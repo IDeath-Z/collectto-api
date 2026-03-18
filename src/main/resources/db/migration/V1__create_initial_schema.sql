@@ -9,6 +9,7 @@ CREATE TABLE users (
     followers_count INT DEFAULT 0,
     following_count INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
+    birthday_date DATE NOT NULL,
     creation_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
