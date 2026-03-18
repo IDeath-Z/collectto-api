@@ -1,0 +1,42 @@
+package com.collectto.api_collectto.presentation.controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.collectto.api_collectto.application.usecases.CreateUserUseCase;
+import com.collectto.api_collectto.presentation.dto.CreateUserRequest;
+import com.collectto.api_collectto.presentation.dto.CreateUserResponse;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+@RestController
+@CrossOrigin
+@RequestMapping("/users")
+public class UserController {
+
+    @Autowired
+    private CreateUserUseCase createUserUseCase;
+
+    @PostMapping("create")
+    public CreateUserResponse create(@RequestBody CreateUserRequest request) {
+        var output = createUserUseCase.execute(new CreateUserUseCase.Input(
+            request.name(),
+            request.username(),
+            request.email(),
+            request.password(),
+            request.birthdayDate()
+        ));
+
+        return new CreateUserResponse(
+            output.id(),
+            output.name(),
+            output.username(),
+            output.email(),
+            output.creationDate()
+        );
+    }   
+}
