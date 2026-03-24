@@ -1,4 +1,4 @@
-package com.collectto.api_collectto.application.usecases;
+package com.collectto.api_collectto.application.usecases.user;
 
 import java.time.Instant;
 import java.time.LocalDate;

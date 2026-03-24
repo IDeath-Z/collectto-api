@@ -1,4 +1,4 @@
-package com.collectto.api_collectto.presentation.dto;
+package com.collectto.api_collectto.presentation.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

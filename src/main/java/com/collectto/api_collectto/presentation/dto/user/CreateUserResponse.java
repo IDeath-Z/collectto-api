@@ -1,4 +1,4 @@
-package com.collectto.api_collectto.presentation.dto;
+package com.collectto.api_collectto.presentation.dto.user;
 
 public record CreateUserResponse(
     String id,

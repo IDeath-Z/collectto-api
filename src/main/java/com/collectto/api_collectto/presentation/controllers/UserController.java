@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.collectto.api_collectto.application.usecases.CreateUserUseCase;
-import com.collectto.api_collectto.presentation.dto.CreateUserRequest;
-import com.collectto.api_collectto.presentation.dto.CreateUserResponse;
+import com.collectto.api_collectto.application.usecases.user.CreateUserUseCase;
+import com.collectto.api_collectto.presentation.dto.user.CreateUserRequest;
+import com.collectto.api_collectto.presentation.dto.user.CreateUserResponse;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +37,6 @@ public class UserController {
             output.username(),
             output.email(),
             output.creationDate()
-        );
+        ); // Implement response entity later
     }   
 }
