@@ -10,6 +10,8 @@ import com.collectto.api_collectto.infrastructure.security.SpringSecurityAuthent
 import com.collectto.api_collectto.presentation.dto.auth.LoginRequest;
 import com.collectto.api_collectto.presentation.dto.auth.LoginResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -26,6 +28,7 @@ public class AuthController {
     private GenerateTokenUseCase generateTokenUseCase;
 
     @PostMapping("/login")
+    @Operation(summary = "Authenticate user and generate JWT token", description = "Validates user credentials and returns a JWT access token for authenticated sessions.")
     public LoginResponse login(@RequestBody LoginRequest request) {
         var user = springSecurityAuthentication.authenticate(request.email(), request.password());
         var token = generateTokenUseCase.execute(user);
