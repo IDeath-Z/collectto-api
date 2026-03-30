@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.collectto.api_collectto.application.exceptions.EmailAlreadyExistsException;
 import com.collectto.api_collectto.application.exceptions.UsernameAlreadyExistsException;
 import com.collectto.api_collectto.domain.entities.User;
+import com.collectto.api_collectto.domain.ports.PasswordHasher;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
 @Service
@@ -17,6 +18,9 @@ public class CreateUserUseCase {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordHasher passwordHasher;
 
     public record Input(String name, String username, String email, String password, String birthdayDate) {}
     public record Output(String id, String name, String username, String email, String bio, String profilePictureUrl,
@@ -34,7 +38,7 @@ public class CreateUserUseCase {
                 input.name(),
                 input.username(),
                 input.email(),
-                input.password(), // IMPLEMENT PASSWORD HASHING
+                passwordHasher.hash(input.password()),
                 null,
                 null,
                 0,
