@@ -19,7 +19,7 @@ CREATE TABLE collections (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     cover_img_url TEXT,
-    visibility VARCHAR(20) DEFAULT 'PUBLIC',
+    visibility VARCHAR(20) DEFAULT 'PRIVATE',
     followers_count INT NOT NULL DEFAULT 0,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
