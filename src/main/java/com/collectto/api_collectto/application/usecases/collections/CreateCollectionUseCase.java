@@ -21,18 +21,18 @@ public class CreateCollectionUseCase {
     @Autowired
     private StorageProvider storageProvider;
 
-    public record Input(UUID userId, String name, String description, MultipartFile image, String folder) {}
-    public record Output(UUID id, UUID userId, String name, String description, String imageUrl, Visibility visibility,
+    public record Input(UUID userId, String name, String description, MultipartFile coverImage, String folder) {}
+    public record Output(UUID id, UUID userId, String name, String description, String coverImageURL, Visibility visibility,
             int followersCount, boolean isActive, String createdAt, String updatedAt) {
     }
                 
     public Output execute(Input input) {
 
         String imageUrl;
-        if (input.image() == null || input.image().isEmpty()) {
+        if (input.coverImage() == null || input.coverImage().isEmpty()) {
             imageUrl = null;
         } else {
-            imageUrl = storageProvider.uploadImage(input.image(), input.folder());
+            imageUrl = storageProvider.uploadImage(input.coverImage(), input.folder());
         }
 
         Collections collection = new Collections(
