@@ -1,29 +1,29 @@
-package com.collectto.api_collectto.application.usecases.collections;
+package com.collectto.api_collectto.application.usecases.collection;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.collectto.api_collectto.domain.entities.Collections;
+import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.enums.Visibility;
-import com.collectto.api_collectto.domain.ports.CollectionsRepository;
+import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CreateCollectionUseCase {
 
-    @Autowired
-    private CollectionsRepository collectionsRepository;
+    private final CollectionRepository collectionsRepository;
+    private final StorageProvider storageProvider;
 
-    @Autowired
-    private StorageProvider storageProvider;
-
-    public record Input(UUID userId, String name, String description, MultipartFile coverImage, String folder) {}
+    public record Input(UUID userId, String name, String description, MultipartFile coverImage, String folder, List<String> tags) {}
     public record Output(UUID id, UUID userId, String name, String description, String coverImageURL, Visibility visibility,
-            int followersCount, boolean isActive, String createdAt, String updatedAt) {
+            int followersCount, List<String> tags, boolean isActive, String createdAt, String updatedAt) {
     }
                 
     public Output execute(Input input) {
@@ -35,7 +35,7 @@ public class CreateCollectionUseCase {
             imageUrl = storageProvider.uploadImage(input.coverImage(), input.folder());
         }
 
-        Collections collection = new Collections(
+        Collection collection = new Collection(
                 UUID.randomUUID(),
                 input.userId(),
                 input.name(),
@@ -43,11 +43,12 @@ public class CreateCollectionUseCase {
                 imageUrl,
                 Visibility.PRIVATE, // Default visibility, can be changed later
                 0,
+                input.tags(),
                 true,
                 Instant.now(),
                 Instant.now());
 
-        Collections savedCollection = collectionsRepository.save(collection);
+        Collection savedCollection = collectionsRepository.save(collection);
 
         return new Output(
                 savedCollection.getId(),
@@ -57,6 +58,7 @@ public class CreateCollectionUseCase {
                 savedCollection.getCoverImageUrl(),
                 savedCollection.getVisibility(),
                 savedCollection.getFollowersCount(),
+                savedCollection.getTags(),
                 savedCollection.isActive(),
                 savedCollection.getCreatedAt().toString(),
                 savedCollection.getUpdatedAt().toString());

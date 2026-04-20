@@ -1,8 +1,10 @@
-package com.collectto.api_collectto.presentation.dto.collections;
+package com.collectto.api_collectto.presentation.dto.collection;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.enums.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -27,9 +29,13 @@ public record CreateCollectionResponse(
                 
         @Schema(description = "Number of followers", example = "100")
         int followersCount,
-                
+                        
+        @Schema(description = "Collection tags", example = "[\"#tag1\", \"#tag2\"]") 
+        List<String> tags,
+        
         @Schema(description = "Indicates if the collection is active", example = "true")
-        boolean isActive,
+        @JsonProperty("isActive")
+        boolean active, // Using 'active' as the field name to avoid confusion with 'isActive' in JSON
                 
         @Schema(description = "Collection creation timestamp", example = "2023-01-01T00:00:00Z")
         String createdAt,

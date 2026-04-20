@@ -1,3 +1,4 @@
+#Base containers
 services:
   postgres:
     image: 'postgres:16'
@@ -7,7 +8,7 @@ services:
       - 'POSTGRES_PASSWORD=${DB_PASSWORD}'
       - 'POSTGRES_USER=${DB_USER}'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -15,31 +16,18 @@ services:
   api:
     build: .
     container_name: collectto_api
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${DB_NAME}
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
       - JWT_SECRET=${JWT_SECRET}
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  caddy:
-    image: caddy:2-alpine
-    container_name: caddy_proxy
-    restart: always
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - api
-
-# Certificates and config for Caddy
-volumes:
-  caddy_data:
-  caddy_config:
+      - ORACLE_TENANT_ID=${ORACLE_TENANT_ID}
+      - ORACLE_USER_ID=${ORACLE_USER_ID}
+      - ORACLE_FINGERPRINT=${ORACLE_FINGERPRINT}
+      - ORACLE_REGION=${ORACLE_REGION}
+      - ORACLE_NAMESPACE=${ORACLE_NAMESPACE}
+      - ORACLE_BUCKET=${ORACLE_BUCKET}
+      - ORACLE_PRIVATE_KEY=${ORACLE_PRIVATE_KEY}

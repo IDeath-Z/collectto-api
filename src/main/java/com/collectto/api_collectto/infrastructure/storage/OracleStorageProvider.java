@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.infrastructure.storage;
 
+import java.io.ByteArrayInputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -47,17 +48,32 @@ public class OracleStorageProvider implements StorageProvider {
 
     @PostConstruct
     public void init() {
-        String finalPrivateKey = privateKey.replace("\\n", "\n");
+        try {
+            // Cleaning up the configuration values to ensure there are no extra quotes or whitespace
+            String cleanRegion = region.replace("\"", "").trim();
+            String cleanTenant = tenantId.replace("\"", "").trim();
+            String cleanUser = userId.replace("\"", "").trim();
+            String cleanFingerprint = fingerprint.replace("\"", "").trim();
 
-        SimpleAuthenticationDetailsProvider provider = SimpleAuthenticationDetailsProvider.builder()
-                .tenantId(tenantId)
-                .userId(userId)
-                .fingerprint(fingerprint)
-                .privateKeySupplier(new StringPrivateKeySupplier(finalPrivateKey))
-                .region(Region.valueOf(region))
-                .build();
-        
-        this.client = ObjectStorageClient.builder().build(provider);
+            // The private key often has newlines and may be stored with escaped characters, so we need to handle that properly
+            String finalPrivateKey = privateKey
+                    .replace("\"", "")
+                    .replace("\\n", "\n")
+                    .trim();
+
+            SimpleAuthenticationDetailsProvider provider = SimpleAuthenticationDetailsProvider.builder()
+                    .tenantId(cleanTenant)
+                    .userId(cleanUser)
+                    .fingerprint(cleanFingerprint)
+                    .privateKeySupplier(new StringPrivateKeySupplier(finalPrivateKey))
+                    .region(Region.valueOf(cleanRegion))
+                    .build();
+
+            this.client = ObjectStorageClient.builder().build(provider);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize Oracle Storage Client", e);
+        }
     }
 
     @Override
@@ -78,12 +94,16 @@ public class OracleStorageProvider implements StorageProvider {
         }
 
         try {
+            byte[] fileBytes = file.getBytes();
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(fileBytes);
+
             PutObjectRequest request = PutObjectRequest.builder()
                     .namespaceName(namespaceName)
                     .bucketName(bucketName)
                     .objectName(objectName)
-                    .putObjectBody(file.getInputStream())
+                    .putObjectBody(inputStream)
                     .contentType(file.getContentType())
+                    .contentLength((long) fileBytes.length)
                     .build();
 
             client.putObject(request);

@@ -21,7 +21,7 @@ public class UserJpaEntity {
 
     @Id
     @Column(name = "user_id", nullable = false, unique = true)
-    private UUID userId;
+    private UUID id;
 
     @Column(name = "name", nullable = false, length = 255)
     private String name;

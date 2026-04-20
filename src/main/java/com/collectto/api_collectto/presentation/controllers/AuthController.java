@@ -1,6 +1,5 @@
 package com.collectto.api_collectto.presentation.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,21 +10,21 @@ import com.collectto.api_collectto.presentation.dto.auth.LoginRequest;
 import com.collectto.api_collectto.presentation.dto.auth.LoginResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-@RestController
 @CrossOrigin
+@RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private SpringSecurityAuthentication springSecurityAuthentication;
+    private final SpringSecurityAuthentication springSecurityAuthentication;
 
-    @Autowired
-    private GenerateTokenUseCase generateTokenUseCase;
+    private final GenerateTokenUseCase generateTokenUseCase;
 
     @PostMapping("/login")
     @Operation(summary = "Authenticate user and generate JWT token", description = "Validates user credentials and returns a JWT access token for authenticated sessions.")

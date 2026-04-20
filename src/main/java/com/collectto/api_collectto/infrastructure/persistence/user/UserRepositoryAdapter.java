@@ -3,20 +3,19 @@ package com.collectto.api_collectto.infrastructure.persistence.user;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Repository
+@RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepository {
 
-    @Autowired
-    private UserJpaRepository userJpaRepository;
-
-    @Autowired
-    private UserMapper userMapper;
+    private final UserJpaRepository userJpaRepository;
+    private final UserMapper userMapper;
 
     @Override
     public boolean existsByEmail(String email) {

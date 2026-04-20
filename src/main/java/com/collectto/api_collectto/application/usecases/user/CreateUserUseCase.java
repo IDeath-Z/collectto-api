@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.collectto.api_collectto.application.exceptions.EmailAlreadyExistsException;
@@ -13,14 +12,14 @@ import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.PasswordHasher;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CreateUserUseCase {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordHasher passwordHasher;
+    private final UserRepository userRepository;
+    private final PasswordHasher passwordHasher;
 
     public record Input(String name, String username, String email, String password, String birthdayDate) {}
     public record Output(String id, String name, String username, String email, String bio, String profilePictureUrl,

@@ -1,24 +1,26 @@
 package com.collectto.api_collectto.domain.entities;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.enums.Visibility;
 
-public class Collections {
+public class Collection {
     private final UUID id;
     private final UUID userId;
     private final String name;
     private final String description;
     private final String coverImageUrl;
     private final Visibility visibility;
-    private int followersCount;
-    private boolean isActive;
+    private final int followersCount;
+    private final List<String> tags;
+    private final boolean isActive;
     private final Instant createdAt;
     private final Instant updatedAt;
 
-    public Collections(UUID id, UUID userId, String name, String description, String coverImageUrl,
-            Visibility visibility, int followersCount, boolean isActive, Instant createdAt, Instant updatedAt) {
+    public Collection(UUID id, UUID userId, String name, String description, String coverImageUrl,
+            Visibility visibility, int followersCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
 
         if (userId == null)
             throw new IllegalArgumentException("User ID is required");
@@ -32,6 +34,7 @@ public class Collections {
         this.coverImageUrl = coverImageUrl;
         this.visibility = visibility;
         this.followersCount = followersCount;
+        this.tags = tags;
         this.isActive = isActive;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -64,6 +67,10 @@ public class Collections {
 
     public int getFollowersCount() {
         return followersCount;
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 
     public boolean isActive() {

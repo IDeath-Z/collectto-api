@@ -1,0 +1,24 @@
+# Production-ready Docker Compose configuration for Collectto API with Caddy as a reverse proxy for secure HTTPS handling.
+# Run docker compose -f compose.yaml -f compose.prod.yaml up -d to start the application in production mode.
+services:
+  api:
+    restart: always
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy_proxy
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+
+# Certificates and config for Caddy
+volumes:
+  caddy_data:
+  caddy_config:

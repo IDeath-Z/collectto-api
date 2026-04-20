@@ -9,7 +9,7 @@ public class UserMapper {
 
     public UserJpaEntity toJpa(User user) {
         UserJpaEntity entity = new UserJpaEntity();
-        entity.setUserId(user.getId());
+        entity.setId(user.getId());
         entity.setName(user.getName());
         entity.setUsername(user.getUsername());
         entity.setEmail(user.getEmail());
@@ -22,7 +22,7 @@ public class UserMapper {
 
     public User toDomain(UserJpaEntity entity) {
         return new User(
-                entity.getUserId(),
+                entity.getId(),
                 entity.getName(),
                 entity.getUsername(),
                 entity.getEmail(),

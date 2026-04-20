@@ -1,11 +1,14 @@
-package com.collectto.api_collectto.infrastructure.persistence.collections;
+package com.collectto.api_collectto.infrastructure.persistence.collection;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.collectto.api_collectto.domain.enums.Visibility;
+import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaEntity;
 import com.collectto.api_collectto.infrastructure.persistence.user.UserJpaEntity;
 
 import jakarta.persistence.Column;
@@ -15,6 +18,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.ForeignKey;
@@ -25,11 +30,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "collections")
-public class CollectionsJpaEntity {
+public class CollectionJpaEntity {
 
     @Id
     @Column(name = "collection_id", nullable = false, unique = true)
-    private UUID collectionId;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_collections_user"))
@@ -41,7 +46,7 @@ public class CollectionsJpaEntity {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "cover_image_url")
+    @Column(name = "cover_img_url")
     private String coverImageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -50,6 +55,10 @@ public class CollectionsJpaEntity {
 
     @Column(name = "followers_count", nullable = false, insertable = false)
     private int followersCount;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "collection_tags", joinColumns = @JoinColumn(name = "collection_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<TagJpaEntity> tags = new HashSet<>();
 
     @Column(name = "is_active", nullable = false, insertable = false)
     private boolean isActive;
