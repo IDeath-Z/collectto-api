@@ -28,18 +28,14 @@ public class CollectionController {
 
     private final CreateCollectionUseCase createCollectionUseCase;
 
-@PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create a new collection", description = "Registers a new collection in the system with the provided details.")
     public CreateCollectionResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @ModelAttribute @Valid CreateCollectionRequest request) {
         
         UUID userId = userDetails.getUser().getId();
-        
-        if (!userId.equals(request.userId())) {
-            throw new RuntimeException("User ID in the request does not match the authenticated user"); // Implement proper exception handling later
-        }
 
         var output = createCollectionUseCase.execute(new CreateCollectionUseCase.Input(
-            request.userId(),
+            userId,
             request.name(),
             request.description(),
             request.coverImage(),

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaEntity;
-import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaRepository;
+import com.collectto.api_collectto.infrastructure.persistence.tag.TagResolverHelper;
 import com.collectto.api_collectto.infrastructure.persistence.user.UserJpaEntity;
 import com.collectto.api_collectto.infrastructure.persistence.user.UserJpaRepository;
 
@@ -24,7 +24,7 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
     private final CollectionJpaRepository collectionsJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final CollectionMapper collectionMapper;
-    private final TagJpaRepository tagJpaRepository;
+    private final TagResolverHelper tagResolverHelper;
 
     @Override
     public List<Collection> findByUserId(UUID userId) {
@@ -41,7 +41,7 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
         CollectionJpaEntity entity = collectionMapper.toJpa(collection, user);
 
         Set<TagJpaEntity> tagEntities = collection.getTags().stream()
-                .map(this::resolveTag)
+                .map(tagResolverHelper::findOrCreate)
                 .collect(Collectors.toSet());
 
         entity.setTags(tagEntities);
@@ -59,15 +59,5 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
         return collectionsJpaRepository.findByUserIdAndNameContainingIgnoreCase(userId, name).stream()
             .map(collectionMapper::toDomain)
             .toList();
-    }
-
-    private TagJpaEntity resolveTag(String name) {
-        return tagJpaRepository.findByName(name)
-                .orElseGet(() -> {
-                    TagJpaEntity entity = new TagJpaEntity();
-                    entity.setId(UUID.randomUUID());
-                    entity.setName(name);
-                    return tagJpaRepository.save(entity);
-                });
     }
 }
