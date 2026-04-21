@@ -22,9 +22,6 @@ public record CreateCollectionRequest(
 
         @NotNull @Schema(description = "Collection image", example = "collection_image.jpg") 
         MultipartFile coverImage,
-
-        @NotBlank @Schema(description = "Collection folder", example = "Collections") 
-        String folder,
                         
         @Schema(description = "Collection tags", example = "[\"#tag1\", \"#tag2\"]") 
         List<String> tags

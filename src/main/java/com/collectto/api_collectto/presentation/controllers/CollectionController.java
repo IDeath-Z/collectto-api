@@ -43,7 +43,6 @@ public class CollectionController {
             request.name(),
             request.description(),
             request.coverImage(),
-            request.folder(),
             request.tags()
         ));
         
