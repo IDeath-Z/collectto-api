@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,8 +25,8 @@ public record CreateItemRequest(
     @Schema(description = "Date when the item was last used", example = "2026-06-01")
     String lastUsedDate,
 
-    @Schema(description = "List of media files associated with the item", example = "[\"image1.jpg\", \"image2.jpg\"]")
-    List<MultipartFile> mediasFiles,
+    @Schema(description = "List of image file paths associated with the item", example = "[\"items/userId/collectionId/itemId/filename.jpg\"]") 
+    List<String> imageFilesUrls,
 
     @Schema(description = "Custom attributes for the item as key-value pairs", example = "{\"color\": \"red\", \"size\": \"medium\"}")
     Map<String, Object> attributes,

@@ -24,7 +24,7 @@ public record CreateCollectionResponse(
         @Schema(description = "URL of the collection cover image", example = "https://example.com/images/collection_cover.jpg")
         String coverImageURL,
                 
-        @Schema(description = "Collection visibility", example = "PUBLIC, PRIVATE, FRIENDS")
+        @Schema(description = "Collection visibility, options are PUBLIC, PRIVATE, FRIENDS", example = "PRIVATE")
         Visibility visibility,
                 
         @Schema(description = "Number of followers", example = "100")

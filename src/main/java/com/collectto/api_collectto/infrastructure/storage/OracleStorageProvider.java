@@ -1,9 +1,11 @@
 package com.collectto.api_collectto.infrastructure.storage;
 
 import java.io.ByteArrayInputStream;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,8 +16,11 @@ import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.StringPrivateKeySupplier;
 import com.oracle.bmc.objectstorage.ObjectStorage;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
+import com.oracle.bmc.objectstorage.model.CreatePreauthenticatedRequestDetails;
+import com.oracle.bmc.objectstorage.requests.CreatePreauthenticatedRequestRequest;
 import com.oracle.bmc.objectstorage.requests.DeleteObjectRequest;
 import com.oracle.bmc.objectstorage.requests.PutObjectRequest;
+import com.oracle.bmc.objectstorage.responses.CreatePreauthenticatedRequestResponse;
 import com.oracle.bmc.Region;
 
 import jakarta.annotation.PostConstruct;
@@ -137,6 +142,38 @@ public class OracleStorageProvider implements StorageProvider {
         }
 
         String encodedObjectName = fullUrl.substring(fullUrl.lastIndexOf("/o/") + 3);
-        return java.net.URLDecoder.decode(encodedObjectName, java.nio.charset.StandardCharsets.UTF_8);
+        return URLDecoder.decode(encodedObjectName, java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public String generatePresignedUrl(String objectName, String contentType, int expirationMinutes) {
+        try {
+            CreatePreauthenticatedRequestDetails details = CreatePreauthenticatedRequestDetails.builder()
+                    .name("presigned-" + UUID.randomUUID())
+                    .objectName(objectName)
+                    .accessType(CreatePreauthenticatedRequestDetails.AccessType.ObjectWrite)
+                    .timeExpires(new Date(System.currentTimeMillis() + (long) expirationMinutes * 60 * 1000))
+                    .build();
+
+            CreatePreauthenticatedRequestRequest request = CreatePreauthenticatedRequestRequest.builder()
+                    .namespaceName(namespaceName)
+                    .bucketName(bucketName)
+                    .createPreauthenticatedRequestDetails(details)
+                    .build();
+
+            CreatePreauthenticatedRequestResponse response = client.createPreauthenticatedRequest(request);
+            String accessUri = response.getPreauthenticatedRequest().getAccessUri();
+
+            return "https://objectstorage." + region + ".oraclecloud.com" + accessUri;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate pre-signed URL", e.getCause()); // Implement better error handling as needed
+        }
+    }
+
+    @Override
+    public String buildPublicUrl(String filePath) {
+        return String.format(
+                "https://objectstorage.%s.oraclecloud.com/n/%s/b/%s/o/%s",
+                region, namespaceName, bucketName, filePath);
     }
 }

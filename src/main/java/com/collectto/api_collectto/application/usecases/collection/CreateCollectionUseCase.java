@@ -4,9 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.enums.Visibility;
@@ -19,13 +17,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateCollectionUseCase {
 
-    @Value("${storage.path.collections}")
-    private String collectionsStoragePath;
-
     private final CollectionRepository collectionsRepository;
     private final StorageProvider storageProvider;
 
-    public record Input(UUID userId, String name, String description, MultipartFile coverImage, List<String> tags) {}
+    public record Input(UUID userId, String name, String description, String coverImageUrl, List<String> tags) {}
     public record Output(UUID id, UUID userId, String name, String description, String coverImageURL, Visibility visibility,
             int followersCount, List<String> tags, boolean isActive, String createdAt, String updatedAt) {
     }
@@ -33,21 +28,19 @@ public class CreateCollectionUseCase {
     public Output execute(Input input) {
 
         UUID collectionId = UUID.randomUUID();
-        String collectionPath = collectionsStoragePath + "/" + input.userId() + "/" + collectionId;
+        String coverImageUrl = input.coverImageUrl() == null
+                ? null
+                : storageProvider.buildPublicUrl(input.coverImageUrl());
 
-        String imageUrl;
-        if (input.coverImage() == null || input.coverImage().isEmpty()) {
-            imageUrl = null;
-        } else {
-            imageUrl = storageProvider.uploadImage(input.coverImage(), collectionPath);
-        }
+        if (coverImageUrl != null && !input.coverImageUrl().startsWith("collections/"))
+            throw new RuntimeException("Invalid cover image path"); // Implement better validation as needed
 
         Collection collection = new Collection(
                 collectionId,
                 input.userId(),
                 input.name(),
                 input.description(),
-                imageUrl,
+                coverImageUrl,
                 Visibility.PRIVATE, // Default visibility, can be changed later
                 0,
                 input.tags(),

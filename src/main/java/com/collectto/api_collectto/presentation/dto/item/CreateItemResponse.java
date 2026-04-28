@@ -29,8 +29,8 @@ public record CreateItemResponse(
     @Schema(description = "Item last used date", example = "2026-06-01") 
     String lastUsedDate,
             
-    @Schema(description = "URLs of the item media files", example = "[\"https://example.com/images/item.jpg\"]") 
-    List<String> mediaURLs,
+    @Schema(description = "URLs of the item image files", example = "[\"https://example.com/images/item.jpg\"]") 
+    List<String> imageFilesUrls,
             
     @Schema(description = "Custom attributes of the item", example = "{\"color\": \"red\", \"size\": \"M\"}") 
     Map<String, Object> attributes,

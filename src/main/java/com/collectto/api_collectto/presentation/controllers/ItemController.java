@@ -2,10 +2,8 @@ package com.collectto.api_collectto.presentation.controllers;
 
 import java.util.UUID;
 
-import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +14,7 @@ import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -27,9 +26,9 @@ public class ItemController {
 
     private final CreateItemUseCase createItemUseCase;
 
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create")
     @Operation(summary = "Create a new item", description = "Registers a new item in the system with the provided details.")
-    public CreateItemResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @ModelAttribute @Valid CreateItemRequest request) {
+    public CreateItemResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateItemRequest request) {
         
         UUID userId = userDetails.getUser().getId();
 
@@ -40,7 +39,7 @@ public class ItemController {
             request.description(),
             request.acquisitionDate(),
             request.lastUsedDate(),
-            request.mediasFiles(),
+            request.imageFilesUrls(),
             request.attributes(),
             request.tags()
         ));
@@ -53,7 +52,7 @@ public class ItemController {
             output.description(),
             output.acquisitionDate(),
             output.lastUsedDate(),
-            output.mediaURLs(),
+            output.imageFilesUrls(),
             output.attributes(),
             output.tags(),
             output.isActive(),

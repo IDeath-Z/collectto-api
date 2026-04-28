@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.jvnet.hk2.annotations.Service;
+import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.Item;
@@ -30,10 +29,10 @@ public class CreateItemUseCase {
     private final StorageProvider storageProvider;
 
     public record Input(UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-            String lastUsedDate, List<MultipartFile> mediasFiles, Map<String, Object> attributes, List<String> tags) {}
+            String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
             
     public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-            String lastUsedDate, List<String> mediaURLs, Map<String, Object> attributes, List<String> tags, boolean isActive, String createdAt, String updatedAt) {}
+            String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, boolean isActive, String createdAt, String updatedAt) {}
     
     public Output execute(Input input) {
 
@@ -44,16 +43,16 @@ public class CreateItemUseCase {
             throw new RuntimeException("User is not the owner of the collection");
 
         UUID itemId = UUID.randomUUID();
-        String itemPath = itemsStoragePath + "/" + input.userId() + "/" + input.collectionId() + "/" + itemId;
-
-        List<String> mediaUrls;
-        if (input.mediasFiles() == null || input.mediasFiles().isEmpty()) {
-            mediaUrls = null;
-        } else {
-            mediaUrls = input.mediasFiles().stream()
-                    .map(file -> storageProvider.uploadImage(file, itemPath))
-                    .toList();
-        }
+        List<String> imageFilesUrls = (input.imageFilesUrls() == null || input.imageFilesUrls().isEmpty())
+                        ? null
+                        : input.imageFilesUrls().stream()
+                                        .filter(path -> {
+                                                if (!path.startsWith("items/"))
+                                                        throw new RuntimeException("Invalid image path"); // Implement better validation as needed
+                                                return true;
+                                        })
+                                        .map(storageProvider::buildPublicUrl)
+                                        .toList();
 
         Item item = new Item(
                 itemId,
@@ -63,7 +62,7 @@ public class CreateItemUseCase {
                 input.description(),
                 LocalDate.parse(input.acquisitionDate()),
                 LocalDate.parse(input.lastUsedDate()),
-                mediaUrls,
+                imageFilesUrls,
                 input.attributes(),
                 0,
                 0,
