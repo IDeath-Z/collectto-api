@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Raymonds-dev/Collectto/main/src/assets/logo.png" alt="Collectto" width="120"/>
+  <img src="https://raw.githubusercontent.com/IDeath-Z/collectto-api/main/assets/logo.png" alt="Collectto" width="120"/>
 </p>
-
-# Collectto API
 
 > Backend da rede social para colecionadores — organize seu acervo e conecte-se com outros entusiastas.
 
