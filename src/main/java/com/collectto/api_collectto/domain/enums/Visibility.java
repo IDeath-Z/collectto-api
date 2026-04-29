@@ -1,6 +1,7 @@
 package com.collectto.api_collectto.domain.enums;
 
 public enum Visibility {
+    
     PUBLIC("PUBLIC"),
     PRIVATE("PRIVATE"),
     FRIENDS("FRIENDS");

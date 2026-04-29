@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Item {
+
     private final UUID id;
     private final UUID collectionId;
     private final UUID userId;
@@ -26,7 +27,6 @@ public class Item {
     public Item(UUID id, UUID collectionId, UUID userId, String name, String description, LocalDate aquisitionDate,
             LocalDate lastUsedDate, List<String> mediaURLs, Map<String, Object> attributes, int likesCount,
             int commentsCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
-
         if (userId == null)
             throw new IllegalArgumentException("User ID cannot be null");
         if (name == null || name.isBlank())

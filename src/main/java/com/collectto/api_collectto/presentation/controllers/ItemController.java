@@ -29,7 +29,6 @@ public class ItemController {
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new item", description = "Registers a new item in the system with the provided details.")
     public CreateItemResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateItemRequest request) {
-        
         UUID userId = userDetails.getUser().getId();
 
         var output = createItemUseCase.execute(new CreateItemUseCase.Input(

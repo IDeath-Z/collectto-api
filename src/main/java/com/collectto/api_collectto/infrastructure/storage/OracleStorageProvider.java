@@ -83,7 +83,6 @@ public class OracleStorageProvider implements StorageProvider {
 
     @Override
     public String uploadImage(MultipartFile file, String folder) {
-
         String originalName = file.getOriginalFilename();
         if (originalName == null || originalName.trim().isEmpty()) {
             throw new IllegalArgumentException("Invalid file: The file name cannot be null or empty."); // Implement better error handling as needed

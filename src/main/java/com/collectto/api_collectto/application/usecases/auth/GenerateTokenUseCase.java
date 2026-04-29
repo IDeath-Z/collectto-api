@@ -4,17 +4,18 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.TokenProvider;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class GenerateTokenUseCase {
 
-    @Autowired
-    private TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
 
     public String execute(User user) {
        return tokenProvider.generate(user.getEmail(), genExpirationDate());

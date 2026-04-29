@@ -15,6 +15,6 @@ public record CreateUserResponse(
     @Schema(description = "User email address", example = "maria@email.com", format = "email")
     String email,
                         
-    @Schema(description = "Timestamp of user creation", example = "2023-01-01T00:00:00Z") 
+    @Schema(description = "Timestamp of user creation", example = "2026-01-01T00:00:00Z") 
     String createdAt
 ) {}

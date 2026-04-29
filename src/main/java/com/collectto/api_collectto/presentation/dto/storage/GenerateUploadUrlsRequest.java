@@ -17,7 +17,7 @@ public record GenerateUploadUrlsRequest(
         @Schema(description = "Parent identifier, used only for ITEM context (specify the collection ID)", example = "123e4567-e89b-12d3-a456-426614174000") 
         UUID parentId,
         
-        @NotNull @Schema(description = "Context for the upload, options are USER_AVATAR, USER_BANNER, COLLECTION or ITEM", example = "COLLECTION") 
+        @NotNull @Schema(description = "Context for the upload, options are PROFILE_PICTURE, PROFILE_BACKGROUND, COLLECTION or ITEM", example = "COLLECTION")
         UploadContext context,
                 
         @NotEmpty @Schema(description = "List of files to upload", example = "[{\"fileName\": \"file1.jpg\", \"contentType\": \"image/jpeg\"}, {\"fileName\": \"file2.png\", \"contentType\": \"image/png\"}]") 

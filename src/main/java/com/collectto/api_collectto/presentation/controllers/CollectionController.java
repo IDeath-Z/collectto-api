@@ -30,7 +30,6 @@ public class CollectionController {
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new collection", description = "Registers a new collection in the system with the provided details.")
     public CreateCollectionResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateCollectionRequest request) {
-        
         UUID userId = userDetails.getUser().getId();
 
         var output = createCollectionUseCase.execute(new CreateCollectionUseCase.Input(

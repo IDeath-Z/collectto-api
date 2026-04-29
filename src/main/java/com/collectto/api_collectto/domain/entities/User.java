@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class User {
+
     private final UUID id;
     private final String name;
     private final String username;
@@ -12,6 +13,7 @@ public class User {
     private final String passwordHash;
     private final String bio;
     private final String profilePictureUrl;
+    private final String profileBackgroundUrl;
     private final int followersCount;
     private final int followingCount;
     private final boolean isActive;
@@ -19,9 +21,8 @@ public class User {
     private final Instant creationDate;
 
     public User(UUID id, String name, String username, String email, String passwordHash, String bio,
-            String profilePictureUrl, int followersCount, int followingCount, boolean isActive,
+            String profilePictureUrl, String profileBackgroundUrl, int followersCount, int followingCount, boolean isActive,
             LocalDate birthdayDate, Instant creationDate) {
-
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Name is required");
         if (username == null || username.isBlank())
@@ -40,6 +41,7 @@ public class User {
         this.passwordHash = passwordHash;
         this.bio = bio;
         this.profilePictureUrl = profilePictureUrl;
+        this.profileBackgroundUrl = profileBackgroundUrl;
         this.followersCount = followersCount;
         this.followingCount = followingCount;
         this.isActive = isActive;
@@ -75,6 +77,10 @@ public class User {
         return profilePictureUrl;
     }
 
+    public String getProfileBackgroundUrl() {
+        return profileBackgroundUrl;
+    }
+
     public int getFollowersCount() {
         return followersCount;
     }
@@ -93,5 +99,25 @@ public class User {
 
     public Instant getCreationDate() {
         return creationDate;
+    }
+
+    public User updateProfile(String name, String username, String bio, String profilePictureUrl,
+            String profileBackgroundUrl, String birthdayDate) {
+        
+        return new User(
+            this.id,
+            name != null ? name : this.name,
+            username != null ? username : this.username,
+            this.email,
+            this.passwordHash,
+            bio != null ? bio : this.bio,
+            profilePictureUrl != null ? profilePictureUrl : this.profilePictureUrl,
+            profileBackgroundUrl != null ? profileBackgroundUrl : this.profileBackgroundUrl,
+            this.followersCount,
+            this.followingCount,
+            this.isActive,
+            birthdayDate != null ? LocalDate.parse(birthdayDate) : this.birthdayDate,
+            this.creationDate
+        );
     }
 }

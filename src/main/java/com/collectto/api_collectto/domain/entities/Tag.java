@@ -10,7 +10,6 @@ public class Tag {
     private final Instant createdAt;
 
     public Tag(UUID id, String name, Instant createdAt) {
-
         if (id == null)
             throw new IllegalArgumentException("User ID is required");
         if (name == null || name.isBlank())

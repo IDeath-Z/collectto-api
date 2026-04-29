@@ -1,8 +1,9 @@
 package com.collectto.api_collectto.domain.enums;
 
 public enum UploadContext {
-    USER_AVATAR("USER_AVATAR"),
-    USER_BANNER("USER_BANNER"),
+
+    PROFILE_PICTURE("PROFILE_PICTURE"),
+    PROFILE_BACKGROUND("PROFILE_BACKGROUND"),
     COLLECTION("COLLECTION"),
     ITEM("ITEM");
 

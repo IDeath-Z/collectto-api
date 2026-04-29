@@ -22,7 +22,7 @@ public class CreateUserUseCase {
     private final PasswordHasher passwordHasher;
 
     public record Input(String name, String username, String email, String password, String birthdayDate) {}
-    public record Output(String id, String name, String username, String email, String bio, String profilePictureUrl,
+    public record Output(String id, String name, String username, String email, String bio, String profilePictureUrl, String profileBackgroundUrl,
             int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {
     }
             
@@ -40,6 +40,7 @@ public class CreateUserUseCase {
                 passwordHasher.hash(input.password()),
                 null,
                 null,
+                null,
                 0,
                 0,
                 true,
@@ -55,6 +56,7 @@ public class CreateUserUseCase {
                 savedUser.getEmail(),
                 savedUser.getBio(),
                 savedUser.getProfilePictureUrl(),
+                savedUser.getProfileBackgroundUrl(),
                 savedUser.getFollowersCount(),
                 savedUser.getFollowingCount(),
                 savedUser.isActive(),

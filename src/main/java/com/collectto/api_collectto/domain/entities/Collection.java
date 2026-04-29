@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.collectto.api_collectto.domain.enums.Visibility;
 
 public class Collection {
+
     private final UUID id;
     private final UUID userId;
     private final String name;
@@ -21,7 +22,6 @@ public class Collection {
 
     public Collection(UUID id, UUID userId, String name, String description, String coverImageUrl,
             Visibility visibility, int followersCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
-
         if (userId == null)
             throw new IllegalArgumentException("User ID is required");
         if (name == null || name.isBlank())

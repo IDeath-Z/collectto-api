@@ -35,7 +35,6 @@ public class CreateItemUseCase {
             String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, boolean isActive, String createdAt, String updatedAt) {}
     
     public Output execute(Input input) {
-
         Collection collection = collectionRepository.findById(input.collectionId())
                 .orElseThrow(() -> new RuntimeException("Collection not found"));
 

@@ -1,19 +1,22 @@
 package com.collectto.api_collectto.presentation.controllers;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.UUID;
+
+import com.collectto.api_collectto.application.usecases.user.UpdateUserUseCase;
+import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
+import com.collectto.api_collectto.presentation.dto.user.UpdateUserRequest;
+import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import com.collectto.api_collectto.application.usecases.user.CreateUserUseCase;
+import com.collectto.api_collectto.application.usecases.user.FetchUserUseCase;
 import com.collectto.api_collectto.presentation.dto.user.CreateUserRequest;
 import com.collectto.api_collectto.presentation.dto.user.CreateUserResponse;
+import com.collectto.api_collectto.presentation.dto.user.UserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 @CrossOrigin
 @RestController
@@ -22,24 +25,73 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
+    private final FetchUserUseCase fetchUserUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
 
     @PostMapping("create")
     @Operation(summary = "Create a new user", description = "Registers a new user in the system with the provided details.")
     public CreateUserResponse create(@RequestBody CreateUserRequest request) {
         var output = createUserUseCase.execute(new CreateUserUseCase.Input(
-            request.name(),
-            request.username(),
-            request.email(),
-            request.password(),
-            request.birthdayDate()
-        ));
+                request.name(),
+                request.username(),
+                request.email(),
+                request.password(),
+                request.birthdayDate()));
 
         return new CreateUserResponse(
-            output.id(),
-            output.name(),
-            output.username(),
-            output.email(),
-            output.creationDate()
-        ); // Implement response entity later
-    }   
+                output.id(),
+                output.name(),
+                output.username(),
+                output.email(),
+                output.creationDate()); // Implement response entity later
+    }
+    
+    @GetMapping("/{userId}")
+    @Operation(summary = "Fetch user details", description = "Retrieves the details of a user by their unique identifier.")
+    public UserResponse get(@PathVariable UUID userId) {
+        var output = fetchUserUseCase.execute(new FetchUserUseCase.Input(userId));
+
+        return new UserResponse(
+                output.id(),
+                output.name(),
+                output.username(),
+                output.email(),
+                output.bio(),
+                output.profilePictureUrl(),
+                output.profileBackgroundUrl(),
+                output.followersCount(),
+                output.followingCount(),
+                output.isActive(),
+                output.birthdayDate(),
+                output.creationDate());
+    }
+
+    @PatchMapping("/profile")
+    @Operation(summary = "Update user profile", description = "Updates the profile of the authenticated user. Only the provided fields will be updated.")
+    public UserResponse patch(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateUserRequest request) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = updateUserUseCase.execute(new UpdateUserUseCase.Input(
+                userId,
+                request.name(),
+                request.username(),
+                request.bio(),
+                request.profilePictureUrl(),
+                request.profileBackgroundUrl(),
+                request.birthdayDate()));
+
+        return new UserResponse(
+                output.id(),
+                output.name(),
+                output.username(),
+                output.email(),
+                output.bio(),
+                output.profilePictureUrl(),
+                output.profileBackgroundUrl(),
+                output.followersCount(),
+                output.followingCount(),
+                output.isActive(),
+                output.birthdayDate(),
+                output.creationDate());
+    }
 }

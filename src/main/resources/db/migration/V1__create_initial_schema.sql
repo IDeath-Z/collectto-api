@@ -6,6 +6,7 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     bio TEXT,
     profile_picture_url TEXT,
+    profile_background_url TEXT,
     followers_count INT NOT NULL DEFAULT 0,
     following_count INT NOT NULL DEFAULT 0,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,

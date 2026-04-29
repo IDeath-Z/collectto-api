@@ -15,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GenerateUploadUrlsUseCase {
 
-    @Value("${storage.path.avatars}")
-    private String avatarsPath;
+    @Value("${storage.path.profilePicture}")
+    private String profilePicture;
 
-    @Value("${storage.path.banners}")
-    private String bannersPath;
+    @Value("${storage.path.profileBackground}")
+    private String profileBackground;
 
     @Value("${storage.path.collections}")
     private String collectionsPath;
@@ -44,8 +44,8 @@ public class GenerateUploadUrlsUseCase {
         List<FileOutput> results = input.files().stream().map(file -> {
             String uniqueName = UUID.randomUUID() + "_" + file.fileName().replaceAll("\\s+", "_");
             String basePath = switch (input.context()) {
-                case USER_AVATAR -> avatarsPath + "/" + input.userId();
-                case USER_BANNER -> bannersPath + "/" + input.userId();
+                case PROFILE_PICTURE -> profilePicture + "/" + input.userId();
+                case PROFILE_BACKGROUND -> profileBackground + "/" + input.userId();
                 case COLLECTION -> collectionsPath + "/" + input.userId() + "/" + input.resourceId();
                 case ITEM -> itemsPath + "/" + input.userId() + "/" + input.parentId() + "/" + input.resourceId();
             };

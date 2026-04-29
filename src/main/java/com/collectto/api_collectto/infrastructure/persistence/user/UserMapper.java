@@ -16,7 +16,12 @@ public class UserMapper {
         entity.setPasswordHash(user.getPasswordHash());
         entity.setBio(user.getBio());
         entity.setProfilePictureUrl(user.getProfilePictureUrl());
+        entity.setProfileBackgroundUrl(user.getProfileBackgroundUrl());
+        entity.setFollowersCount(user.getFollowersCount());
+        entity.setFollowingCount(user.getFollowingCount());
+        entity.setActive(user.isActive());
         entity.setBirthdayDate(user.getBirthdayDate());
+        entity.setCreationDate(user.getCreationDate());
         return entity;
     }
 
@@ -29,6 +34,7 @@ public class UserMapper {
                 entity.getPasswordHash(),
                 entity.getBio(),
                 entity.getProfilePictureUrl(),
+                entity.getProfileBackgroundUrl(),
                 entity.getFollowersCount(),
                 entity.getFollowingCount(),
                 entity.isActive(),

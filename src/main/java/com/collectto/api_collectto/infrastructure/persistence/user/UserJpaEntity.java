@@ -41,6 +41,9 @@ public class UserJpaEntity {
     @Column(name = "profile_picture_url", columnDefinition = "TEXT")
     private String profilePictureUrl;
 
+    @Column(name = "profile_background_url", columnDefinition = "TEXT")
+    private String profileBackgroundUrl;
+
     @Column(name = "followers_count", nullable = false, insertable = false)
     private int followersCount;
 

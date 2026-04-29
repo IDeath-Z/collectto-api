@@ -25,7 +25,6 @@ public class UploadController {
     @PostMapping("/presigned-urls")
     @Operation(summary = "Generate pre-signed upload URLs", description = "Returns pre-signed URLs for direct upload to storage. Valid for 5 minutes.")
     public GenerateUploadUrlsResponse generatePresignedUrls(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid GenerateUploadUrlsRequest request) {
-
         UUID userId = userDetails.getUser().getId();
 
         var output = generateUploadUrlsUseCase.execute(new GenerateUploadUrlsUseCase.Input(

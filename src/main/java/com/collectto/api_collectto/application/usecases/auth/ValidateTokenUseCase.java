@@ -1,20 +1,19 @@
 package com.collectto.api_collectto.application.usecases.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.TokenProvider;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidateTokenUseCase {
 
-    @Autowired
-    private TokenProvider tokenProvider;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final TokenProvider tokenProvider;
+    private final UserRepository userRepository;
 
     public User execute(String token) {
         String valid = tokenProvider.validate(token);

@@ -26,7 +26,6 @@ public class CreateCollectionUseCase {
     }
                 
     public Output execute(Input input) {
-
         UUID collectionId = UUID.randomUUID();
         String coverImageUrl = input.coverImageUrl() == null
                 ? null
