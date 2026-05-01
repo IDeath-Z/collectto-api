@@ -3,11 +3,9 @@ package com.collectto.api_collectto.application.usecases.user;
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@Service
 @RequiredArgsConstructor
 public class FetchUserUseCase {
 

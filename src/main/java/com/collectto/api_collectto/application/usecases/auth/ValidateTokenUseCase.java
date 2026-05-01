@@ -1,14 +1,11 @@
 package com.collectto.api_collectto.application.usecases.auth;
 
-import org.springframework.stereotype.Service;
-
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.TokenProvider;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
 public class ValidateTokenUseCase {
 

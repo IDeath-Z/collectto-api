@@ -3,34 +3,21 @@ package com.collectto.api_collectto.application.usecases.storage;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.collectto.api_collectto.domain.enums.UploadContext;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
 public class GenerateUploadUrlsUseCase {
 
-    @Value("${storage.path.profilePicture}")
-    private String profilePicture;
-
-    @Value("${storage.path.profileBackground}")
-    private String profileBackground;
-
-    @Value("${storage.path.collections}")
-    private String collectionsPath;
-
-    @Value("${storage.path.items}")
-    private String itemsPath;
-
-    @Value("${storage.presignedUrlExpirationMinutes}")
-    private int presignedUrlExpirationMinutes;
-
     private final StorageProvider storageProvider;
+
+    private final String profilePicture;
+    private final String profileBackground;
+    private final String collectionsPath;
+    private final String itemsPath;
+    private final int presignedUrlExpirationMinutes;
 
     public record FileInput(String fileName, String contentType) {}
 

@@ -4,8 +4,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
-
 import com.collectto.api_collectto.application.exceptions.EmailAlreadyExistsException;
 import com.collectto.api_collectto.application.exceptions.UsernameAlreadyExistsException;
 import com.collectto.api_collectto.domain.entities.User;
@@ -14,7 +12,6 @@ import com.collectto.api_collectto.domain.ports.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
 public class CreateUserUseCase {
 

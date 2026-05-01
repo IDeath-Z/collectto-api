@@ -3,14 +3,12 @@ package com.collectto.api_collectto.application.usecases.user;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.ports.StorageProvider;
-import org.springframework.stereotype.Service;
 
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
 public class UpdateUserUseCase {
 

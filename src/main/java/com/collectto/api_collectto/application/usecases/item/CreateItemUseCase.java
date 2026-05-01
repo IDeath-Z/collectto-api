@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
-
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
@@ -17,12 +14,8 @@ import com.collectto.api_collectto.domain.ports.StorageProvider;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
 public class CreateItemUseCase {
-
-    @Value("${storage.path.items}")
-    private String itemsStoragePath;
 
     private final ItemRepository itemRepository;
     private final CollectionRepository collectionRepository;

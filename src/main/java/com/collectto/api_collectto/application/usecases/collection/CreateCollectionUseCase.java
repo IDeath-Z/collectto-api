@@ -4,8 +4,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
-
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
@@ -13,7 +11,6 @@ import com.collectto.api_collectto.domain.ports.StorageProvider;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
 public class CreateCollectionUseCase {
 
