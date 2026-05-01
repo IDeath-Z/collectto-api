@@ -32,7 +32,8 @@ public class CreateItemUseCase {
             String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
             
     public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-            String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, boolean isActive, String createdAt, String updatedAt) {}
+            String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
+            int commentsCount, boolean isActive, String createdAt, String updatedAt) {}
     
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.collectionId())
@@ -83,6 +84,8 @@ public class CreateItemUseCase {
                 savedItem.getMediaURLs(),
                 savedItem.getAttributes(),
                 savedItem.getTags(),
+                savedItem.getLikesCount(),
+                savedItem.getCommentsCount(),
                 savedItem.isActive(),
                 savedItem.getCreatedAt().toString(),
                 savedItem.getUpdatedAt().toString()

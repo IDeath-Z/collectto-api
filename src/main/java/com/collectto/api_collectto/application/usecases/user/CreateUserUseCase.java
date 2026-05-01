@@ -23,8 +23,7 @@ public class CreateUserUseCase {
 
     public record Input(String name, String username, String email, String password, String birthdayDate) {}
     public record Output(String id, String name, String username, String email, String bio, String profilePictureUrl, String profileBackgroundUrl,
-            int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {
-    }
+            int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {}
             
     public Output execute(Input input) {
         if (userRepository.existsByEmail(input.email()))

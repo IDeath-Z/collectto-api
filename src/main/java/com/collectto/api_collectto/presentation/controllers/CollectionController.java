@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.collectto.api_collectto.application.usecases.collection.CreateCollectionUseCase;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.collection.CreateCollectionRequest;
-import com.collectto.api_collectto.presentation.dto.collection.CreateCollectionResponse;
+import com.collectto.api_collectto.presentation.dto.collection.CollectionResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -29,7 +29,7 @@ public class CollectionController {
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new collection", description = "Registers a new collection in the system with the provided details.")
-    public CreateCollectionResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateCollectionRequest request) {
+    public CollectionResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateCollectionRequest request) {
         UUID userId = userDetails.getUser().getId();
 
         var output = createCollectionUseCase.execute(new CreateCollectionUseCase.Input(
@@ -40,7 +40,7 @@ public class CollectionController {
             request.tags()
         ));
         
-        return new CreateCollectionResponse(
+        return new CollectionResponse(
                 output.id(),
                 output.userId(),
                 output.name(),

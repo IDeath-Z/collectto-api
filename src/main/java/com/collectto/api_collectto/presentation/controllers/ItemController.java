@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
-import com.collectto.api_collectto.presentation.dto.item.CreateItemResponse;
+import com.collectto.api_collectto.presentation.dto.item.ItemResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -28,7 +28,7 @@ public class ItemController {
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new item", description = "Registers a new item in the system with the provided details.")
-    public CreateItemResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateItemRequest request) {
+    public ItemResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateItemRequest request) {
         UUID userId = userDetails.getUser().getId();
 
         var output = createItemUseCase.execute(new CreateItemUseCase.Input(
@@ -43,7 +43,7 @@ public class ItemController {
             request.tags()
         ));
         
-        return new CreateItemResponse(
+        return new ItemResponse(
             output.id(),
             output.collectionId(),
             output.userId(),
@@ -53,6 +53,8 @@ public class ItemController {
             output.lastUsedDate(),
             output.imageFilesUrls(),
             output.attributes(),
+            output.likesCount(),
+            output.commentsCount(),
             output.tags(),
             output.isActive(),
             output.createdAt(),
