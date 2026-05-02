@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping("create")
     @Operation(summary = "Create a new user", description = "Registers a new user in the system with the provided details.")
-    public CreateUserResponse create(@RequestBody CreateUserRequest request) {
+    public CreateUserResponse create(@RequestBody @Valid CreateUserRequest request) {
         var output = createUserUseCase.execute(new CreateUserUseCase.Input(
                 request.name(),
                 request.username(),

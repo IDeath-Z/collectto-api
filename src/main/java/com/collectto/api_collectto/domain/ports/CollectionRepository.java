@@ -5,10 +5,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.entities.Collection;
+import com.collectto.api_collectto.domain.shared.DomainPageRequest;
+import com.collectto.api_collectto.domain.shared.DomainPageResult;
 
 public interface CollectionRepository {
     
-    List<Collection> findByUserId(UUID userId);
+    DomainPageResult<Collection> findByUserId(UUID userId, DomainPageRequest pageRequest);
     Collection save(Collection collection);
     Optional<Collection> findById(UUID id);
     List<Collection> findByUserIdAndName(UUID userId, String name);

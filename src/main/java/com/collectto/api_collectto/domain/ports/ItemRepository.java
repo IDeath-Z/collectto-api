@@ -13,4 +13,5 @@ public interface ItemRepository {
     Item save(Item item);
     Optional<Item> findById(UUID itemId);
     List<Item> findByCollectionIdAndName(UUID collectionId, String name);
+    List<String> findTop3MediaUrlsByCollectionId(UUID collectionId);
 }

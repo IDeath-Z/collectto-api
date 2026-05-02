@@ -72,4 +72,9 @@ public class ItemRepositoryAdapter implements ItemRepository {
                 .map(itemMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<String> findTop3MediaUrlsByCollectionId(UUID collectionId) {
+        return itemJpaRepository.findTop3MediaUrlsByCollectionId(collectionId);
+    }
 }

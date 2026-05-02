@@ -3,7 +3,11 @@ package com.collectto.api_collectto.presentation.controllers;
 import java.util.UUID;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.storage.GenerateUploadUrlsUseCase;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
