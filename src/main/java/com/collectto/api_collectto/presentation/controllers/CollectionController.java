@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.collection.CreateCollectionUseCase;
+import com.collectto.api_collectto.application.usecases.collection.FetchCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchUserCollectionsUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class CollectionController {
 
     private final CreateCollectionUseCase createCollectionUseCase;
+    private final FetchCollectionUseCase fetchCollectionUseCase;
     private final FetchUserCollectionsUseCase fetchUserCollectionsUseCase;
 
     @PostMapping(value = "/create")
@@ -63,8 +65,28 @@ public class CollectionController {
         );
     }
 
+@GetMapping("{collectionId}")
+    public CollectionResponse getCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
+        UUID requesterId = userDetails.getUser().getId();
 
-    @GetMapping("/{userId}")
+        var output = fetchCollectionUseCase.execute(new FetchCollectionUseCase.Input(collectionId, requesterId));
+
+        return new CollectionResponse(
+                output.id(),
+                output.userId(),
+                output.name(),
+                output.description(),
+                output.coverImageURL(),
+                output.visibility(),
+                output.followersCount(),
+                output.tags(),
+                output.isActive(),
+                output.createdAt(),
+                output.updatedAt()
+        );
+    }
+    
+    @GetMapping("/by-user/{userId}")
     @Operation(summary = "Fetch paginated collections of a user", description = "Retrieves a paginated list of collections for a specific user, with visibility filtering based on the requester's relationship to the collection owner.")
     public CollectionPageResponse getPaginatedCollections(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID userId,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {
@@ -79,10 +101,10 @@ public class CollectionController {
         
         return new CollectionPageResponse(
                 output.collections().stream()
-                    .map(c -> new CollectionPageResponse.CollectionSummaryResponse(
-                            c.id(),
-                            c.name(),
-                            c.imagesURL()
+                    .map(collection -> new CollectionPageResponse.CollectionSummaryResponse(
+                            collection.id(),
+                            collection.name(),
+                            collection.imagesURL()
                     ))
                     .toList(),
                 output.totalPages(),

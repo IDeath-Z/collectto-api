@@ -20,7 +20,7 @@ public class FetchUserCollectionsUseCase {
 
     public record Input(UUID userId, UUID requesterId, DomainPageRequest pageRequest) {}
 
-    public record CollectionSummary(String id, String name, List<String> imagesURL) {}
+    public record CollectionSummary(UUID id, String name, List<String> imagesURL) {}
 
     public record Output(List<CollectionSummary> collections, int totalPages, long totalElements, int currentPage) {}
 
@@ -33,7 +33,7 @@ public class FetchUserCollectionsUseCase {
                 return collection.getVisibility() != Visibility.PRIVATE; // Implements FRIENDS visibility later
             })
             .map(collection -> new CollectionSummary(
-                    collection.getId().toString(),
+                    collection.getId(),
                     collection.getName(),
                     itemRepository.findTop3MediaUrlsByCollectionId(collection.getId())
             ))

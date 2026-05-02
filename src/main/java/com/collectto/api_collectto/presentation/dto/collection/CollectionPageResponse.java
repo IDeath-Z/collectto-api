@@ -1,6 +1,8 @@
 package com.collectto.api_collectto.presentation.dto.collection;
 
 import java.util.List;
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record CollectionPageResponse(
@@ -18,7 +20,7 @@ public record CollectionPageResponse(
 ) {
     public record CollectionSummaryResponse(
             @Schema(description = "Collection identifier", example = "123e4567-e89b-12d3-a456-426614174000")
-            String id,
+            UUID id,
 
             @Schema(description = "Collection name", example = "My Collection")
             String name,
