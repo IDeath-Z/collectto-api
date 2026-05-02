@@ -14,12 +14,13 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
     List<ItemJpaEntity> findByCollectionIdAndNameContainingIgnoreCase(UUID collectionId, String name);
 
     @Query(value = """
-        SELECT i.media_urls
+        SELECT i.media_urls[1]
         FROM items i
         WHERE i.collection_id = :collectionId
+        AND i.media_urls IS NOT NULL
+        AND array_length(i.media_urls, 1) > 0
         ORDER BY i.created_at DESC
         LIMIT 3
-        """, nativeQuery = true
-    )
+        """, nativeQuery = true)
     List<String> findTop3MediaUrlsByCollectionId(@Param("collectionId") UUID collectionId);
 }
