@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 
 @Schema(name = "CreateCollectionRequest", description = "Payload for creating a new collection")
 public record CreateCollectionRequest(
-                
         @NotBlank @Schema(description = "Collection name", example = "My Collection") 
         String name,
                 
