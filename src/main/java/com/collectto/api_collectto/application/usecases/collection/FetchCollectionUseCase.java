@@ -14,7 +14,7 @@ public class FetchCollectionUseCase {
     
     private final CollectionRepository collectionRepository;
 
-        public record Input(UUID collectionId, UUID requesterId) {}
+    public record Input(UUID collectionId, UUID requesterId) {}
 
     public record Output(UUID id, UUID userId, String name, String description, String coverImageURL, 
         Visibility visibility, int followersCount, List<String> tags, boolean isActive, String createdAt, String updatedAt) {}
