@@ -106,9 +106,9 @@ public class CollectionController {
         return new CollectionPageResponse(
                 output.collections().stream()
                     .map(collection -> new CollectionPageResponse.CollectionSummaryResponse(
-                            collection.id(),
-                            collection.name(),
-                            collection.imagesURL()
+                        collection.id(),
+                        collection.name(),
+                        collection.imagesURL()
                     ))
                     .toList(),
                 output.totalPages(),
