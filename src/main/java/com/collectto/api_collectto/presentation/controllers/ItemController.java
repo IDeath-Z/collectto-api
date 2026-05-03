@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchCollectionItemsUseCase;
+import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
@@ -34,6 +35,7 @@ public class ItemController {
 
     private final CreateItemUseCase createItemUseCase;
     private final FetchCollectionItemsUseCase fetchCollectionItemsUseCase;
+    private final FetchItemUseCase fetchItemUseCase;
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new item", description = "Registers a new item in the system with the provided details.")
@@ -72,6 +74,7 @@ public class ItemController {
     }
 
     @GetMapping("/by-collection/{collectionId}")
+    @Operation(summary = "Get paginated items by collection", description = "Retrieves a paginated list of items belonging to a specific collection, with optional sorting.")
     public ItemPageResponse getPaginatedItems(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId, 
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {
 
@@ -94,6 +97,36 @@ public class ItemController {
             output.totalPages(),
             output.totalItems(),
             output.currentPage()
+        );
+    }
+
+    @GetMapping("/{collectionId}/{itemId}")
+    @Operation(summary = "Fetch item details", description = "Retrieves detailed information about a specific item, including its attributes and media URLs.")
+    public ItemResponse getItemById(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId, @PathVariable UUID itemId) {
+        UUID requesterId = userDetails.getUser().getId();
+
+        var output = fetchItemUseCase.execute(new FetchItemUseCase.Input(
+            itemId,
+            collectionId,
+            requesterId
+        ));
+
+        return new ItemResponse(
+            output.id(),
+            output.collectionId(),
+            output.userId(),
+            output.name(),
+            output.description(),
+            output.acquisitionDate(),
+            output.lastUsedDate(),
+            output.imageFilesUrls(),
+            output.attributes(),
+            output.likesCount(),
+            output.commentsCount(),
+            output.tags(),
+            output.isActive(),
+            output.createdAt(),
+            output.updatedAt()
         );
     }
 }

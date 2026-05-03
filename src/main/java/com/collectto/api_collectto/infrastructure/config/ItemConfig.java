@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchCollectionItemsUseCase;
+import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
@@ -21,5 +22,10 @@ public class ItemConfig {
     @Bean
     public FetchCollectionItemsUseCase fetchCollectionItemsUseCase(ItemRepository itemRepository, CollectionRepository collectionRepository) {
         return new FetchCollectionItemsUseCase(itemRepository, collectionRepository);
+    }
+
+    @Bean
+    public FetchItemUseCase fetchItemUseCase(ItemRepository itemRepository, CollectionRepository collectionRepository) {
+        return new FetchItemUseCase(itemRepository, collectionRepository);
     }
 }
