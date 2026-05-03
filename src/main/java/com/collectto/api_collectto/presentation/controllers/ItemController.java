@@ -10,13 +10,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
+import com.collectto.api_collectto.application.usecases.item.FetchCollectionItemsUseCase;
+import com.collectto.api_collectto.domain.enums.SortBy;
+import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
+import com.collectto.api_collectto.presentation.dto.item.ItemPageResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @CrossOrigin
 @RestController
@@ -25,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class ItemController {
 
     private final CreateItemUseCase createItemUseCase;
+    private final FetchCollectionItemsUseCase fetchCollectionItemsUseCase;
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new item", description = "Registers a new item in the system with the provided details.")
@@ -59,6 +68,32 @@ public class ItemController {
             output.isActive(),
             output.createdAt(),
             output.updatedAt()
+        );
+    }
+
+    @GetMapping("/by-collection/{collectionId}")
+    public ItemPageResponse getPaginatedItems(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId, 
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {
+
+        UUID requesterId = userDetails.getUser().getId();
+
+        var output = fetchCollectionItemsUseCase.execute(new FetchCollectionItemsUseCase.Input(
+            collectionId, 
+            requesterId, 
+            new DomainPageRequest(page, size, sortBy)
+        ));
+
+        return new ItemPageResponse(
+            output.items().stream()
+                .map(item -> new ItemPageResponse.ItemSummaryResponse(
+                    item.id(),
+                    item.name(),
+                    item.imagesURL()
+                ))
+                .toList(),
+            output.totalPages(),
+            output.totalItems(),
+            output.currentPage()
         );
     }
 }

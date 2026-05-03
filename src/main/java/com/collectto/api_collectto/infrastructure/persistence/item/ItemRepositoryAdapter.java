@@ -6,10 +6,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
+import com.collectto.api_collectto.domain.shared.DomainPageRequest;
+import com.collectto.api_collectto.domain.shared.DomainPageResult;
 import com.collectto.api_collectto.infrastructure.persistence.collection.CollectionJpaEntity;
 import com.collectto.api_collectto.infrastructure.persistence.collection.CollectionJpaRepository;
 import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaEntity;
@@ -30,10 +35,21 @@ public class ItemRepositoryAdapter implements ItemRepository {
     private final TagResolverHelper tagResolverHelper;
 
     @Override
-    public List<Item> findByCollectionId(UUID collectionId) {
-        return itemJpaRepository.findByCollectionId(collectionId).stream()
-                .map(itemMapper::toDomain)
-                .toList();
+    public DomainPageResult<Item> findByCollectionId(UUID collectionId, DomainPageRequest pageRequest) {
+        Sort sort = pageRequest.sortBy().getDirection().equals("ASC")
+        ? Sort.by(pageRequest.sortBy().getField()).ascending()
+        : Sort.by(pageRequest.sortBy().getField()).descending();
+
+        PageRequest springPage = PageRequest.of(pageRequest.page(), pageRequest.size(), sort);
+        Page<ItemJpaEntity> page = itemJpaRepository.findByCollectionId(collectionId, springPage);
+
+        return new DomainPageResult<>(
+            page.getContent().stream().map(itemMapper::toDomain).toList(),
+            page.getNumber(),
+            page.getSize(),
+            page.getTotalElements(),
+            page.getTotalPages()
+        );
     }
 
     @Override

@@ -3,13 +3,15 @@ package com.collectto.api_collectto.infrastructure.persistence.item;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
     
-    List<ItemJpaEntity> findByCollectionId(UUID collectionId);
+    Page<ItemJpaEntity> findByCollectionId(UUID collectionId, Pageable pageable);
     List<ItemJpaEntity> findByUserId(UUID userId);
     List<ItemJpaEntity> findByCollectionIdAndNameContainingIgnoreCase(UUID collectionId, String name);
 

@@ -15,7 +15,6 @@ public class UpdateUserUseCase {
 
     private final UserRepository userRepository;
     private final StorageProvider storageProvider;
-
     private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID id, String name, String username, String bio, String profilePictureUrl,
