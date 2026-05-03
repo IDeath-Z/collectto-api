@@ -8,6 +8,7 @@ import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
+import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +17,7 @@ public class CreateCollectionUseCase {
 
     private final CollectionRepository collectionsRepository;
     private final StorageProvider storageProvider;
+    private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID userId, String name, String description, String coverImageUrl, List<String> tags) {}
     public record Output(UUID id, UUID userId, String name, String description, String coverImageURL, Visibility visibility,
@@ -28,7 +30,7 @@ public class CreateCollectionUseCase {
                 ? null
                 : storageProvider.buildPublicUrl(input.coverImageUrl());
 
-        if (coverImageUrl != null && !input.coverImageUrl().startsWith("collections/"))
+        if (coverImageUrl != null && !storageUrlPaths.isCollectionPathValid(input.coverImageUrl()))
             throw new RuntimeException("Invalid cover image path"); // Implement better validation as needed
 
         Collection collection = new Collection(

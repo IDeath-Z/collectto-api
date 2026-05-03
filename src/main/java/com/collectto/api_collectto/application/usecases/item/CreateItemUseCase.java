@@ -11,6 +11,7 @@ import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
+import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ public class CreateItemUseCase {
     private final ItemRepository itemRepository;
     private final CollectionRepository collectionRepository;
     private final StorageProvider storageProvider;
+    private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
             String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
@@ -40,7 +42,7 @@ public class CreateItemUseCase {
                         ? null
                         : input.imageFilesUrls().stream()
                                         .filter(path -> {
-                                                if (!path.startsWith("items/"))
+                                                if (!storageUrlPaths.isItemPathValid(path))
                                                         throw new RuntimeException("Invalid image path"); // Implement better validation as needed
                                                 return true;
                                         })

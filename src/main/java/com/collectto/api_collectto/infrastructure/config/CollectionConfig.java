@@ -16,8 +16,8 @@ import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 public class CollectionConfig {
 
     @Bean
-    public CreateCollectionUseCase createCollectionUseCase(CollectionRepository collectionRepository, StorageProvider storageProvider) {
-        return new CreateCollectionUseCase(collectionRepository, storageProvider);
+    public CreateCollectionUseCase createCollectionUseCase(CollectionRepository collectionRepository, StorageProvider storageProvider, StorageUrlPaths storageUrlPaths) {
+        return new CreateCollectionUseCase(collectionRepository, storageProvider, storageUrlPaths);
     }
 
     @Bean
