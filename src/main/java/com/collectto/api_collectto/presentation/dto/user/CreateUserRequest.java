@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 
 @Schema(name = "CreateUserRequest", description = "Payload for user creation")
 public record CreateUserRequest(
-   
     @NotBlank @Schema(description = "User full name", example = "Maria Silva") 
     String name,
             

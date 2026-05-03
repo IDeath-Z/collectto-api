@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "UpdateUserRequest", description = "Request payload for updating user profile")
 public record UpdateUserRequest(
-
     @Schema(description = "User full name", example = "Maria Silva") 
     String name,
 
