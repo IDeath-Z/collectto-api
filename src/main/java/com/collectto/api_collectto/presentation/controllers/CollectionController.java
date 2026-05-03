@@ -65,7 +65,7 @@ public class CollectionController {
         );
     }
 
-@GetMapping("{collectionId}")
+    @GetMapping("{collectionId}")
     public CollectionResponse getCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID requesterId = userDetails.getUser().getId();
 
