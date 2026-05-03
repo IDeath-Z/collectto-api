@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.collectto.api_collectto.application.usecases.collection.CreateCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchUserCollectionsUseCase;
+import com.collectto.api_collectto.application.usecases.collection.UpdateCollectionUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.collection.CreateCollectionRequest;
+import com.collectto.api_collectto.presentation.dto.collection.UpdateCollectionRequest;
 import com.collectto.api_collectto.presentation.dto.collection.CollectionPageResponse;
 import com.collectto.api_collectto.presentation.dto.collection.CollectionResponse;
 
@@ -36,6 +39,7 @@ public class CollectionController {
     private final CreateCollectionUseCase createCollectionUseCase;
     private final FetchCollectionUseCase fetchCollectionUseCase;
     private final FetchUserCollectionsUseCase fetchUserCollectionsUseCase;
+    private final UpdateCollectionUseCase updateCollectionUseCase;
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new collection", description = "Registers a new collection in the system with the provided details.")
@@ -110,6 +114,36 @@ public class CollectionController {
                 output.totalPages(),
                 output.totalElements(),
                 output.currentPage()
+        );
+    }
+
+    @PatchMapping("/update")
+    @Operation(summary = "Update an existing collection", description = "Updates the details of an existing collection. Only the fields provided in the request will be updated.")
+    public CollectionResponse patchCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateCollectionRequest request) {
+        UUID requesterId = userDetails.getUser().getId();
+
+        var output = updateCollectionUseCase.execute(new UpdateCollectionUseCase.Input(
+            request.id(),
+            requesterId,
+            request.name(),
+            request.description(),
+            request.coverImageUrl(),
+            request.visibility(),
+            request.tags()
+        ));
+
+        return new CollectionResponse(
+                output.id(),
+                output.userId(),
+                output.name(),
+                output.description(),
+                output.coverImageURL(),
+                output.visibility(),
+                output.followersCount(),
+                output.tags(),
+                output.isActive(),
+                output.createdAt(),
+                output.updatedAt()
         );
     }
 }

@@ -84,4 +84,20 @@ public class Collection {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public Collection updateCollection(String name, String description, String coverImageUrl, Visibility visibility, List<String> tags) {
+        return new Collection(
+            this.id,
+            this.userId,
+            name != null ? name : this.name,
+            description != null ? description : this.description,
+            coverImageUrl != null ? coverImageUrl : this.coverImageUrl,
+            visibility != null ? visibility : this.visibility,
+            this.followersCount,
+            tags != null ? tags : this.tags,
+            this.isActive,
+            this.createdAt,
+            Instant.now()
+        );
+    }
 }
