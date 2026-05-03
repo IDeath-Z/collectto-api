@@ -9,11 +9,11 @@ public record UpdateUserRequest(
     String name,
 
     @Schema(description = "Unique username", example = "maria_silva") 
-        String username,
+    String username,
 
     @Schema(description = "User bio", example = "Collecting memories") 
     String bio,
-    
+
     @Schema(description = "Profile picture path", example = "avatars/userId/filename.jpg") 
     String profilePictureUrl,
 
