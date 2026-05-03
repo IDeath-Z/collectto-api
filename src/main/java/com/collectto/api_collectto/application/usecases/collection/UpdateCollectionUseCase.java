@@ -16,7 +16,6 @@ public class UpdateCollectionUseCase {
 
     private final CollectionRepository collectionRepository;
     private final StorageProvider storageProvider;
-
     private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID id, UUID requesterId, String name, String description, String coverImageUrl, Visibility visibility, List<String> tags) {}
