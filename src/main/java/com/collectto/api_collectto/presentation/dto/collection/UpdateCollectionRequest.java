@@ -18,7 +18,7 @@ public record UpdateCollectionRequest(
     @Schema(description = "Description of the collection", example = "This is an updated description for my collection.")
     String description,
 
-    @Schema(description = "URL of the new cover image for the collection", example = "https://example.com/new-cover.jpg")
+    @Schema(description = "URL of the new cover image for the collection, use null to keep the current image or an empty string to remove the cover image", example = "collections/userId/collectionId/new-cover.jpg")
     String coverImageUrl,
 
     @Schema(description = "Visibility of the collection, can be PUBLIC, PRIVATE or FRIENDS", example = "PUBLIC")

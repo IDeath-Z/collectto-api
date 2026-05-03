@@ -13,10 +13,10 @@ public record UpdateUserRequest(
     @Schema(description = "User bio", example = "Collecting memories") 
     String bio,
 
-    @Schema(description = "Profile picture path", example = "avatars/userId/filename.jpg") 
+    @Schema(description = "Profile picture path, use null to keep the current image or an empty string to remove the profile picture", example = "profiles/userId/filename.jpg") 
     String profilePictureUrl,
 
-    @Schema(description = "Profile background path", example = "banners/userId/filename.jpg") 
+    @Schema(description = "Profile background path, use null to keep the current background or an empty string to remove the profile background", example = "backgrounds/userId/filename.jpg") 
     String profileBackgroundUrl,
 
     @Schema(description = "User birthday date", example = "1990-01-01") 

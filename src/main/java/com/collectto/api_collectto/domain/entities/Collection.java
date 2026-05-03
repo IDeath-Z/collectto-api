@@ -86,12 +86,15 @@ public class Collection {
     }
 
     public Collection updateCollection(String name, String description, String coverImageUrl, Visibility visibility, List<String> tags) {
+        String processCoverImage = (coverImageUrl != null && coverImageUrl.isEmpty()) ? null : 
+                           (coverImageUrl != null) ? coverImageUrl : this.coverImageUrl;
+
         return new Collection(
             this.id,
             this.userId,
             name != null ? name : this.name,
             description != null ? description : this.description,
-            coverImageUrl != null ? coverImageUrl : this.coverImageUrl,
+            processCoverImage,
             visibility != null ? visibility : this.visibility,
             this.followersCount,
             tags != null ? tags : this.tags,

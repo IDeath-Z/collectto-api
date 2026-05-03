@@ -30,20 +30,36 @@ public class UpdateCollectionUseCase {
         if (!collection.getUserId().equals(input.requesterId()))
             throw new RuntimeException("Unauthorized"); // Implement proper exception handling as needed
 
-        if (input.coverImageUrl() != null && !storageUrlPaths.isCollectionPathValid(input.coverImageUrl()))
-            throw new RuntimeException("Invalid cover image path"); // Implement proper exception handling as needed
-
         String oldCoverImageUrl = collection.getCoverImageUrl();
+        String finalCoverImageUrl = null;
+        boolean deleteOldCover = false;
 
-        String coverImageUrl = input.coverImageUrl() == null ?
-                null :
-                storageProvider.buildPublicUrl(input.coverImageUrl());
+        if (input.coverImageUrl() != null) {
+            if (input.coverImageUrl().isEmpty()) { // Removes cover image if empty string is sent
+                finalCoverImageUrl = "";
+                deleteOldCover = true;
+            } else if (input.coverImageUrl().equals(oldCoverImageUrl)) { // Keeps old cover if the same URL is sent
+                finalCoverImageUrl = oldCoverImageUrl;
+            } else { // Validates and builds URL for new cover image
+                if (!storageUrlPaths.isCollectionPathValid(input.coverImageUrl()))
+                    throw new RuntimeException("Invalid cover image path");
+                
+                finalCoverImageUrl = storageProvider.buildPublicUrl(input.coverImageUrl());
+                deleteOldCover = true;
+            }
+        }
 
-        Collection updatedCollection = collection.updateCollection(input.name(), input.description(), coverImageUrl, 
-                input.visibility(), input.tags());
+        Collection updatedCollection = collection.updateCollection(
+            input.name(), 
+            input.description(), 
+            finalCoverImageUrl, 
+            input.visibility(), 
+            input.tags()
+        );
+        
         Collection savedCollection = collectionRepository.save(updatedCollection);
 
-        if (input.coverImageUrl() != null && oldCoverImageUrl != null)
+        if (deleteOldCover && oldCoverImageUrl != null)
             storageProvider.deleteImage(oldCoverImageUrl);
 
         return new Output(

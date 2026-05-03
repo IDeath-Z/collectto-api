@@ -27,28 +27,59 @@ public class UpdateUserUseCase {
         User user = userRepository.findById(input.id())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + input.id()));
 
-        if (input.profilePictureUrl() != null && !storageUrlPaths.isProfilePictureValid(input.profilePictureUrl()))
-            throw new RuntimeException("Invalid profile image path");
-        if (input.profileBackgroundUrl() != null && !storageUrlPaths.isProfileBackgroundValid(input.profileBackgroundUrl()))
-            throw new RuntimeException("Invalid background image path");
-
         String oldPictureUrl = user.getProfilePictureUrl();
         String oldBackgroundUrl = user.getProfileBackgroundUrl();
 
-        String profilePictureUrl = input.profilePictureUrl() == null
-                ? null
-                : storageProvider.buildPublicUrl(input.profilePictureUrl());
-        String profileBackgroundUrl = input.profileBackgroundUrl() == null
-                ? null
-                : storageProvider.buildPublicUrl(input.profileBackgroundUrl());
+        String finalPictureUrl = null;
+        boolean deleteOldPicture = false;
 
-        User updatedUser = user.updateProfile(input.name(), input.username(), input.bio(), profilePictureUrl,
-                profileBackgroundUrl, input.birthdayDate());
+        String finalBackgroundUrl = null;
+        boolean deleteOldBackground = false;
+
+
+        if (input.profilePictureUrl() != null) {
+            if (input.profilePictureUrl().isEmpty()) { // Removes profile picture if empty string is sent
+                finalPictureUrl = "";
+                deleteOldPicture = true;
+            } else if (input.profilePictureUrl().equals(oldPictureUrl)) { // Keeps old picture if the same URL is sent
+                finalPictureUrl = oldPictureUrl;
+            } else { // Validates and builds URL for new picture
+                if (!storageUrlPaths.isProfilePictureValid(input.profilePictureUrl()))
+                    throw new RuntimeException("Invalid profile image path");
+                finalPictureUrl = storageProvider.buildPublicUrl(input.profilePictureUrl());
+                deleteOldPicture = true;
+            }
+        }
+
+        // Same as above
+        if (input.profileBackgroundUrl() != null) {
+            if (input.profileBackgroundUrl().isEmpty()) {
+                finalBackgroundUrl = "";
+                deleteOldBackground = true;
+            } else if (input.profileBackgroundUrl().equals(oldBackgroundUrl)) {
+                finalBackgroundUrl = oldBackgroundUrl;
+            } else {
+                if (!storageUrlPaths.isProfileBackgroundValid(input.profileBackgroundUrl()))
+                    throw new RuntimeException("Invalid background image path");
+                finalBackgroundUrl = storageProvider.buildPublicUrl(input.profileBackgroundUrl());
+                deleteOldBackground = true;
+            }
+        }
+
+        User updatedUser = user.updateProfile(
+                input.name(), 
+                input.username(), 
+                input.bio(), 
+                finalPictureUrl,
+                finalBackgroundUrl, 
+                input.birthdayDate()
+        );
+        
         User savedUser = userRepository.save(updatedUser);
 
-        if (input.profilePictureUrl() != null && oldPictureUrl != null)
+        if (deleteOldPicture && oldPictureUrl != null)
             storageProvider.deleteImage(oldPictureUrl);
-        if (input.profileBackgroundUrl() != null && oldBackgroundUrl != null)
+        if (deleteOldBackground && oldBackgroundUrl != null)
             storageProvider.deleteImage(oldBackgroundUrl);
 
         return new Output(

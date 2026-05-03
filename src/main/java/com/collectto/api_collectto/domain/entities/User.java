@@ -103,6 +103,11 @@ public class User {
 
     public User updateProfile(String name, String username, String bio, String profilePictureUrl,
             String profileBackgroundUrl, String birthdayDate) {
+        String processPicture = (profilePictureUrl != null && profilePictureUrl.isEmpty()) ? null : 
+                                (profilePictureUrl != null) ? profilePictureUrl : this.profilePictureUrl;
+
+        String processBackground = (profileBackgroundUrl != null && profileBackgroundUrl.isEmpty()) ? null : 
+                           (profileBackgroundUrl != null) ? profileBackgroundUrl : this.profileBackgroundUrl;
         
         return new User(
             this.id,
@@ -111,8 +116,8 @@ public class User {
             this.email,
             this.passwordHash,
             bio != null ? bio : this.bio,
-            profilePictureUrl != null ? profilePictureUrl : this.profilePictureUrl,
-            profileBackgroundUrl != null ? profileBackgroundUrl : this.profileBackgroundUrl,
+            processPicture,
+            processBackground,
             this.followersCount,
             this.followingCount,
             this.isActive,
