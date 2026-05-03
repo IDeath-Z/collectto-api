@@ -9,6 +9,7 @@ import com.collectto.api_collectto.application.usecases.user.UpdateUserUseCase;
 import com.collectto.api_collectto.domain.ports.PasswordHasher;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
 import com.collectto.api_collectto.domain.ports.UserRepository;
+import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 
 @Configuration
 public class UserConfig {
@@ -24,7 +25,7 @@ public class UserConfig {
     }
 
     @Bean
-    public UpdateUserUseCase updateUserUseCase(UserRepository userRepository, StorageProvider storageProvider) {
-        return new UpdateUserUseCase(userRepository, storageProvider);
+    public UpdateUserUseCase updateUserUseCase(UserRepository userRepository, StorageProvider storageProvider, StorageUrlPaths storageUrlPaths) {
+        return new UpdateUserUseCase(userRepository, storageProvider, storageUrlPaths);
     }
 }

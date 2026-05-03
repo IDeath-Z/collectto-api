@@ -6,6 +6,7 @@ import com.collectto.api_collectto.domain.ports.StorageProvider;
 
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
+import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +15,8 @@ public class UpdateUserUseCase {
 
     private final UserRepository userRepository;
     private final StorageProvider storageProvider;
+
+    private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID id, String name, String username, String bio, String profilePictureUrl,
             String profileBackgroundUrl, String birthdayDate) {}       
@@ -25,9 +28,9 @@ public class UpdateUserUseCase {
         User user = userRepository.findById(input.id())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + input.id()));
 
-        if (input.profilePictureUrl() != null && !input.profilePictureUrl().startsWith("avatars/"))
+        if (input.profilePictureUrl() != null && !storageUrlPaths.isProfilePictureValid(input.profilePictureUrl()))
             throw new RuntimeException("Invalid profile image path");
-        if (input.profileBackgroundUrl() != null && !input.profileBackgroundUrl().startsWith("banners/"))
+        if (input.profileBackgroundUrl() != null && !storageUrlPaths.isProfileBackgroundValid(input.profileBackgroundUrl()))
             throw new RuntimeException("Invalid background image path");
 
         String oldPictureUrl = user.getProfilePictureUrl();

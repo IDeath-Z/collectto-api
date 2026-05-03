@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.collectto.api_collectto.application.usecases.storage.GenerateUploadUrlsUseCase;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
+import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 
 @Configuration
 public class StorageConfig {
@@ -26,7 +27,12 @@ public class StorageConfig {
     private int presignedUrlExpirationMinutes;
 
     @Bean
-    public GenerateUploadUrlsUseCase generateUploadUrlsUseCase(StorageProvider storageProvider) {
-        return new GenerateUploadUrlsUseCase(storageProvider, profilePicture, profileBackground, collectionsPath, itemsPath, presignedUrlExpirationMinutes);
+    public StorageUrlPaths storageUrlPaths() {
+        return new StorageUrlPaths(profilePicture, profileBackground, collectionsPath, itemsPath);
+    }
+
+    @Bean
+    public GenerateUploadUrlsUseCase generateUploadUrlsUseCase(StorageProvider storageProvider, StorageUrlPaths storageUrlPaths) {
+        return new GenerateUploadUrlsUseCase(storageProvider, storageUrlPaths, presignedUrlExpirationMinutes);
     }
 }
