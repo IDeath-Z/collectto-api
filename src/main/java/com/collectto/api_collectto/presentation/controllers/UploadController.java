@@ -37,13 +37,13 @@ public class UploadController {
                 request.parentId(),
                 request.context(),
                 request.files().stream()
-                        .map(f -> new GenerateUploadUrlsUseCase.FileInput(f.fileName(), f.contentType()))
+                        .map(file -> new GenerateUploadUrlsUseCase.FileInput(file.fileName(), file.contentType()))
                         .toList()));
 
         return new GenerateUploadUrlsResponse(
                 output.resourceId(),
                 output.files().stream()
-                        .map(f -> new GenerateUploadUrlsResponse.FileOutput(f.filePath(), f.uploadUrl()))
+                        .map(file -> new GenerateUploadUrlsResponse.FileOutput(file.filePath(), file.uploadUrl()))
                         .toList()); // Implements response entity later
     }
 }
