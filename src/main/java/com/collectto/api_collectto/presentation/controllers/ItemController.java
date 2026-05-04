@@ -12,17 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchCollectionItemsUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
+import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
 import com.collectto.api_collectto.presentation.dto.item.ItemPageResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemResponse;
+import com.collectto.api_collectto.presentation.dto.item.UpdateItemRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -36,6 +39,7 @@ public class ItemController {
     private final CreateItemUseCase createItemUseCase;
     private final FetchCollectionItemsUseCase fetchCollectionItemsUseCase;
     private final FetchItemUseCase fetchItemUseCase;
+    private final UpdateItemUseCase updateItemUseCase;
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new item", description = "Registers a new item in the system with the provided details.")
@@ -112,6 +116,41 @@ public class ItemController {
         ));
 
         return new ItemResponse(
+            output.id(),
+            output.collectionId(),
+            output.userId(),
+            output.name(),
+            output.description(),
+            output.acquisitionDate(),
+            output.lastUsedDate(),
+            output.imageFilesUrls(),
+            output.attributes(),
+            output.likesCount(),
+            output.commentsCount(),
+            output.tags(),
+            output.isActive(),
+            output.createdAt(),
+            output.updatedAt()
+        );
+    }
+
+    @PatchMapping("/update")
+    @Operation(summary = "Update an existing item", description = "Updates the details of an existing item. Only the details provided in the request will be updated.")
+    public ItemResponse update(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateItemRequest request) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = updateItemUseCase.execute(new UpdateItemUseCase.Input(
+            request.id(),
+            userId,
+            request.name(),
+            request.description(),
+            request.acquisitionDate(),
+            request.imageFilesUrls(),
+            request.attributes(),
+            request.tags()
+        ));
+
+       return new ItemResponse(
             output.id(),
             output.collectionId(),
             output.userId(),

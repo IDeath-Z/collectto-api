@@ -70,6 +70,7 @@ public class CollectionController {
     }
 
     @GetMapping("{collectionId}")
+    @Operation(summary = "Fetch collection details", description = "Retrieves the details of a specific collection by its ID, with visibility filtering based on the requester's relationship to the collection owner.")
     public CollectionResponse getCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID requesterId = userDetails.getUser().getId();
 

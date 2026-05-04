@@ -108,4 +108,24 @@ public class Item {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public Item updateItem(String name, String description, LocalDate acquisitionDate, List<String> mediaURLs, 
+                Map<String, Object> attributes, List<String> tags) {
+        return new Item(
+                this.id,
+                this.collectionId,
+                this.userId,
+                name != null ? name : this.name,
+                description != null ? description : this.description,
+                acquisitionDate != null ? acquisitionDate : this.acquisitionDate,
+                this.lastUsedDate,
+                mediaURLs != null ? mediaURLs : this.mediaURLs,
+                attributes != null ? attributes : this.attributes,
+                this.likesCount,
+                this.commentsCount,
+                tags != null ? tags : this.tags,
+                this.isActive,
+                this.createdAt,
+                Instant.now());
+    }
 }
