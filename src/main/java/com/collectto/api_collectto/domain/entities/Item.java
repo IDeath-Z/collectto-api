@@ -25,12 +25,24 @@ public class Item {
     private final Instant updatedAt;
 
     public Item(UUID id, UUID collectionId, UUID userId, String name, String description, LocalDate aquisitionDate,
-            LocalDate lastUsedDate, List<String> mediaURLs, Map<String, Object> attributes, int likesCount,
-            int commentsCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
+        LocalDate lastUsedDate, List<String> mediaURLs, Map<String, Object> attributes, int likesCount,
+        int commentsCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
+        if (id == null)
+            throw new IllegalArgumentException("Item ID cannot be null");
+        if (collectionId == null)
+            throw new IllegalArgumentException("Collection ID cannot be null");
         if (userId == null)
             throw new IllegalArgumentException("User ID cannot be null");
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Name cannot be null or blank");
+        if (likesCount < 0)
+            throw new IllegalArgumentException("Likes count cannot be negative");
+        if (commentsCount < 0)
+            throw new IllegalArgumentException("Comments count cannot be negative");
+        if (createdAt == null)
+            throw new IllegalArgumentException("Created at timestamp cannot be null");
+        if (updatedAt == null)
+            throw new IllegalArgumentException("Updated at timestamp cannot be null");
 
         this.id = id;
         this.collectionId = collectionId;
@@ -110,22 +122,23 @@ public class Item {
     }
 
     public Item updateItem(String name, String description, LocalDate acquisitionDate, List<String> mediaURLs, 
-                Map<String, Object> attributes, List<String> tags) {
+        Map<String, Object> attributes, List<String> tags) {
         return new Item(
-                this.id,
-                this.collectionId,
-                this.userId,
-                name != null ? name : this.name,
-                description != null ? description : this.description,
-                acquisitionDate != null ? acquisitionDate : this.acquisitionDate,
-                this.lastUsedDate,
-                mediaURLs != null ? mediaURLs : this.mediaURLs,
-                attributes != null ? attributes : this.attributes,
-                this.likesCount,
-                this.commentsCount,
-                tags != null ? tags : this.tags,
-                this.isActive,
-                this.createdAt,
-                Instant.now());
+            this.id,
+            this.collectionId,
+            this.userId,
+            name != null ? name : this.name,
+            description != null ? description : this.description,
+            acquisitionDate != null ? acquisitionDate : this.acquisitionDate,
+            this.lastUsedDate,
+            mediaURLs != null ? mediaURLs : this.mediaURLs,
+            attributes != null ? attributes : this.attributes,
+            this.likesCount,
+            this.commentsCount,
+            tags != null ? tags : this.tags,
+            this.isActive,
+            this.createdAt,
+            Instant.now()
+        );
     }
 }

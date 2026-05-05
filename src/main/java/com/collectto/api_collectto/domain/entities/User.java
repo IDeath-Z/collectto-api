@@ -21,8 +21,10 @@ public class User {
     private final Instant creationDate;
 
     public User(UUID id, String name, String username, String email, String passwordHash, String bio,
-            String profilePictureUrl, String profileBackgroundUrl, int followersCount, int followingCount, boolean isActive,
-            LocalDate birthdayDate, Instant creationDate) {
+        String profilePictureUrl, String profileBackgroundUrl, int followersCount, int followingCount, boolean isActive,
+        LocalDate birthdayDate, Instant creationDate) {
+        if (id == null)
+            throw new IllegalArgumentException("User ID is required");
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Name is required");
         if (username == null || username.isBlank())
@@ -31,8 +33,14 @@ public class User {
             throw new IllegalArgumentException("Email is required");
         if (passwordHash == null || passwordHash.isBlank())
             throw new IllegalArgumentException("Password is required");
+        if (followersCount < 0)
+            throw new IllegalArgumentException("Followers count cannot be negative");
+        if (followingCount < 0)
+            throw new IllegalArgumentException("Following count cannot be negative");
         if (birthdayDate == null || birthdayDate.toString().isBlank())
             throw new IllegalArgumentException("Birthday date is required");
+        if (creationDate == null)
+            throw new IllegalArgumentException("Creation date is required");
 
         this.id = id;
         this.name = name;
@@ -102,12 +110,12 @@ public class User {
     }
 
     public User updateProfile(String name, String username, String bio, String profilePictureUrl,
-            String profileBackgroundUrl, String birthdayDate) {
+        String profileBackgroundUrl, String birthdayDate) {
         String processPicture = (profilePictureUrl != null && profilePictureUrl.isEmpty()) ? null : 
-                                (profilePictureUrl != null) ? profilePictureUrl : this.profilePictureUrl;
+            (profilePictureUrl != null) ? profilePictureUrl : this.profilePictureUrl;
 
         String processBackground = (profileBackgroundUrl != null && profileBackgroundUrl.isEmpty()) ? null : 
-                           (profileBackgroundUrl != null) ? profileBackgroundUrl : this.profileBackgroundUrl;
+            (profileBackgroundUrl != null) ? profileBackgroundUrl : this.profileBackgroundUrl;
         
         return new User(
             this.id,

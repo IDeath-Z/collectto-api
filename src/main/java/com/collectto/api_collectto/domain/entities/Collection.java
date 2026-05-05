@@ -21,11 +21,19 @@ public class Collection {
     private final Instant updatedAt;
 
     public Collection(UUID id, UUID userId, String name, String description, String coverImageUrl,
-            Visibility visibility, int followersCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
+        Visibility visibility, int followersCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
+        if (id == null)
+            throw new IllegalArgumentException("Collection ID is required");
         if (userId == null)
             throw new IllegalArgumentException("User ID is required");
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Name is required");
+        if (followersCount < 0)
+            throw new IllegalArgumentException("Followers count cannot be negative");
+        if (createdAt == null)
+            throw new IllegalArgumentException("Created at timestamp is required");
+        if (updatedAt == null)
+            throw new IllegalArgumentException("Updated at timestamp is required");
 
         this.id = id;
         this.userId = userId;
@@ -87,7 +95,7 @@ public class Collection {
 
     public Collection updateCollection(String name, String description, String coverImageUrl, Visibility visibility, List<String> tags) {
         String processCoverImage = (coverImageUrl != null && coverImageUrl.isEmpty()) ? null : 
-                           (coverImageUrl != null) ? coverImageUrl : this.coverImageUrl;
+            (coverImageUrl != null) ? coverImageUrl : this.coverImageUrl;
 
         return new Collection(
             this.id,
