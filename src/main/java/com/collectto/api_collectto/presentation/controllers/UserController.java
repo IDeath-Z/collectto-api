@@ -3,8 +3,11 @@ package com.collectto.api_collectto.presentation.controllers;
 import java.util.UUID;
 
 import com.collectto.api_collectto.application.usecases.user.UpdateUserUseCase;
+import com.collectto.api_collectto.application.usecases.userfollow.CreateUserFollowUseCase;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.user.UpdateUserRequest;
+import com.collectto.api_collectto.presentation.dto.user.UserFollowResponse;
+
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import com.collectto.api_collectto.presentation.dto.user.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
+
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +31,8 @@ public class UserController {
     private final CreateUserUseCase createUserUseCase;
     private final FetchUserUseCase fetchUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
+
+    private final CreateUserFollowUseCase createUserFollowUseCase;
 
     @PostMapping("create")
     @Operation(summary = "Create a new user", description = "Registers a new user in the system with the provided details.")
@@ -94,4 +100,20 @@ public class UserController {
                 output.birthdayDate(),
                 output.creationDate());
     }
+
+    // Follow
+    @PostMapping("/{followedId}/follow")
+    @Operation(summary = "Follow a user", description = "Sends a follow request to the specified user. If the request is successful, the follow status will be PENDING until accepted by the followed user.")
+    public UserFollowResponse postMethodName(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID followedId) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = createUserFollowUseCase.execute(new CreateUserFollowUseCase.Input(userId, followedId));
+        
+        return new UserFollowResponse(
+            output.followerId(), 
+            output.followedId(), 
+            output.status(), 
+            output.createdAt()
+        );
+    }  
 }
