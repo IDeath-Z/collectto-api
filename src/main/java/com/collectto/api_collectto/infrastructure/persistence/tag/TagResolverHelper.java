@@ -14,11 +14,11 @@ public class TagResolverHelper {
 
     public TagJpaEntity findOrCreate(String name) {
         return tagJpaRepository.findByName(name)
-                .orElseGet(() -> {
-                    TagJpaEntity entity = new TagJpaEntity();
-                    entity.setId(UUID.randomUUID());
-                    entity.setName(name);
-                    return tagJpaRepository.save(entity);
-                });
+            .orElseGet(() -> {
+                TagJpaEntity entity = new TagJpaEntity();
+                entity.setId(UUID.randomUUID());
+                entity.setName(name);
+                return tagJpaRepository.save(entity);
+            });
     }
 }

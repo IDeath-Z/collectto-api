@@ -55,23 +55,23 @@ public class ItemRepositoryAdapter implements ItemRepository {
     @Override
     public List<Item> findByUserId(UUID userId) {
         return itemJpaRepository.findByUserId(userId).stream()
-                .map(itemMapper::toDomain)
-                .toList();
+            .map(itemMapper::toDomain)
+            .toList();
     }
 
     @Override
     public Item save(Item item) {
         CollectionJpaEntity collection = collectionsJpaRepository.findById(item.getCollectionId())
-                .orElseThrow(() -> new RuntimeException("Collection not found"));
+            .orElseThrow(() -> new RuntimeException("Collection not found"));
 
         UserJpaEntity user = userJpaRepository.findById(item.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
         ItemJpaEntity entity = itemMapper.toJpa(item, collection, user);
 
         Set<TagJpaEntity> tagEntities = item.getTags().stream()
-                .map(tagResolverHelper::findOrCreate)
-                .collect(Collectors.toSet());
+            .map(tagResolverHelper::findOrCreate)
+            .collect(Collectors.toSet());
 
         entity.setTags(tagEntities);
         return itemMapper.toDomain(itemJpaRepository.save(entity));
@@ -85,8 +85,8 @@ public class ItemRepositoryAdapter implements ItemRepository {
     @Override
     public List<Item> findByCollectionIdAndName(UUID collectionId, String name) {
         return itemJpaRepository.findByCollectionIdAndNameContainingIgnoreCase(collectionId, name).stream()
-                .map(itemMapper::toDomain)
-                .toList();
+            .map(itemMapper::toDomain)
+            .toList();
     }
 
     @Override

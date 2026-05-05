@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AuthController {
 
     private final SpringSecurityAuthentication springSecurityAuthentication;
-
     private final GenerateTokenUseCase generateTokenUseCase;
 
     @PostMapping("/login")

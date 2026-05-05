@@ -20,7 +20,7 @@ public class CreateUserUseCase {
 
     public record Input(String name, String username, String email, String password, String birthdayDate) {}
     public record Output(String id, String name, String username, String email, String bio, String profilePictureUrl, String profileBackgroundUrl,
-            int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {}
+        int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {}
             
     public Output execute(Input input) {
         if (userRepository.existsByEmail(input.email()))
@@ -29,35 +29,37 @@ public class CreateUserUseCase {
             throw new UsernameAlreadyExistsException(input.username());
 
         User user = new User(
-                UUID.randomUUID(),
-                input.name(),
-                input.username(),
-                input.email(),
-                passwordHasher.hash(input.password()),
-                null,
-                null,
-                null,
-                0,
-                0,
-                true,
-                LocalDate.parse(input.birthdayDate()),
-                Instant.now());
+            UUID.randomUUID(),
+            input.name(),
+            input.username(),
+            input.email(),
+            passwordHasher.hash(input.password()),
+            null,
+            null,
+            null,
+            0,
+            0,
+            true,
+            LocalDate.parse(input.birthdayDate()),
+            Instant.now()
+        );
 
         User savedUser = userRepository.save(user);
 
         return new Output(
-                savedUser.getId().toString(),
-                savedUser.getName(),
-                savedUser.getUsername(),
-                savedUser.getEmail(),
-                savedUser.getBio(),
-                savedUser.getProfilePictureUrl(),
-                savedUser.getProfileBackgroundUrl(),
-                savedUser.getFollowersCount(),
-                savedUser.getFollowingCount(),
-                savedUser.isActive(),
-                savedUser.getBirthdayDate().toString(),
-                savedUser.getCreationDate().toString());
+            savedUser.getId().toString(),
+            savedUser.getName(),
+            savedUser.getUsername(),
+            savedUser.getEmail(),
+            savedUser.getBio(),
+            savedUser.getProfilePictureUrl(),
+            savedUser.getProfileBackgroundUrl(),
+            savedUser.getFollowersCount(),
+            savedUser.getFollowingCount(),
+            savedUser.isActive(),
+            savedUser.getBirthdayDate().toString(),
+            savedUser.getCreationDate().toString()
+        );
     }
 
 }

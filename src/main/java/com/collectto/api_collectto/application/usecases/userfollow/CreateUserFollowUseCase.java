@@ -33,7 +33,6 @@ public class CreateUserFollowUseCase {
                 throw new IllegalStateException("Already following.");
             
             if (existingFollow.getStatus() == FollowStatus.DECLINED) {
-                
                 UserFollow savedNewFollow = userFollowRepository.save(existingFollow.pending());
                 
                 return new Output(

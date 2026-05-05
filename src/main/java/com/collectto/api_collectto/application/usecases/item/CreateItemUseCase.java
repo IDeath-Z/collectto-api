@@ -24,11 +24,11 @@ public class CreateItemUseCase {
     private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-            String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
+        String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
             
     public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-            String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
-            int commentsCount, boolean isActive, String createdAt, String updatedAt) {}
+        String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
+        int commentsCount, boolean isActive, String createdAt, String updatedAt) {}
     
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.collectionId())
@@ -39,51 +39,52 @@ public class CreateItemUseCase {
 
         UUID itemId = UUID.randomUUID();
         List<String> imageFilesUrls = (input.imageFilesUrls() == null || input.imageFilesUrls().isEmpty())
-                        ? null
-                        : input.imageFilesUrls().stream()
-                                        .filter(path -> {
-                                                if (!storageUrlPaths.isItemPathValid(path))
-                                                        throw new RuntimeException("Invalid image path"); // Implement better validation as needed
-                                                return true;
-                                        })
-                                        .map(storageProvider::buildPublicUrl)
-                                        .toList();
+            ? null
+            : input.imageFilesUrls().stream()
+                .filter(path -> {
+                    if (!storageUrlPaths.isItemPathValid(path))
+                        throw new RuntimeException("Invalid image path"); // Implement better validation as needed
+                    return true;
+                })
+                .map(storageProvider::buildPublicUrl)
+                .toList();
 
         Item item = new Item(
-                itemId,
-                input.collectionId(),
-                input.userId(),
-                input.name(),
-                input.description(),
-                LocalDate.parse(input.acquisitionDate()),
-                LocalDate.parse(input.lastUsedDate()),
-                imageFilesUrls,
-                input.attributes(),
-                0,
-                0,
-                input.tags(),
-                true,
-                Instant.now(),
-                Instant.now());
+            itemId,
+            input.collectionId(),
+            input.userId(),
+            input.name(),
+            input.description(),
+            LocalDate.parse(input.acquisitionDate()),
+            LocalDate.parse(input.lastUsedDate()),
+            imageFilesUrls,
+            input.attributes(),
+            0,
+            0,
+            input.tags(),
+            true,
+            Instant.now(),
+            Instant.now()
+        );
 
         Item savedItem = itemRepository.save(item);
 
         return new Output(
-                savedItem.getId(),
-                savedItem.getCollectionId(),
-                savedItem.getUserId(),
-                savedItem.getName(),
-                savedItem.getDescription(),
-                savedItem.getAcquisitionDate().toString(),
-                savedItem.getLastUsedDate().toString(),
-                savedItem.getMediaURLs(),
-                savedItem.getAttributes(),
-                savedItem.getTags(),
-                savedItem.getLikesCount(),
-                savedItem.getCommentsCount(),
-                savedItem.isActive(),
-                savedItem.getCreatedAt().toString(),
-                savedItem.getUpdatedAt().toString()
+            savedItem.getId(),
+            savedItem.getCollectionId(),
+            savedItem.getUserId(),
+            savedItem.getName(),
+            savedItem.getDescription(),
+            savedItem.getAcquisitionDate().toString(),
+            savedItem.getLastUsedDate().toString(),
+            savedItem.getMediaURLs(),
+            savedItem.getAttributes(),
+            savedItem.getTags(),
+            savedItem.getLikesCount(),
+            savedItem.getCommentsCount(),
+            savedItem.isActive(),
+            savedItem.getCreatedAt().toString(),
+            savedItem.getUpdatedAt().toString()
         );
     }
 }

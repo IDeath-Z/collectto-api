@@ -55,17 +55,17 @@ public class CollectionController {
         ));
         
         return new CollectionResponse(
-                output.id(),
-                output.userId(),
-                output.name(),
-                output.description(),
-                output.coverImageURL(),
-                output.visibility(),
-                output.followersCount(),
-                output.tags(),
-                output.isActive(),
-                output.createdAt(),
-                output.updatedAt()
+            output.id(),
+            output.userId(),
+            output.name(),
+            output.description(),
+            output.coverImageURL(),
+            output.visibility(),
+            output.followersCount(),
+            output.tags(),
+            output.isActive(),
+            output.createdAt(),
+            output.updatedAt()
         );
     }
 
@@ -77,17 +77,17 @@ public class CollectionController {
         var output = fetchCollectionUseCase.execute(new FetchCollectionUseCase.Input(collectionId, requesterId));
 
         return new CollectionResponse(
-                output.id(),
-                output.userId(),
-                output.name(),
-                output.description(),
-                output.coverImageURL(),
-                output.visibility(),
-                output.followersCount(),
-                output.tags(),
-                output.isActive(),
-                output.createdAt(),
-                output.updatedAt()
+            output.id(),
+            output.userId(),
+            output.name(),
+            output.description(),
+            output.coverImageURL(),
+            output.visibility(),
+            output.followersCount(),
+            output.tags(),
+            output.isActive(),
+            output.createdAt(),
+            output.updatedAt()
         );
     }
     
@@ -99,9 +99,9 @@ public class CollectionController {
         UUID requesterId = userDetails.getUser().getId();
             
         var output = fetchUserCollectionsUseCase.execute(new FetchUserCollectionsUseCase.Input(
-                userId,
-                requesterId,
-                new DomainPageRequest(page, size, sortBy)
+            userId,
+            requesterId,
+            new DomainPageRequest(page, size, sortBy)
         ));
         
         return new CollectionPageResponse(
@@ -134,17 +134,17 @@ public class CollectionController {
         ));
 
         return new CollectionResponse(
-                output.id(),
-                output.userId(),
-                output.name(),
-                output.description(),
-                output.coverImageURL(),
-                output.visibility(),
-                output.followersCount(),
-                output.tags(),
-                output.isActive(),
-                output.createdAt(),
-                output.updatedAt()
+            output.id(),
+            output.userId(),
+            output.name(),
+            output.description(),
+            output.coverImageURL(),
+            output.visibility(),
+            output.followersCount(),
+            output.tags(),
+            output.isActive(),
+            output.createdAt(),
+            output.updatedAt()
         );
     }
 }

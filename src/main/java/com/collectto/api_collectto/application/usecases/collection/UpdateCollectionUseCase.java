@@ -25,7 +25,7 @@ public class UpdateCollectionUseCase {
 
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.id())
-                .orElseThrow(() -> new RuntimeException("Collection not found")); // Implement proper exception handling as needed
+            .orElseThrow(() -> new RuntimeException("Collection not found")); // Implement proper exception handling as needed
 
         if (!collection.getUserId().equals(input.requesterId()))
             throw new RuntimeException("Unauthorized"); // Implement proper exception handling as needed
@@ -63,17 +63,17 @@ public class UpdateCollectionUseCase {
             storageProvider.deleteImage(oldCoverImageUrl);
 
         return new Output(
-                savedCollection.getId(),
-                savedCollection.getUserId(),
-                savedCollection.getName(),
-                savedCollection.getDescription(),
-                savedCollection.getCoverImageUrl(),
-                savedCollection.getVisibility(),
-                savedCollection.getFollowersCount(),
-                savedCollection.getTags(),
-                savedCollection.isActive(),
-                savedCollection.getCreatedAt().toString(),
-                savedCollection.getUpdatedAt().toString()
+            savedCollection.getId(),
+            savedCollection.getUserId(),
+            savedCollection.getName(),
+            savedCollection.getDescription(),
+            savedCollection.getCoverImageUrl(),
+            savedCollection.getVisibility(),
+            savedCollection.getFollowersCount(),
+            savedCollection.getTags(),
+            savedCollection.isActive(),
+            savedCollection.getCreatedAt().toString(),
+            savedCollection.getUpdatedAt().toString()
         );
     }
 }

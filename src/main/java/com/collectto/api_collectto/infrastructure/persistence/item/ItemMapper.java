@@ -33,25 +33,25 @@ public class ItemMapper {
 
     public Item toDomain(ItemJpaEntity entity) {
         List<String> tags = entity.getTags().stream()
-                .map(TagJpaEntity::getName)
-                .toList();
+            .map(TagJpaEntity::getName)
+            .toList();
 
         return new Item(
-                entity.getId(),
-                entity.getCollection().getId(),
-                entity.getUser().getId(),
-                entity.getName(),
-                entity.getDescription(),
-                entity.getAcquisitionDate(),
-                entity.getLastUsedDate(),
-                entity.getMediaUrls(),
-                entity.getAttributes(),
-                entity.getLikesCount(),
-                entity.getCommentsCount(),
-                tags,
-                entity.isActive(),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt()
+            entity.getId(),
+            entity.getCollection().getId(),
+            entity.getUser().getId(),
+            entity.getName(),
+            entity.getDescription(),
+            entity.getAcquisitionDate(),
+            entity.getLastUsedDate(),
+            entity.getMediaUrls(),
+            entity.getAttributes(),
+            entity.getLikesCount(),
+            entity.getCommentsCount(),
+            tags,
+            entity.isActive(),
+            entity.getCreatedAt(),
+            entity.getUpdatedAt()
         );
     }
 }

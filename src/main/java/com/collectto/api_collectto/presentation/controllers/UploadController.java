@@ -32,18 +32,20 @@ public class UploadController {
         UUID userId = userDetails.getUser().getId();
 
         var output = generateUploadUrlsUseCase.execute(new GenerateUploadUrlsUseCase.Input(
-                userId,
-                request.resourceId(),
-                request.parentId(),
-                request.context(),
-                request.files().stream()
-                        .map(file -> new GenerateUploadUrlsUseCase.FileInput(file.fileName(), file.contentType()))
-                        .toList()));
+            userId,
+            request.resourceId(),
+            request.parentId(),
+            request.context(),
+            request.files().stream()
+                .map(file -> new GenerateUploadUrlsUseCase.FileInput(file.fileName(), file.contentType()))
+                .toList()
+        ));
 
         return new GenerateUploadUrlsResponse(
-                output.resourceId(),
-                output.files().stream()
-                        .map(file -> new GenerateUploadUrlsResponse.FileOutput(file.filePath(), file.uploadUrl()))
-                        .toList()); // Implements response entity later
+            output.resourceId(),
+            output.files().stream()
+                .map(file -> new GenerateUploadUrlsResponse.FileOutput(file.filePath(), file.uploadUrl()))
+                .toList()
+        ); // Implements response entity later
     }
 }

@@ -62,17 +62,17 @@ public class OracleStorageProvider implements StorageProvider {
 
             // The private key often has newlines and may be stored with escaped characters, so we need to handle that properly
             String finalPrivateKey = privateKey
-                    .replace("\"", "")
-                    .replace("\\n", "\n")
-                    .trim();
+                .replace("\"", "")
+                .replace("\\n", "\n")
+                .trim();
 
             SimpleAuthenticationDetailsProvider provider = SimpleAuthenticationDetailsProvider.builder()
-                    .tenantId(cleanTenant)
-                    .userId(cleanUser)
-                    .fingerprint(cleanFingerprint)
-                    .privateKeySupplier(new StringPrivateKeySupplier(finalPrivateKey))
-                    .region(Region.valueOf(cleanRegion))
-                    .build();
+                .tenantId(cleanTenant)
+                .userId(cleanUser)
+                .fingerprint(cleanFingerprint)
+                .privateKeySupplier(new StringPrivateKeySupplier(finalPrivateKey))
+                .region(Region.valueOf(cleanRegion))
+                .build();
 
             this.client = ObjectStorageClient.builder().build(provider);
 
@@ -84,9 +84,8 @@ public class OracleStorageProvider implements StorageProvider {
     @Override
     public String uploadImage(MultipartFile file, String folder) {
         String originalName = file.getOriginalFilename();
-        if (originalName == null || originalName.trim().isEmpty()) {
+        if (originalName == null || originalName.trim().isEmpty())
             throw new IllegalArgumentException("Invalid file: The file name cannot be null or empty."); // Implement better error handling as needed
-        }
 
         String uniqueFileName = UUID.randomUUID().toString() + "_" + originalName.replaceAll("\\s+", "_");
         String objectName;
@@ -102,13 +101,13 @@ public class OracleStorageProvider implements StorageProvider {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(fileBytes);
 
             PutObjectRequest request = PutObjectRequest.builder()
-                    .namespaceName(namespaceName)
-                    .bucketName(bucketName)
-                    .objectName(objectName)
-                    .putObjectBody(inputStream)
-                    .contentType(file.getContentType())
-                    .contentLength((long) fileBytes.length)
-                    .build();
+                .namespaceName(namespaceName)
+                .bucketName(bucketName)
+                .objectName(objectName)
+                .putObjectBody(inputStream)
+                .contentType(file.getContentType())
+                .contentLength((long) fileBytes.length)
+                .build();
 
             client.putObject(request);
         } catch (Exception e) {
@@ -124,10 +123,10 @@ public class OracleStorageProvider implements StorageProvider {
     public void deleteImage(String imageUrl) {
         try {
             DeleteObjectRequest request = DeleteObjectRequest.builder()
-                    .namespaceName(namespaceName)
-                    .bucketName(bucketName)
-                    .objectName(extractObjectNameFromUrl(imageUrl))
-                    .build();
+                .namespaceName(namespaceName)
+                .bucketName(bucketName)
+                .objectName(extractObjectNameFromUrl(imageUrl))
+                .build();
 
             client.deleteObject(request);
         } catch (Exception e) {
@@ -136,9 +135,8 @@ public class OracleStorageProvider implements StorageProvider {
     }
 
     private String extractObjectNameFromUrl(String fullUrl) {
-        if (fullUrl == null || !fullUrl.contains("/o/")) {
+        if (fullUrl == null || !fullUrl.contains("/o/"))
             throw new IllegalArgumentException("Oracle URL is invalid: " + fullUrl); // Implement better error handling as needed
-        }
 
         String encodedObjectName = fullUrl.substring(fullUrl.lastIndexOf("/o/") + 3);
         return URLDecoder.decode(encodedObjectName, java.nio.charset.StandardCharsets.UTF_8);
@@ -148,17 +146,17 @@ public class OracleStorageProvider implements StorageProvider {
     public String generatePresignedUrl(String objectName, String contentType, int expirationMinutes) {
         try {
             CreatePreauthenticatedRequestDetails details = CreatePreauthenticatedRequestDetails.builder()
-                    .name("presigned-" + UUID.randomUUID())
-                    .objectName(objectName)
-                    .accessType(CreatePreauthenticatedRequestDetails.AccessType.ObjectWrite)
-                    .timeExpires(new Date(System.currentTimeMillis() + (long) expirationMinutes * 60 * 1000))
-                    .build();
+                .name("presigned-" + UUID.randomUUID())
+                .objectName(objectName)
+                .accessType(CreatePreauthenticatedRequestDetails.AccessType.ObjectWrite)
+                .timeExpires(new Date(System.currentTimeMillis() + (long) expirationMinutes * 60 * 1000))
+                .build();
 
             CreatePreauthenticatedRequestRequest request = CreatePreauthenticatedRequestRequest.builder()
-                    .namespaceName(namespaceName)
-                    .bucketName(bucketName)
-                    .createPreauthenticatedRequestDetails(details)
-                    .build();
+                .namespaceName(namespaceName)
+                .bucketName(bucketName)
+                .createPreauthenticatedRequestDetails(details)
+                .build();
 
             CreatePreauthenticatedRequestResponse response = client.createPreauthenticatedRequest(request);
             String accessUri = response.getPreauthenticatedRequest().getAccessUri();
@@ -172,7 +170,7 @@ public class OracleStorageProvider implements StorageProvider {
     @Override
     public String buildPublicUrl(String filePath) {
         return String.format(
-                "https://objectstorage.%s.oraclecloud.com/n/%s/b/%s/o/%s",
-                region, namespaceName, bucketName, filePath);
+            "https://objectstorage.%s.oraclecloud.com/n/%s/b/%s/o/%s",
+            region, namespaceName, bucketName, filePath);
     }
 }

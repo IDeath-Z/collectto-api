@@ -18,14 +18,14 @@ public class UpdateUserUseCase {
     private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID id, String name, String username, String bio, String profilePictureUrl,
-            String profileBackgroundUrl, String birthdayDate) {}       
+        String profileBackgroundUrl, String birthdayDate) {}       
     public record Output(UUID id, String name, String username, String email, String bio, String profilePictureUrl,
-            String profileBackgroundUrl,
-            int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {}
+        String profileBackgroundUrl,
+        int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {}
 
     public Output execute(Input input) {
         User user = userRepository.findById(input.id())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + input.id()));
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + input.id()));
 
         String oldPictureUrl = user.getProfilePictureUrl();
         String oldBackgroundUrl = user.getProfileBackgroundUrl();
@@ -67,12 +67,12 @@ public class UpdateUserUseCase {
         }
 
         User updatedUser = user.updateProfile(
-                input.name(), 
-                input.username(), 
-                input.bio(), 
-                finalPictureUrl,
-                finalBackgroundUrl, 
-                input.birthdayDate()
+            input.name(), 
+            input.username(), 
+            input.bio(), 
+            finalPictureUrl,
+            finalBackgroundUrl, 
+            input.birthdayDate()
         );
         
         User savedUser = userRepository.save(updatedUser);
@@ -83,18 +83,18 @@ public class UpdateUserUseCase {
             storageProvider.deleteImage(oldBackgroundUrl);
 
         return new Output(
-                savedUser.getId(),
-                savedUser.getName(),
-                savedUser.getUsername(),
-                savedUser.getEmail(),
-                savedUser.getBio(),
-                savedUser.getProfilePictureUrl(),
-                savedUser.getProfileBackgroundUrl(),
-                savedUser.getFollowersCount(),
-                savedUser.getFollowingCount(),
-                savedUser.isActive(),
-                savedUser.getBirthdayDate().toString(),
-                savedUser.getCreationDate().toString()
+            savedUser.getId(),
+            savedUser.getName(),
+            savedUser.getUsername(),
+            savedUser.getEmail(),
+            savedUser.getBio(),
+            savedUser.getProfilePictureUrl(),
+            savedUser.getProfileBackgroundUrl(),
+            savedUser.getFollowersCount(),
+            savedUser.getFollowingCount(),
+            savedUser.isActive(),
+            savedUser.getBirthdayDate().toString(),
+            savedUser.getCreationDate().toString()
         );
     }
 }

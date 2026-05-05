@@ -16,6 +16,6 @@ public class ValidateTokenUseCase {
         String valid = tokenProvider.validate(token);
 
         return userRepository.findByEmail(valid)
-                .orElseThrow(() -> new RuntimeException("User not found")); // Implement custom exception later
+            .orElseThrow(() -> new RuntimeException("User not found")); // Implement custom exception later
     }
 }

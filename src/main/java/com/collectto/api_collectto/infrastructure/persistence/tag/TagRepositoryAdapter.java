@@ -19,8 +19,8 @@ public class TagRepositoryAdapter implements TagRepository {
     @Override
     public List<Tag> findSuggestions(String prefix, int limit) {
         return jpaRepository.findSuggestions(prefix, limit)
-                .stream()
-                .map(tagmapper::toDomain)
-                .toList();
+            .stream()
+            .map(tagmapper::toDomain)
+            .toList();
     }
 }

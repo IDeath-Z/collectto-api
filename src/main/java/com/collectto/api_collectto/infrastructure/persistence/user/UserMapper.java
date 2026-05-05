@@ -27,18 +27,19 @@ public class UserMapper {
 
     public User toDomain(UserJpaEntity entity) {
         return new User(
-                entity.getId(),
-                entity.getName(),
-                entity.getUsername(),
-                entity.getEmail(),
-                entity.getPasswordHash(),
-                entity.getBio(),
-                entity.getProfilePictureUrl(),
-                entity.getProfileBackgroundUrl(),
-                entity.getFollowersCount(),
-                entity.getFollowingCount(),
-                entity.isActive(),
-                entity.getBirthdayDate(),
-                entity.getCreationDate());
+            entity.getId(),
+            entity.getName(),
+            entity.getUsername(),
+            entity.getEmail(),
+            entity.getPasswordHash(),
+            entity.getBio(),
+            entity.getProfilePictureUrl(),
+            entity.getProfileBackgroundUrl(),
+            entity.getFollowersCount(),
+            entity.getFollowingCount(),
+            entity.isActive(),
+            entity.getBirthdayDate(),
+            entity.getCreationDate()
+        );
     }
 }

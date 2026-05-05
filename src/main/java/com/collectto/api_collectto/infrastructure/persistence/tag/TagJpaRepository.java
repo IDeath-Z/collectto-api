@@ -11,11 +11,12 @@ import org.springframework.data.repository.query.Param;
 public interface TagJpaRepository extends JpaRepository<TagJpaEntity, UUID> {
 
     @Query(value = """
-            SELECT * FROM tags
-            WHERE name ILIKE :prefix || '%'
-            ORDER BY name
-            LIMIT :limit
-            """, nativeQuery = true)
+        SELECT * FROM tags
+        WHERE name ILIKE :prefix || '%'
+        ORDER BY name
+        LIMIT :limit
+        """, nativeQuery = true
+    )
     List<TagJpaEntity> findSuggestions(@Param("prefix") String prefix, @Param("limit") int limit);
 
     Optional<TagJpaEntity> findByName(String name);

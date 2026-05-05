@@ -33,17 +33,17 @@ public class FetchUserCollectionsUseCase {
                 return collection.getVisibility() != Visibility.PRIVATE; // Implements FRIENDS visibility later
             })
             .map(collection -> new CollectionSummary(
-                    collection.getId(),
-                    collection.getName(),
-                    itemRepository.findTop3MediaUrlsByCollectionId(collection.getId())
+                collection.getId(),
+                collection.getName(),
+                itemRepository.findTop3MediaUrlsByCollectionId(collection.getId())
             ))
             .toList();
 
             return new Output(
-                    collections,
-                    pageableCollections.totalPages(),
-                    pageableCollections.totalElements(),
-                    pageableCollections.page()
+                collections,
+                pageableCollections.totalPages(),
+                pageableCollections.totalElements(),
+                pageableCollections.page()
             );
     }
 }

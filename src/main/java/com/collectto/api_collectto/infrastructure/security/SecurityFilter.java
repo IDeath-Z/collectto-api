@@ -32,7 +32,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                 User user = validateTokenUseCase.execute(token);
                 SecurityUserDetails userDetails = new SecurityUserDetails(user);
                 var authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                    userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
                 // Not authenticated, just continue without setting authentication

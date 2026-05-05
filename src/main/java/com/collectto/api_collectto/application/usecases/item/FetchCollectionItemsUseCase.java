@@ -35,9 +35,9 @@ public class FetchCollectionItemsUseCase {
         DomainPageResult<Item> pageableItems = itemRepository.findByCollectionId(input.collectionId(), input.pageRequest());
 
         List<ItemSummary> items = pageableItems.content().stream()
-                .map(item -> new ItemSummary(item.getId(), item.getName(), 
-                        item.getMediaURLs() == null ? null : item.getMediaURLs().stream().limit(3).toList())) // Limit to 3 images for summary, which 3? i don't know, maybe the first 3? Fix as needed
-                .toList();
+            .map(item -> new ItemSummary(item.getId(), item.getName(), 
+                item.getMediaURLs() == null ? null : item.getMediaURLs().stream().limit(3).toList())) // Limit to 3 images for summary, which 3? i don't know, maybe the first 3? Fix as needed
+            .toList();
 
         return new Output(items, pageableItems.totalPages(), pageableItems.totalElements(), pageableItems.page());
     }

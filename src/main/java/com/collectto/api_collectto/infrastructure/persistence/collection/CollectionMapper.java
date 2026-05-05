@@ -28,21 +28,21 @@ public class CollectionMapper {
 
     public Collection toDomain(CollectionJpaEntity entity) {
         List<String> tags = entity.getTags().stream()
-                .map(TagJpaEntity::getName)
-                .toList();
+            .map(TagJpaEntity::getName)
+            .toList();
 
         return new Collection(
-                entity.getId(),
-                entity.getUser().getId(),
-                entity.getName(),
-                entity.getDescription(),
-                entity.getCoverImageUrl(),
-                entity.getVisibility(),
-                entity.getFollowersCount(),
-                tags,
-                entity.isActive(),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt()
-            );
+            entity.getId(),
+            entity.getUser().getId(),
+            entity.getName(),
+            entity.getDescription(),
+            entity.getCoverImageUrl(),
+            entity.getVisibility(),
+            entity.getFollowersCount(),
+            tags,
+            entity.isActive(),
+            entity.getCreatedAt(),
+            entity.getUpdatedAt()
+        );
     }
 }

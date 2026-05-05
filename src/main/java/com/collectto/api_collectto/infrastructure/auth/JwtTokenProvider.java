@@ -21,10 +21,10 @@ public class JwtTokenProvider implements TokenProvider {
         try {
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
             return JWT.create()
-                    .withIssuer("collectto_api")
-                    .withSubject(subject)
-                    .withExpiresAt(expiration)
-                    .sign(algorithm);
+                .withIssuer("collectto_api") // Consider making this configurable later
+                .withSubject(subject)
+                .withExpiresAt(expiration)
+                .sign(algorithm);
         } catch (Exception e) {
             throw new RuntimeException("Error while generating token", e); // Implement proper exception handling later
         }
@@ -35,10 +35,10 @@ public class JwtTokenProvider implements TokenProvider {
         try {
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
             return JWT.require(algorithm)
-                    .withIssuer("collectto_api")
-                    .build()
-                    .verify(token)
-                    .getSubject();
+                .withIssuer("collectto_api") // Same as above
+                .build()
+                .verify(token)
+                .getSubject();
         } catch (JWTVerificationException e) {
             throw new RuntimeException("Invalid or expired token", e); // Implement proper exception handling later
         }

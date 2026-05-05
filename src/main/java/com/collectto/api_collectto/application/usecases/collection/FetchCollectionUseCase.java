@@ -22,7 +22,7 @@ public class FetchCollectionUseCase {
     public Output execute(Input input) {
 
         Collection collection = collectionRepository.findById(input.collectionId())
-                .orElseThrow(() -> new RuntimeException("Collection not found")); // Implement proper exception handling as needed
+            .orElseThrow(() -> new RuntimeException("Collection not found")); // Implement proper exception handling as needed
 
         if (!collection.getUserId().equals(input.requesterId())) {
             if (collection.getVisibility() == Visibility.PRIVATE)

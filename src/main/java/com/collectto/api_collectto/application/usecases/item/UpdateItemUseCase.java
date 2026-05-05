@@ -20,15 +20,15 @@ public class UpdateItemUseCase {
     private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID itemId, UUID requesterId, String name, String description, LocalDate acquisitionDate, 
-            List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
+        List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
 
     public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-            String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
-            int commentsCount, boolean isActive, String createdAt, String updatedAt) {}
+        String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
+        int commentsCount, boolean isActive, String createdAt, String updatedAt) {}
 
     public Output execute(Input input) {
         Item item = itemRepository.findById(input.itemId())
-                .orElseThrow(() -> new RuntimeException("Item not found with id: " + input.itemId()));
+            .orElseThrow(() -> new RuntimeException("Item not found with id: " + input.itemId()));
 
         if (!item.getUserId().equals(input.requesterId()))
             throw new RuntimeException("Unauthorized");
@@ -42,20 +42,20 @@ public class UpdateItemUseCase {
             processedImageUrls = List.of(); 
         } else { // merge old and new URLs, validating new ones and keeping valid old ones
             processedImageUrls = input.imageFilesUrls().stream()
-                    .map(path -> {
-                        if (oldImageUrls.contains(path)) {
-                            return path;
-                        }
-                        if (!storageUrlPaths.isItemPathValid(path)) {
-                            throw new RuntimeException("Invalid image path: " + path);
-                        }
-                        return storageProvider.buildPublicUrl(path);
-                    })
-                    .toList();
+                .map(path -> {
+                    if (oldImageUrls.contains(path)) {
+                        return path;
+                    }
+                    if (!storageUrlPaths.isItemPathValid(path)) {
+                        throw new RuntimeException("Invalid image path: " + path);
+                    }
+                    return storageProvider.buildPublicUrl(path);
+                })
+                .toList();
         }
 
         Item updatedItem = item.updateItem(input.name(), input.description(), input.acquisitionDate(), processedImageUrls, 
-                input.attributes(), input.tags());
+            input.attributes(), input.tags());
         Item savedItem = itemRepository.save(updatedItem);
 
         if (input.imageFilesUrls() != null && !oldImageUrls.isEmpty()) {

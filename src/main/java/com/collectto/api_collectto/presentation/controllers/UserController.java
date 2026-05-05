@@ -38,18 +38,20 @@ public class UserController {
     @Operation(summary = "Create a new user", description = "Registers a new user in the system with the provided details.")
     public CreateUserResponse create(@RequestBody @Valid CreateUserRequest request) {
         var output = createUserUseCase.execute(new CreateUserUseCase.Input(
-                request.name(),
-                request.username(),
-                request.email(),
-                request.password(),
-                request.birthdayDate()));
+            request.name(),
+            request.username(),
+            request.email(),
+            request.password(),
+            request.birthdayDate()
+        ));
 
         return new CreateUserResponse(
-                output.id(),
-                output.name(),
-                output.username(),
-                output.email(),
-                output.creationDate()); // Implement response entity later
+            output.id(),
+            output.name(),
+            output.username(),
+            output.email(),
+            output.creationDate()
+        ); // Implement response entity later
     }
     
     @GetMapping("/{userId}")
@@ -58,18 +60,19 @@ public class UserController {
         var output = fetchUserUseCase.execute(new FetchUserUseCase.Input(userId));
 
         return new UserResponse(
-                output.id(),
-                output.name(),
-                output.username(),
-                output.email(),
-                output.bio(),
-                output.profilePictureUrl(),
-                output.profileBackgroundUrl(),
-                output.followersCount(),
-                output.followingCount(),
-                output.isActive(),
-                output.birthdayDate(),
-                output.creationDate());
+            output.id(),
+            output.name(),
+            output.username(),
+            output.email(),
+            output.bio(),
+            output.profilePictureUrl(),
+            output.profileBackgroundUrl(),
+            output.followersCount(),
+            output.followingCount(),
+            output.isActive(),
+            output.birthdayDate(),
+            output.creationDate()
+        );
     }
 
     @PatchMapping("/profile")
@@ -78,27 +81,29 @@ public class UserController {
         UUID userId = userDetails.getUser().getId();
 
         var output = updateUserUseCase.execute(new UpdateUserUseCase.Input(
-                userId,
-                request.name(),
-                request.username(),
-                request.bio(),
-                request.profilePictureUrl(),
-                request.profileBackgroundUrl(),
-                request.birthdayDate()));
+            userId,
+            request.name(),
+            request.username(),
+            request.bio(),
+            request.profilePictureUrl(),
+            request.profileBackgroundUrl(),
+            request.birthdayDate()
+        ));
 
         return new UserResponse(
-                output.id(),
-                output.name(),
-                output.username(),
-                output.email(),
-                output.bio(),
-                output.profilePictureUrl(),
-                output.profileBackgroundUrl(),
-                output.followersCount(),
-                output.followingCount(),
-                output.isActive(),
-                output.birthdayDate(),
-                output.creationDate());
+            output.id(),
+            output.name(),
+            output.username(),
+            output.email(),
+            output.bio(),
+            output.profilePictureUrl(),
+            output.profileBackgroundUrl(),
+            output.followersCount(),
+            output.followingCount(),
+            output.isActive(),
+            output.birthdayDate(),
+            output.creationDate()
+        );
     }
 
     // Follow
