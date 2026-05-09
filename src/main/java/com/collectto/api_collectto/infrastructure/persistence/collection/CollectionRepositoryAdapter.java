@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.domain.shared.DomainPageResult;
+import com.collectto.api_collectto.infrastructure.persistence.shared.PageRequestConverter;
 import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaEntity;
 import com.collectto.api_collectto.infrastructure.persistence.tag.TagResolverHelper;
 import com.collectto.api_collectto.infrastructure.persistence.user.UserJpaEntity;
@@ -33,11 +33,7 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
 
     @Override
     public DomainPageResult<Collection> findByUserId(UUID userId, DomainPageRequest pageRequest) {
-        Sort sort = pageRequest.sortBy().getDirection().equals("ASC")
-        ? Sort.by(pageRequest.sortBy().getField()).ascending()
-        : Sort.by(pageRequest.sortBy().getField()).descending();
-
-        PageRequest springPage = PageRequest.of(pageRequest.page(), pageRequest.size(), sort);
+        PageRequest springPage = PageRequestConverter.toSpring(pageRequest);
         Page<CollectionJpaEntity> page = collectionsJpaRepository.findByUserId(userId, springPage);
     
         return new DomainPageResult<>(

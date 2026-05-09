@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.collectto.api_collectto.domain.entities.UserFollow;
@@ -13,6 +12,7 @@ import com.collectto.api_collectto.domain.enums.FollowStatus;
 import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.domain.shared.DomainPageResult;
+import com.collectto.api_collectto.infrastructure.persistence.shared.PageRequestConverter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,11 +36,7 @@ public class UserFollowRepositoryAdapter implements UserFollowRepository {
 
     @Override
     public DomainPageResult<UserFollow> findByFollowerIdAndStatus(UUID followerId, FollowStatus status, DomainPageRequest pageRequest) {
-        Sort sort = pageRequest.sortBy().getDirection().equals("ASC")
-        ? Sort.by(pageRequest.sortBy().getField()).ascending()
-        : Sort.by(pageRequest.sortBy().getField()).descending();
-
-        PageRequest springPage = PageRequest.of(pageRequest.page(), pageRequest.size(), sort);
+        PageRequest springPage = PageRequestConverter.toSpring(pageRequest);
         Page<UserFollowJpaEntity> page = userFollowJpaRepository.findByFollowerIdAndStatus(followerId, status, springPage);
 
         return new DomainPageResult<>(
@@ -54,11 +50,7 @@ public class UserFollowRepositoryAdapter implements UserFollowRepository {
 
     @Override
     public DomainPageResult<UserFollow> findByFollowedIdAndStatus(UUID followedId, FollowStatus status, DomainPageRequest pageRequest) {
-        Sort sort = pageRequest.sortBy().getDirection().equals("ASC")
-        ? Sort.by(pageRequest.sortBy().getField()).ascending()
-        : Sort.by(pageRequest.sortBy().getField()).descending();
-
-        PageRequest springPage = PageRequest.of(pageRequest.page(), pageRequest.size(), sort);
+        PageRequest springPage = PageRequestConverter.toSpring(pageRequest);
         Page<UserFollowJpaEntity> page = userFollowJpaRepository.findByFollowedIdAndStatus(followedId, status, springPage);
 
         return new DomainPageResult<>(
