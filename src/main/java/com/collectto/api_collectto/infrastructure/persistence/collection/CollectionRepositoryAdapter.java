@@ -14,7 +14,7 @@ import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.domain.shared.DomainPageResult;
-import com.collectto.api_collectto.infrastructure.persistence.shared.PageRequestConverter;
+import com.collectto.api_collectto.infrastructure.persistence.shared.PageConverter;
 import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaEntity;
 import com.collectto.api_collectto.infrastructure.persistence.tag.TagResolverHelper;
 import com.collectto.api_collectto.infrastructure.persistence.user.UserJpaEntity;
@@ -33,16 +33,10 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
 
     @Override
     public DomainPageResult<Collection> findByUserId(UUID userId, DomainPageRequest pageRequest) {
-        PageRequest springPage = PageRequestConverter.toSpring(pageRequest);
+        PageRequest springPage = PageConverter.toSpring(pageRequest);
         Page<CollectionJpaEntity> page = collectionsJpaRepository.findByUserId(userId, springPage);
     
-        return new DomainPageResult<>(
-            page.getContent().stream().map(collectionMapper::toDomain).toList(),
-            page.getNumber(),
-            page.getSize(),
-            page.getTotalElements(),
-            page.getTotalPages()
-        );
+        return PageConverter.toDomain(page, collectionMapper::toDomain);
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.collectto.api_collectto.domain.enums.FollowStatus;
 import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.domain.shared.DomainPageResult;
-import com.collectto.api_collectto.infrastructure.persistence.shared.PageRequestConverter;
+import com.collectto.api_collectto.infrastructure.persistence.shared.PageConverter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,30 +36,18 @@ public class UserFollowRepositoryAdapter implements UserFollowRepository {
 
     @Override
     public DomainPageResult<UserFollow> findByFollowerIdAndStatus(UUID followerId, FollowStatus status, DomainPageRequest pageRequest) {
-        PageRequest springPage = PageRequestConverter.toSpring(pageRequest);
+        PageRequest springPage = PageConverter.toSpring(pageRequest);
         Page<UserFollowJpaEntity> page = userFollowJpaRepository.findByFollowerIdAndStatus(followerId, status, springPage);
 
-        return new DomainPageResult<>(
-            page.getContent().stream().map(userFollowMapper::toDomain).toList(),
-            page.getNumber(),
-            page.getSize(),
-            page.getTotalElements(),
-            page.getTotalPages()
-        );
+        return PageConverter.toDomain(page, userFollowMapper::toDomain);
     }
 
     @Override
     public DomainPageResult<UserFollow> findByFollowedIdAndStatus(UUID followedId, FollowStatus status, DomainPageRequest pageRequest) {
-        PageRequest springPage = PageRequestConverter.toSpring(pageRequest);
+        PageRequest springPage = PageConverter.toSpring(pageRequest);
         Page<UserFollowJpaEntity> page = userFollowJpaRepository.findByFollowedIdAndStatus(followedId, status, springPage);
 
-        return new DomainPageResult<>(
-            page.getContent().stream().map(userFollowMapper::toDomain).toList(),
-            page.getNumber(),
-            page.getSize(),
-            page.getTotalElements(),
-            page.getTotalPages()
-        );
+        return PageConverter.toDomain(page, userFollowMapper::toDomain);
     }
 
     @Override
