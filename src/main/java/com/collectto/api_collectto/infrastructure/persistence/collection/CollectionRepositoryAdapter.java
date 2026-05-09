@@ -66,4 +66,14 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
             .map(collectionMapper::toDomain)
             .toList();
     }
+
+    @Override
+    public void incrementFollowers(UUID collectionId) {
+        collectionsJpaRepository.incrementFollowers(collectionId);
+    }
+
+    @Override
+    public void decrementFollowers(UUID collectionId) {
+        collectionsJpaRepository.decrementFollowers(collectionId);
+    }
 }

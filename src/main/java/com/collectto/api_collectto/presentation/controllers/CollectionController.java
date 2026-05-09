@@ -15,11 +15,13 @@ import com.collectto.api_collectto.application.usecases.collection.CreateCollect
 import com.collectto.api_collectto.application.usecases.collection.FetchCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchUserCollectionsUseCase;
 import com.collectto.api_collectto.application.usecases.collection.UpdateCollectionUseCase;
+import com.collectto.api_collectto.application.usecases.collectionfollow.CreateCollectionFollowUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.collection.CreateCollectionRequest;
 import com.collectto.api_collectto.presentation.dto.collection.UpdateCollectionRequest;
+import com.collectto.api_collectto.presentation.dto.collection.CollectionFollowResponse;
 import com.collectto.api_collectto.presentation.dto.collection.CollectionPageResponse;
 import com.collectto.api_collectto.presentation.dto.collection.CollectionResponse;
 
@@ -40,6 +42,7 @@ public class CollectionController {
     private final FetchCollectionUseCase fetchCollectionUseCase;
     private final FetchUserCollectionsUseCase fetchUserCollectionsUseCase;
     private final UpdateCollectionUseCase updateCollectionUseCase;
+    private final CreateCollectionFollowUseCase createCollectionFollowUseCase;
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new collection", description = "Registers a new collection in the system with the provided details.")
@@ -145,6 +148,21 @@ public class CollectionController {
             output.isActive(),
             output.createdAt(),
             output.updatedAt()
+        );
+    }
+
+    // Follow
+    @PostMapping("/{collectionId}/follow")
+    @Operation(summary = "Follow a collection", description = "Allows the authenticated user to follow a collection, increasing its followers count and enabling it to appear in the user's followed collections list.")
+    public CollectionFollowResponse followCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = createCollectionFollowUseCase.execute(new CreateCollectionFollowUseCase.Input(userId, collectionId));
+        
+        return new CollectionFollowResponse(
+            output.followerId(),
+            output.collectionId(),
+            output.createdAt()
         );
     }
 }
