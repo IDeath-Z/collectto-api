@@ -43,4 +43,24 @@ public class UserRepositoryAdapter implements UserRepository {
     public Optional<User> findByEmail(String email) {
         return userJpaRepository.findByEmail(email).map(userMapper::toDomain);
     }
+
+    @Override
+    public void incrementFollowers(UUID userId) {
+        userJpaRepository.incrementFollowers(userId);
+    }
+
+    @Override
+    public void incrementFollowing(UUID userId) {
+        userJpaRepository.incrementFollowing(userId);
+    }
+
+    @Override
+    public void decrementFollowers(UUID userId) {
+        userJpaRepository.decrementFollowers(userId);
+    }
+
+    @Override
+    public void decrementFollowing(UUID userId) {
+        userJpaRepository.decrementFollowing(userId);
+    }
 }
