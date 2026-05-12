@@ -4,11 +4,13 @@ import java.util.UUID;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.collection.CreateCollectionUseCase;
@@ -16,6 +18,7 @@ import com.collectto.api_collectto.application.usecases.collection.FetchCollecti
 import com.collectto.api_collectto.application.usecases.collection.FetchUserCollectionsUseCase;
 import com.collectto.api_collectto.application.usecases.collection.UpdateCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collectionfollow.FollowCollectionUseCase;
+import com.collectto.api_collectto.application.usecases.collectionfollow.UnfollowCollectionUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
@@ -28,6 +31,7 @@ import com.collectto.api_collectto.presentation.dto.collection.CollectionRespons
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +48,7 @@ public class CollectionController {
     private final FetchUserCollectionsUseCase fetchUserCollectionsUseCase;
     private final UpdateCollectionUseCase updateCollectionUseCase;
     private final FollowCollectionUseCase followCollectionUseCase;
+    private final UnfollowCollectionUseCase unfollowCollectionUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @PostMapping(value = "/create")
@@ -176,5 +181,16 @@ public class CollectionController {
             output.collectionId(),
             output.createdAt()
         );
+    }
+
+    @DeleteMapping("/{collectionId}/unfollow")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Unfollow a collection", description = "Allows the authenticated user to unfollow a collection, decreasing its followers count")
+    public void unfollowCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
+        UUID userId = userDetails.getUser().getId();
+
+        transactionalProxy.execute(() -> unfollowCollectionUseCase.execute(
+            new UnfollowCollectionUseCase.Input(userId, collectionId)       
+        ));
     }
 }
