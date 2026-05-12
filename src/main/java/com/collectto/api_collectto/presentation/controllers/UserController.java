@@ -3,7 +3,7 @@ package com.collectto.api_collectto.presentation.controllers;
 import java.util.UUID;
 
 import com.collectto.api_collectto.application.usecases.user.UpdateUserUseCase;
-import com.collectto.api_collectto.application.usecases.userfollow.CreateUserFollowUseCase;
+import com.collectto.api_collectto.application.usecases.userfollow.FollowUserUseCase;
 import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.user.UpdateUserRequest;
@@ -35,7 +35,7 @@ public class UserController {
     private final DeleteUserUseCase deleteUserUseCase;
     private final FetchUserUseCase fetchUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
-    private final CreateUserFollowUseCase createUserFollowUseCase;
+    private final FollowUserUseCase followUserUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @PostMapping("create")
@@ -128,8 +128,8 @@ public class UserController {
     public UserFollowResponse followUser(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID followedId) {
         UUID userId = userDetails.getUser().getId();
 
-        var output = transactionalProxy.execute(() -> createUserFollowUseCase.execute(
-            new CreateUserFollowUseCase.Input(userId, followedId)
+        var output = transactionalProxy.execute(() -> followUserUseCase.execute(
+            new FollowUserUseCase.Input(userId, followedId)
         ));
 
         return new UserFollowResponse(
