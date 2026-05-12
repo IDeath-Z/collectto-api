@@ -15,6 +15,7 @@ import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
+import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
 import com.collectto.api_collectto.presentation.dto.item.ItemPageResponse;
@@ -40,22 +41,25 @@ public class ItemController {
     private final FetchCollectionItemsUseCase fetchCollectionItemsUseCase;
     private final FetchItemUseCase fetchItemUseCase;
     private final UpdateItemUseCase updateItemUseCase;
+    private final TransactionalProxy transactionalProxy;
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new item", description = "Registers a new item in the system with the provided details.")
     public ItemResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateItemRequest request) {
         UUID userId = userDetails.getUser().getId();
 
-        var output = createItemUseCase.execute(new CreateItemUseCase.Input(
-            request.collectionId(),
-            userId,
-            request.name(),
-            request.description(),
-            request.acquisitionDate(),
-            request.lastUsedDate(),
-            request.imageFilesUrls(),
-            request.attributes(),
-            request.tags()
+        var output = transactionalProxy.execute(() ->  createItemUseCase.execute(
+            new CreateItemUseCase.Input(
+                request.collectionId(),
+                userId,
+                request.name(),
+                request.description(),
+                request.acquisitionDate(),
+                request.lastUsedDate(),
+                request.imageFilesUrls(),
+                request.attributes(),
+                request.tags()
+            )
         ));
         
         return new ItemResponse(
@@ -84,10 +88,12 @@ public class ItemController {
 
         UUID requesterId = userDetails.getUser().getId();
 
-        var output = fetchCollectionItemsUseCase.execute(new FetchCollectionItemsUseCase.Input(
-            collectionId, 
-            requesterId, 
-            new DomainPageRequest(page, size, sortBy)
+        var output = transactionalProxy.executeReadOnly(() -> fetchCollectionItemsUseCase.execute(
+            new FetchCollectionItemsUseCase.Input(
+                collectionId, 
+                requesterId, 
+                new DomainPageRequest(page, size, sortBy)
+            )
         ));
 
         return new ItemPageResponse(
@@ -109,10 +115,12 @@ public class ItemController {
     public ItemResponse getItemById(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId, @PathVariable UUID itemId) {
         UUID requesterId = userDetails.getUser().getId();
 
-        var output = fetchItemUseCase.execute(new FetchItemUseCase.Input(
-            itemId,
-            collectionId,
-            requesterId
+        var output = transactionalProxy.executeReadOnly(() -> fetchItemUseCase.execute(
+            new FetchItemUseCase.Input(
+                itemId,
+                collectionId,
+                requesterId
+            )
         ));
 
         return new ItemResponse(
@@ -139,15 +147,17 @@ public class ItemController {
     public ItemResponse update(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateItemRequest request) {
         UUID userId = userDetails.getUser().getId();
 
-        var output = updateItemUseCase.execute(new UpdateItemUseCase.Input(
-            request.id(),
-            userId,
-            request.name(),
-            request.description(),
-            request.acquisitionDate(),
-            request.imageFilesUrls(),
-            request.attributes(),
-            request.tags()
+        var output = transactionalProxy.execute(() -> updateItemUseCase.execute(
+            new UpdateItemUseCase.Input(
+                request.id(),
+                userId,
+                request.name(),
+                request.description(),
+                request.acquisitionDate(),
+                request.imageFilesUrls(),
+                request.attributes(),
+                request.tags()
+            )
         ));
 
        return new ItemResponse(

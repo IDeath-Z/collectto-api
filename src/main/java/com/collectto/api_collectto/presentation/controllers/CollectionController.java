@@ -18,6 +18,7 @@ import com.collectto.api_collectto.application.usecases.collection.UpdateCollect
 import com.collectto.api_collectto.application.usecases.collectionfollow.CreateCollectionFollowUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
+import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.collection.CreateCollectionRequest;
 import com.collectto.api_collectto.presentation.dto.collection.UpdateCollectionRequest;
@@ -43,18 +44,21 @@ public class CollectionController {
     private final FetchUserCollectionsUseCase fetchUserCollectionsUseCase;
     private final UpdateCollectionUseCase updateCollectionUseCase;
     private final CreateCollectionFollowUseCase createCollectionFollowUseCase;
+    private final TransactionalProxy transactionalProxy;
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new collection", description = "Registers a new collection in the system with the provided details.")
     public CollectionResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateCollectionRequest request) {
         UUID userId = userDetails.getUser().getId();
 
-        var output = createCollectionUseCase.execute(new CreateCollectionUseCase.Input(
-            userId,
-            request.name(),
-            request.description(),
-            request.coverImageUrl(),
-            request.tags()
+        var output = transactionalProxy.execute(() -> createCollectionUseCase.execute(
+            new CreateCollectionUseCase.Input(
+                userId,
+                request.name(),
+                request.description(),
+                request.coverImageUrl(),
+                request.tags()
+            )
         ));
         
         return new CollectionResponse(
@@ -77,7 +81,9 @@ public class CollectionController {
     public CollectionResponse getCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID requesterId = userDetails.getUser().getId();
 
-        var output = fetchCollectionUseCase.execute(new FetchCollectionUseCase.Input(collectionId, requesterId));
+        var output = transactionalProxy.executeReadOnly(() -> fetchCollectionUseCase.execute(
+            new FetchCollectionUseCase.Input(collectionId, requesterId)
+        ));
 
         return new CollectionResponse(
             output.id(),
@@ -101,10 +107,12 @@ public class CollectionController {
             
         UUID requesterId = userDetails.getUser().getId();
             
-        var output = fetchUserCollectionsUseCase.execute(new FetchUserCollectionsUseCase.Input(
-            userId,
-            requesterId,
-            new DomainPageRequest(page, size, sortBy)
+        var output = transactionalProxy.executeReadOnly(() -> fetchUserCollectionsUseCase.execute(
+            new FetchUserCollectionsUseCase.Input(
+                userId,
+                requesterId,
+                new DomainPageRequest(page, size, sortBy)
+            )
         ));
         
         return new CollectionPageResponse(
@@ -126,14 +134,16 @@ public class CollectionController {
     public CollectionResponse patchCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateCollectionRequest request) {
         UUID requesterId = userDetails.getUser().getId();
 
-        var output = updateCollectionUseCase.execute(new UpdateCollectionUseCase.Input(
-            request.id(),
-            requesterId,
-            request.name(),
-            request.description(),
-            request.coverImageUrl(),
-            request.visibility(),
-            request.tags()
+        var output = transactionalProxy.execute(() -> updateCollectionUseCase.execute(
+            new UpdateCollectionUseCase.Input(
+                request.id(),
+                requesterId,
+                request.name(),
+                request.description(),
+                request.coverImageUrl(),
+                request.visibility(),
+                request.tags()
+            )
         ));
 
         return new CollectionResponse(
@@ -157,7 +167,9 @@ public class CollectionController {
     public CollectionFollowResponse followCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID userId = userDetails.getUser().getId();
 
-        var output = createCollectionFollowUseCase.execute(new CreateCollectionFollowUseCase.Input(userId, collectionId));
+        var output = transactionalProxy.execute(() -> createCollectionFollowUseCase.execute(
+            new CreateCollectionFollowUseCase.Input(userId, collectionId)
+        ));
         
         return new CollectionFollowResponse(
             output.followerId(),
