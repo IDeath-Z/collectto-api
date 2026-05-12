@@ -13,9 +13,9 @@ import com.collectto.api_collectto.domain.enums.FollowStatus;
 
 public interface UserFollowJpaRepository extends JpaRepository<UserFollowJpaEntity, UserFollowJpaId> {
 
-    @Query("SELECT u FROM UserFollowJpaEntity u WHERE u.id.followerId = :followerId AND u.status = :status")
+    @Query("SELECT if FROM UserFollowJpaEntity if WHERE if.id.followerId = :followerId AND if.status = :status")
     Page<UserFollowJpaEntity> findByFollowerIdAndStatus(@Param("followerId") UUID followerId, @Param("status") FollowStatus status, Pageable pageRequest);
     
-    @Query("SELECT u FROM UserFollowJpaEntity u WHERE u.id.followedId = :followedId AND u.status = :status")
+    @Query("SELECT if FROM UserFollowJpaEntity if WHERE if.id.followedId = :followedId AND if.status = :status")
     Page<UserFollowJpaEntity> findByFollowedIdAndStatus(@Param("followedId") UUID followedId, @Param("status") FollowStatus status, Pageable pageRequest);
 }

@@ -10,9 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface CollectionFollowJpaRepository extends JpaRepository<CollectionFollowJpaEntity, CollectionFollowJpaId> {
 
-    @Query("SELECT c FROM CollectionFollowJpaEntity c WHERE c.id.followerId = :followerId")
+    @Query("SELECT cf FROM CollectionFollowJpaEntity cf WHERE cf.id.followerId = :followerId")
     Page<CollectionFollowJpaEntity> findByFollowerId(@Param("followerId") UUID followerId, Pageable pageRequest);
 
-    @Query("SELECT c FROM CollectionFollowJpaEntity c WHERE c.id.collectionId = :collectionId")
+    @Query("SELECT cf FROM CollectionFollowJpaEntity cf WHERE cf.id.collectionId = :collectionId")
     Page<CollectionFollowJpaEntity> findByCollectionId(@Param("collectionId") UUID collectionId, Pageable pageRequest);
 }
