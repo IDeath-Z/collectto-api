@@ -15,7 +15,7 @@ import com.collectto.api_collectto.application.usecases.collection.CreateCollect
 import com.collectto.api_collectto.application.usecases.collection.FetchCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchUserCollectionsUseCase;
 import com.collectto.api_collectto.application.usecases.collection.UpdateCollectionUseCase;
-import com.collectto.api_collectto.application.usecases.collectionfollow.CreateCollectionFollowUseCase;
+import com.collectto.api_collectto.application.usecases.collectionfollow.FollowCollectionUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
@@ -43,7 +43,7 @@ public class CollectionController {
     private final FetchCollectionUseCase fetchCollectionUseCase;
     private final FetchUserCollectionsUseCase fetchUserCollectionsUseCase;
     private final UpdateCollectionUseCase updateCollectionUseCase;
-    private final CreateCollectionFollowUseCase createCollectionFollowUseCase;
+    private final FollowCollectionUseCase followCollectionUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @PostMapping(value = "/create")
@@ -167,8 +167,8 @@ public class CollectionController {
     public CollectionFollowResponse followCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID userId = userDetails.getUser().getId();
 
-        var output = transactionalProxy.execute(() -> createCollectionFollowUseCase.execute(
-            new CreateCollectionFollowUseCase.Input(userId, collectionId)
+        var output = transactionalProxy.execute(() -> followCollectionUseCase.execute(
+            new FollowCollectionUseCase.Input(userId, collectionId)
         ));
         
         return new CollectionFollowResponse(

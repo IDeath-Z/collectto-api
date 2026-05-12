@@ -12,7 +12,7 @@ import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CreateCollectionFollowUseCase {
+public class FollowCollectionUseCase {
 
     private final CollectionFollowRepository collectionFollowRepository;
     private final CollectionRepository collectionRepository;
