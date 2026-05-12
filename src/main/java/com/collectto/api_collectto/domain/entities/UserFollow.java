@@ -8,10 +8,10 @@ import com.collectto.api_collectto.domain.shared.DomainValidator;
 
 public class UserFollow {
 
-    UUID followerId;
-    UUID followedId;
-    FollowStatus status;
-    Instant createdAt;
+    private final UUID followerId;
+    private final UUID followedId;
+    private final FollowStatus status;
+    private final Instant createdAt;
 
     public UserFollow(UUID followerId, UUID followedId, FollowStatus status, Instant createdAt) {
         if (followerId.equals(followedId))

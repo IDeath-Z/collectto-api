@@ -7,9 +7,9 @@ import com.collectto.api_collectto.domain.shared.DomainValidator;
 
 public class CollectionFollow {
 
-    UUID followerId;
-    UUID collectionId;
-    Instant createdAt;
+    private final UUID followerId;
+    private final UUID collectionId;
+    private final Instant createdAt;
 
     public CollectionFollow(UUID followerId, UUID collectionId, Instant createdAt) {
         this.followerId = DomainValidator.requireNonNull(followerId, "Follower ID cannot be null");
