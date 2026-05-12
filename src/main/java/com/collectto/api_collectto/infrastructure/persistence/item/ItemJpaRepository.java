@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -25,4 +26,16 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         LIMIT 3
         """, nativeQuery = true)
     List<String> findTop3MediaUrlsByCollectionId(@Param("collectionId") UUID collectionId);
+
+    @Modifying @Query("UPDATE ItemJpaEntity i SET i.likesCount = i.likesCount + 1 WHERE i.id = :itemId")
+    void incrementLikesCount(UUID itemId);
+
+    @Modifying @Query("UPDATE ItemJpaEntity i SET i.likesCount = i.likesCount - 1 WHERE i.id = :itemId")
+    void decrementLikesCount(UUID itemId);
+
+    @Modifying @Query("UPDATE ItemJpaEntity i SET i.commentsCount = i.commentsCount + 1 WHERE i.id = :itemId")
+    void incrementCommentsCount(UUID itemId);
+
+    @Modifying @Query("UPDATE ItemJpaEntity i SET i.commentsCount = i.commentsCount - 1 WHERE i.id = :itemId")
+    void decrementCommentsCount(UUID itemId);
 }

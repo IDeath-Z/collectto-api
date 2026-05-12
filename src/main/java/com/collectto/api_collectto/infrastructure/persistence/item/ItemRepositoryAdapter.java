@@ -83,4 +83,24 @@ public class ItemRepositoryAdapter implements ItemRepository {
     public List<String> findTop3MediaUrlsByCollectionId(UUID collectionId) {
         return itemJpaRepository.findTop3MediaUrlsByCollectionId(collectionId);
     }
+
+    @Override
+    public void incrementLikesCount(UUID itemId) {
+        itemJpaRepository.incrementLikesCount(itemId);
+    }
+
+    @Override
+    public void decrementLikesCount(UUID itemId) {
+        itemJpaRepository.decrementLikesCount(itemId);
+    }
+
+    @Override
+    public void incrementCommentsCount(UUID itemId) {
+        itemJpaRepository.incrementCommentsCount(itemId);
+    }
+
+    @Override
+    public void decrementCommentsCount(UUID itemId) {
+        itemJpaRepository.decrementCommentsCount(itemId);
+    }
 }

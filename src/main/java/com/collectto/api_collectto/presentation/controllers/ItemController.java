@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,22 +14,27 @@ import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchCollectionItemsUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
+import com.collectto.api_collectto.application.usecases.itemlike.LikeItemUseCase;
+import com.collectto.api_collectto.application.usecases.itemlike.UnlikeItemUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
+import com.collectto.api_collectto.presentation.dto.item.ItemLikeResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemPageResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemResponse;
 import com.collectto.api_collectto.presentation.dto.item.UpdateItemRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @CrossOrigin
@@ -41,6 +47,8 @@ public class ItemController {
     private final FetchCollectionItemsUseCase fetchCollectionItemsUseCase;
     private final FetchItemUseCase fetchItemUseCase;
     private final UpdateItemUseCase updateItemUseCase;
+    private final LikeItemUseCase likeItemUseCase;
+    private final UnlikeItemUseCase unlikeItemUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @PostMapping(value = "/create")
@@ -177,5 +185,36 @@ public class ItemController {
             output.createdAt(),
             output.updatedAt()
         );
+    }
+
+    // Likes
+    @PostMapping("{itemId}/like")
+    @Operation(summary = "Like an item", description = "Allows a user to like an item. If the user has already liked the item, an error will be returned.")
+    public ItemLikeResponse likeItem(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.execute(() -> likeItemUseCase.execute(
+            new LikeItemUseCase.Input(
+                itemId,
+                userId
+            )
+        ));
+
+        return new ItemLikeResponse(
+            output.itemId(),
+            output.likerId(),
+            output.createdAt()
+        );
+    }
+
+    @DeleteMapping("{itemId}/like")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Unlike an item", description = "Allows a user to unlike an item")
+    public void unlikeItem(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId) {
+        UUID userId = userDetails.getUser().getId();
+
+        transactionalProxy.execute(() -> unlikeItemUseCase.execute(
+            new UnlikeItemUseCase.Input(itemId, userId)
+        ));
     }
 }
