@@ -10,10 +10,12 @@ import com.collectto.api_collectto.presentation.dto.user.UpdateUserRequest;
 import com.collectto.api_collectto.presentation.dto.user.UserFollowResponse;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.collectto.api_collectto.application.usecases.user.CreateUserUseCase;
+import com.collectto.api_collectto.application.usecases.user.DeleteUserUseCase;
 import com.collectto.api_collectto.application.usecases.user.FetchUserUseCase;
 import com.collectto.api_collectto.presentation.dto.user.CreateUserRequest;
 import com.collectto.api_collectto.presentation.dto.user.CreateUserResponse;
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
+    private final DeleteUserUseCase deleteUserUseCase;
     private final FetchUserUseCase fetchUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final CreateUserFollowUseCase createUserFollowUseCase;
@@ -55,6 +58,14 @@ public class UserController {
             output.email(),
             output.creationDate()
         ); // Implement response entity later
+    }
+
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivateAccount(@AuthenticationPrincipal SecurityUserDetails userDetails) {
+        UUID userId = userDetails.getUser().getId();
+    
+        transactionalProxy.execute(() -> deleteUserUseCase.execute(userId));
     }
     
     @GetMapping("/{userId}")

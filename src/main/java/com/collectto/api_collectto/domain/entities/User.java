@@ -109,6 +109,48 @@ public class User {
         return creationDate;
     }
 
+    public User activate() {
+        if (this.isActive)
+            return this;
+
+        return new User(
+            this.id,
+            this.name,
+            this.username,
+            this.email,
+            this.passwordHash,
+            this.bio,
+            this.profilePictureUrl,
+            this.profileBackgroundUrl,
+            this.followersCount,
+            this.followingCount,
+            true,
+            this.birthdayDate,
+            this.creationDate
+        );
+    }
+
+    public User deactivate() {
+        if (!this.isActive)
+            return this;
+
+        return new User(
+            this.id,
+            this.name,
+            this.username,
+            this.email,
+            this.passwordHash,
+            this.bio,
+            this.profilePictureUrl,
+            this.profileBackgroundUrl,
+            this.followersCount,
+            this.followingCount,
+            false,
+            this.birthdayDate,
+            this.creationDate
+        );
+    }
+
     public User updateProfile(String name, String username, String bio, String profilePictureUrl,
         String profileBackgroundUrl, String birthdayDate) {
         String processPicture = (profilePictureUrl != null && profilePictureUrl.isEmpty()) ? null : 
