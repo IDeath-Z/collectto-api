@@ -3,6 +3,8 @@ package com.collectto.api_collectto.domain.entities;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.collectto.api_collectto.domain.shared.DomainValidator;
+
 public class Tag {
 
     private final UUID id;
@@ -10,14 +12,9 @@ public class Tag {
     private final Instant createdAt;
 
     public Tag(UUID id, String name, Instant createdAt) {
-        if (id == null)
-            throw new IllegalArgumentException("User ID is required");
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Name is required");
-
-        this.id = id;
-        this.name = name;
-        this.createdAt = createdAt;
+        this.id = DomainValidator.requireNonNull(id, "Tag ID cannot be null");
+        this.name = DomainValidator.requireNonNull(name, "Name cannot be null");
+        this.createdAt = DomainValidator.requireNonNull(createdAt, "Created at timestamp cannot be null");
     }
 
     public UUID getId() {

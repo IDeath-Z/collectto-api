@@ -3,6 +3,8 @@ package com.collectto.api_collectto.domain.entities;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.collectto.api_collectto.domain.shared.DomainValidator;
+
 public class CollectionFollow {
 
     UUID followerId;
@@ -10,13 +12,9 @@ public class CollectionFollow {
     Instant createdAt;
 
     public CollectionFollow(UUID followerId, UUID collectionId, Instant createdAt) {
-        if (followerId == null || collectionId == null || createdAt == null) {
-            throw new IllegalArgumentException("Ids and createdAt cannot be null");
-        }
-
-        this.followerId = followerId;
-        this.collectionId = collectionId;
-        this.createdAt = createdAt;
+        this.followerId = DomainValidator.requireNonNull(followerId, "Follower ID cannot be null");
+        this.collectionId = DomainValidator.requireNonNull(collectionId, "Collection ID cannot be null");
+        this.createdAt = DomainValidator.requireNonNull(createdAt, "Creation timestamp cannot be null");
     }
 
     public UUID getFollowerId() {

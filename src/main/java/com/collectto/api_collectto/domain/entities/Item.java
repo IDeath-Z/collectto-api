@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.collectto.api_collectto.domain.shared.DomainValidator;
+
 public class Item {
 
     private final UUID id;
@@ -24,41 +26,24 @@ public class Item {
     private final Instant createdAt;
     private final Instant updatedAt;
 
-    public Item(UUID id, UUID collectionId, UUID userId, String name, String description, LocalDate aquisitionDate,
+    public Item(UUID id, UUID collectionId, UUID userId, String name, String description, LocalDate acquisitionDate,
         LocalDate lastUsedDate, List<String> mediaURLs, Map<String, Object> attributes, int likesCount,
         int commentsCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
-        if (id == null)
-            throw new IllegalArgumentException("Item ID cannot be null");
-        if (collectionId == null)
-            throw new IllegalArgumentException("Collection ID cannot be null");
-        if (userId == null)
-            throw new IllegalArgumentException("User ID cannot be null");
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Name cannot be null or blank");
-        if (likesCount < 0)
-            throw new IllegalArgumentException("Likes count cannot be negative");
-        if (commentsCount < 0)
-            throw new IllegalArgumentException("Comments count cannot be negative");
-        if (createdAt == null)
-            throw new IllegalArgumentException("Created at timestamp cannot be null");
-        if (updatedAt == null)
-            throw new IllegalArgumentException("Updated at timestamp cannot be null");
-
-        this.id = id;
-        this.collectionId = collectionId;
-        this.userId = userId;
-        this.name = name;
+        this.id = DomainValidator.requireNonNull(id, "Item ID cannot be null");
+        this.collectionId = DomainValidator.requireNonNull(collectionId, "Collection ID cannot be null");
+        this.userId = DomainValidator.requireNonNull(userId, "User ID cannot be null");
+        this.name = DomainValidator.requireNonBlank(name, "Name cannot be null");
         this.description = description;
-        this.acquisitionDate = aquisitionDate;
+        this.acquisitionDate = acquisitionDate;
         this.lastUsedDate = lastUsedDate;
         this.mediaURLs = mediaURLs;
         this.attributes = attributes;
-        this.likesCount = likesCount;
-        this.commentsCount = commentsCount;
+        this.likesCount = DomainValidator.requireNonNegative(likesCount, "Likes count cannot be negative");
+        this.commentsCount = DomainValidator.requireNonNegative(commentsCount, "Comments count cannot be negative");
         this.tags = tags;
         this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = DomainValidator.requireNonNull(createdAt, "Created at timestamp cannot be null");
+        this.updatedAt = DomainValidator.requireNonNull(updatedAt, "Updated at timestamp cannot be null");
     }
 
     public UUID getId() {

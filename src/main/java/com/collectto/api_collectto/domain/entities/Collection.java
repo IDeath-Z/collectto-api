@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.enums.Visibility;
+import com.collectto.api_collectto.domain.shared.DomainValidator;
 
 public class Collection {
 
@@ -22,31 +23,17 @@ public class Collection {
 
     public Collection(UUID id, UUID userId, String name, String description, String coverImageUrl,
         Visibility visibility, int followersCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {
-        if (id == null)
-            throw new IllegalArgumentException("Collection ID is required");
-        if (userId == null)
-            throw new IllegalArgumentException("User ID is required");
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Name is required");
-        if (followersCount < 0)
-            throw new IllegalArgumentException("Followers count cannot be negative");
-        if (createdAt == null)
-            throw new IllegalArgumentException("Created at timestamp is required");
-        if (updatedAt == null)
-            throw new IllegalArgumentException("Updated at timestamp is required");
-
-        this.id = id;
-        this.userId = userId;
-        this.name = name;
+        this.id = DomainValidator.requireNonNull(id, "Collection ID cannot be null");
+        this.userId = DomainValidator.requireNonNull(userId, "User ID cannot be null");
+        this.name = DomainValidator.requireNonBlank(name, "Name cannot be null");
         this.description = description;
         this.coverImageUrl = coverImageUrl;
         this.visibility = visibility;
-        this.followersCount = followersCount;
+        this.followersCount = DomainValidator.requireNonNegative(followersCount, "Followers count cannot be negative");
         this.tags = tags;
         this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        
+        this.createdAt = DomainValidator.requireNonNull(createdAt, "Created at timestamp cannot be null");
+        this.updatedAt = DomainValidator.requireNonNull(updatedAt, "Updated at timestamp cannot be null"); 
     }
 
     public UUID getId() {

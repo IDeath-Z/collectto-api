@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import com.collectto.api_collectto.domain.shared.DomainValidator;
+
 public class User {
 
     private final UUID id;
@@ -23,38 +25,19 @@ public class User {
     public User(UUID id, String name, String username, String email, String passwordHash, String bio,
         String profilePictureUrl, String profileBackgroundUrl, int followersCount, int followingCount, boolean isActive,
         LocalDate birthdayDate, Instant creationDate) {
-        if (id == null)
-            throw new IllegalArgumentException("User ID is required");
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Name is required");
-        if (username == null || username.isBlank())
-            throw new IllegalArgumentException("Username is required");
-        if (email == null || email.isBlank())
-            throw new IllegalArgumentException("Email is required");
-        if (passwordHash == null || passwordHash.isBlank())
-            throw new IllegalArgumentException("Password is required");
-        if (followersCount < 0)
-            throw new IllegalArgumentException("Followers count cannot be negative");
-        if (followingCount < 0)
-            throw new IllegalArgumentException("Following count cannot be negative");
-        if (birthdayDate == null || birthdayDate.toString().isBlank())
-            throw new IllegalArgumentException("Birthday date is required");
-        if (creationDate == null)
-            throw new IllegalArgumentException("Creation date is required");
-
-        this.id = id;
-        this.name = name;
-        this.username = username;
-        this.email = email;
-        this.passwordHash = passwordHash;
+        this.id = DomainValidator.requireNonNull(id, "User ID is required");
+        this.name = DomainValidator.requireNonBlank(name, "Name is required");
+        this.username = DomainValidator.requireNonBlank(username, "Username is required");
+        this.email = DomainValidator.requireNonBlank(email, "Email is required");
+        this.passwordHash = DomainValidator.requireNonBlank(passwordHash, "Password is required");
         this.bio = bio;
         this.profilePictureUrl = profilePictureUrl;
         this.profileBackgroundUrl = profileBackgroundUrl;
-        this.followersCount = followersCount;
-        this.followingCount = followingCount;
+        this.followersCount = DomainValidator.requireNonNegative(followersCount, "Followers count cannot be negative");
+        this.followingCount = DomainValidator.requireNonNegative(followingCount, "Following count cannot be negative");
         this.isActive = isActive;
-        this.birthdayDate = birthdayDate;
-        this.creationDate = creationDate;
+        this.birthdayDate = DomainValidator.requireNonNull(birthdayDate, "Birthday date is required");
+        this.creationDate = DomainValidator.requireNonNull(creationDate, "Creation date is required");
     }
 
     public UUID getId() {

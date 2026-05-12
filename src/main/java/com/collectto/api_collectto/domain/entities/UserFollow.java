@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.enums.FollowStatus;
+import com.collectto.api_collectto.domain.shared.DomainValidator;
 
 public class UserFollow {
 
@@ -13,15 +14,13 @@ public class UserFollow {
     Instant createdAt;
 
     public UserFollow(UUID followerId, UUID followedId, FollowStatus status, Instant createdAt) {
-        if (followerId == null || followedId == null || createdAt == null)
-            throw new IllegalArgumentException("Ids and createdAt cannot be null");
         if (followerId.equals(followedId))
             throw new IllegalArgumentException("A user cannot follow themselves");
 
-        this.followerId = followerId;
-        this.followedId = followedId;
+        this.followerId = DomainValidator.requireNonNull(followerId, "Follower ID cannot be null");
+        this.followedId = DomainValidator.requireNonNull(followedId, "Followed ID cannot be null");
         this.status = status;
-        this.createdAt = createdAt;
+        this.createdAt = DomainValidator.requireNonNull(createdAt, "Creation date cannot be null");
     }
 
     public UUID getFollowerId() {
