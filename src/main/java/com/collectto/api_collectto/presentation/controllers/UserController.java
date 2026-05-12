@@ -62,6 +62,7 @@ public class UserController {
 
     @DeleteMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Deactivate user account", description = "Deactivates the authenticated user's account.")
     public void deactivateAccount(@AuthenticationPrincipal SecurityUserDetails userDetails) {
         UUID userId = userDetails.getUser().getId();
     
