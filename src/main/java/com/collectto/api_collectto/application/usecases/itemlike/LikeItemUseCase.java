@@ -43,7 +43,7 @@ public class LikeItemUseCase {
         );
 
         ItemLike savedLike = itemLikeRepository.save(newLike);
-        itemRepository.incrementLikesCount(input.itemId());
+        itemRepository.incrementLikesCount(savedLike.getItemId());
 
         return new Output(
             savedLike.getItemId(), 

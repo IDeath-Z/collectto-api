@@ -40,7 +40,7 @@ public class FollowCollectionUseCase {
         );
 
         CollectionFollow savedFollow = collectionFollowRepository.save(newFollow);
-        collectionRepository.incrementFollowers(input.collectionId());
+        collectionRepository.incrementFollowers(savedFollow.getCollectionId());
 
         return new Output(
             savedFollow.getFollowerId(),
