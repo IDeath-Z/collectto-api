@@ -14,12 +14,16 @@ import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchCollectionItemsUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
+import com.collectto.api_collectto.application.usecases.itemcomment.CommentItemUseCase;
+import com.collectto.api_collectto.application.usecases.itemcomment.DeleteCommentUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.LikeItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.UnlikeItemUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
+import com.collectto.api_collectto.presentation.dto.item.CreateCommentRequest;
+import com.collectto.api_collectto.presentation.dto.item.CreateCommentResponse;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
 import com.collectto.api_collectto.presentation.dto.item.ItemLikeResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemPageResponse;
@@ -49,6 +53,8 @@ public class ItemController {
     private final UpdateItemUseCase updateItemUseCase;
     private final LikeItemUseCase likeItemUseCase;
     private final UnlikeItemUseCase unlikeItemUseCase;
+    private final CommentItemUseCase commentItemUseCase;
+    private final DeleteCommentUseCase deleteCommentUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @PostMapping(value = "/create")
@@ -207,7 +213,7 @@ public class ItemController {
         );
     }
 
-    @DeleteMapping("{itemId}/like")
+    @DeleteMapping("{itemId}/unlike")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Unlike an item", description = "Allows a user to unlike an item")
     public void unlikeItem(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId) {
@@ -215,6 +221,40 @@ public class ItemController {
 
         transactionalProxy.execute(() -> unlikeItemUseCase.execute(
             new UnlikeItemUseCase.Input(itemId, userId)
+        ));
+    }
+
+    // Comments
+    @PostMapping("/{itemId}/comments")
+    @Operation(summary = "Comment on an item", description = "Allows a user to comment on an item. The comment will be added to the item and associated with the user.")
+    public CreateCommentResponse commentOnItem(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId, @RequestBody @Valid CreateCommentRequest request) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.execute(() -> commentItemUseCase.execute(
+            new CommentItemUseCase.Input(
+                itemId,
+                userId,
+                request.content()
+            )
+        ));
+
+        return new CreateCommentResponse(
+            output.commentId(),
+            output.itemId(),
+            output.authorId(),
+            output.content(),
+            output.createdAt()
+        );
+    }
+
+    @DeleteMapping("{commentId}/comments")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a comment", description = "Allows a user to delete their own comment or comments on their item.")
+    public void deleteComment(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID commentId) {
+        UUID userId = userDetails.getUser().getId();
+
+        transactionalProxy.execute(() -> deleteCommentUseCase.execute(
+            new DeleteCommentUseCase.Input(commentId, userId)
         ));
     }
 }
