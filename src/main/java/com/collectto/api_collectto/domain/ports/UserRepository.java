@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.domain.ports;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ public interface UserRepository {
     boolean existsByUsername(String username);
     User save(User user);
     Optional<User> findById(UUID id);
+    List<User> findAllByIds(List<UUID> ids);
     Optional<User> findByEmail(String email);
     void incrementFollowers(UUID userId);
     void incrementFollowing(UUID userId);

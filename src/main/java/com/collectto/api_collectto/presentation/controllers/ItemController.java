@@ -16,6 +16,7 @@ import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemcomment.CommentItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemcomment.DeleteCommentUseCase;
+import com.collectto.api_collectto.application.usecases.itemcomment.FetchItemLikesUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.LikeItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.UnlikeItemUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
@@ -26,6 +27,7 @@ import com.collectto.api_collectto.presentation.dto.item.CreateCommentRequest;
 import com.collectto.api_collectto.presentation.dto.item.CreateCommentResponse;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
 import com.collectto.api_collectto.presentation.dto.item.ItemLikeResponse;
+import com.collectto.api_collectto.presentation.dto.item.ItemLikesPageResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemPageResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemResponse;
 import com.collectto.api_collectto.presentation.dto.item.UpdateItemRequest;
@@ -53,6 +55,7 @@ public class ItemController {
     private final UpdateItemUseCase updateItemUseCase;
     private final LikeItemUseCase likeItemUseCase;
     private final UnlikeItemUseCase unlikeItemUseCase;
+    private final FetchItemLikesUseCase fetchItemLikesUseCase;
     private final CommentItemUseCase commentItemUseCase;
     private final DeleteCommentUseCase deleteCommentUseCase;
     private final TransactionalProxy transactionalProxy;
@@ -224,6 +227,35 @@ public class ItemController {
         ));
     }
 
+    @GetMapping("{itemId}/likes")
+    @Operation(summary = "Fetch item likes", description = "Retrieves a paginated list of users who liked a specific item, including their basic information and profile picture URLs.")
+    public ItemLikesPageResponse getItemLikes(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId, 
+        @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.execute(() -> fetchItemLikesUseCase.execute(
+            new FetchItemLikesUseCase.Input(
+                itemId, 
+                userId, 
+                new DomainPageRequest(page, size, sortBy)
+            )
+        ));
+
+        return new ItemLikesPageResponse(
+            output.likers().stream()
+                .map(liker -> new ItemLikesPageResponse.LikerSummaryResponse(
+                    liker.userId(),
+                    liker.name(),
+                    liker.username(),
+                    liker.profilePictureURL()
+                ))
+                .toList(),
+            output.totalPages(),
+            output.totalElements(),
+            output.currentPage()
+        );
+    }
+    
     // Comments
     @PostMapping("/{itemId}/comments")
     @Operation(summary = "Comment on an item", description = "Allows a user to comment on an item. The comment will be added to the item and associated with the user.")

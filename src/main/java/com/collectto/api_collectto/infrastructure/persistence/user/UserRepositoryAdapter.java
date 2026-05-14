@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.infrastructure.persistence.user;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +38,14 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public Optional<User> findById(UUID id) {
         return userJpaRepository.findById(id).map(userMapper::toDomain);
+    }
+
+    @Override
+    public List<User> findAllByIds(List<UUID> ids) {
+        return userJpaRepository.findAllById(ids)
+            .stream()
+            .map(userMapper::toDomain)
+            .toList();
     }
 
     @Override

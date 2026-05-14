@@ -27,6 +27,8 @@ public class FetchUserCollectionsUseCase {
     public Output execute(Input input) {
         DomainPageResult<Collection> pageableCollections = collectionRepository.findByUserId(input.userId(), input.pageRequest());
 
+        // TODO: Fix N+1 problem here, put a findAllByIds
+
         List<CollectionSummary> collections = pageableCollections.content().stream()    
             .filter(collection -> {
                 if (collection.getUserId().equals(input.requesterId())) return true;
@@ -39,11 +41,11 @@ public class FetchUserCollectionsUseCase {
             ))
             .toList();
 
-            return new Output(
-                collections,
-                pageableCollections.totalPages(),
-                pageableCollections.totalElements(),
-                pageableCollections.page()
-            );
+        return new Output(
+            collections,
+            pageableCollections.totalPages(),
+            pageableCollections.totalElements(),
+            pageableCollections.page()
+        );
     }
 }
