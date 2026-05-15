@@ -16,7 +16,7 @@ import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemcomment.CommentItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemcomment.DeleteCommentUseCase;
-import com.collectto.api_collectto.application.usecases.itemcomment.FetchItemLikesUseCase;
+import com.collectto.api_collectto.application.usecases.itemlike.FetchItemLikesUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.LikeItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.UnlikeItemUseCase;
 import com.collectto.api_collectto.domain.enums.SortBy;
