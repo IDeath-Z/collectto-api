@@ -5,9 +5,11 @@ import org.springframework.context.annotation.Configuration;
 
 import com.collectto.api_collectto.application.usecases.itemcomment.CommentItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemcomment.DeleteCommentUseCase;
+import com.collectto.api_collectto.application.usecases.itemcomment.FetchItemCommentsUseCase;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemCommentRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
+import com.collectto.api_collectto.domain.ports.UserRepository;
 
 @Configuration
 public class ItemCommentConfig {
@@ -20,5 +22,10 @@ public class ItemCommentConfig {
     @Bean
     public DeleteCommentUseCase deleteCommentUseCase(ItemCommentRepository itemCommentRepository, ItemRepository itemRepository) {
         return new DeleteCommentUseCase(itemCommentRepository, itemRepository);
+    }
+
+    @Bean
+    public FetchItemCommentsUseCase fetchItemCommentsUseCase(ItemCommentRepository itemCommentRepository, CollectionRepository collectionRepository, ItemRepository itemRepository, UserRepository userRepository) {
+        return new FetchItemCommentsUseCase(itemCommentRepository, collectionRepository, itemRepository, userRepository);
     }
 }

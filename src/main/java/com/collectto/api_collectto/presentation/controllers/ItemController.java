@@ -16,6 +16,7 @@ import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemcomment.CommentItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemcomment.DeleteCommentUseCase;
+import com.collectto.api_collectto.application.usecases.itemcomment.FetchItemCommentsUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.FetchItemLikesUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.LikeItemUseCase;
 import com.collectto.api_collectto.application.usecases.itemlike.UnlikeItemUseCase;
@@ -26,6 +27,7 @@ import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.item.CreateCommentRequest;
 import com.collectto.api_collectto.presentation.dto.item.CreateCommentResponse;
 import com.collectto.api_collectto.presentation.dto.item.CreateItemRequest;
+import com.collectto.api_collectto.presentation.dto.item.ItemCommentPageResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemLikeResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemLikesPageResponse;
 import com.collectto.api_collectto.presentation.dto.item.ItemPageResponse;
@@ -58,6 +60,7 @@ public class ItemController {
     private final FetchItemLikesUseCase fetchItemLikesUseCase;
     private final CommentItemUseCase commentItemUseCase;
     private final DeleteCommentUseCase deleteCommentUseCase;
+    private final FetchItemCommentsUseCase fetchItemCommentsUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @PostMapping(value = "/create")
@@ -289,4 +292,36 @@ public class ItemController {
             new DeleteCommentUseCase.Input(commentId, userId)
         ));
     }
+
+    @GetMapping("/itemId/comments")
+    @Operation(summary = "Fetch item comments", description = "Retrieves a paginated list of comments for a specific item, including the comment content, author information, and timestamps.")
+    public ItemCommentPageResponse getItemComments(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId, 
+        @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.execute(() -> fetchItemCommentsUseCase.execute(
+            new FetchItemCommentsUseCase.Input(
+                itemId, 
+                userId, 
+                new DomainPageRequest(page, size, sortBy)
+            )
+        ));
+
+        return new ItemCommentPageResponse(
+            output.commenterSummaries().stream()
+                .map(commenter -> new ItemCommentPageResponse.CommenterSummaryResponse(
+                    commenter.commentId(),
+                    commenter.userId(),
+                    commenter.username(),
+                    commenter.profilePictureURL(),
+                    commenter.content(),
+                    commenter.createdAt()
+                ))
+                .toList(),
+            output.totalPages(),
+            output.totalElements(),
+            output.currentPage()
+        );
+    }
+    
 }

@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.Item;
-import com.collectto.api_collectto.domain.entities.ItemLike;
+import com.collectto.api_collectto.domain.entities.ItemComment;
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
-import com.collectto.api_collectto.domain.ports.ItemLikeRepository;
+import com.collectto.api_collectto.domain.ports.ItemCommentRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
@@ -20,18 +20,18 @@ import com.collectto.api_collectto.domain.shared.DomainPageResult;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchItemLikesUseCase {
+public class FetchItemCommentsUseCase {
 
-    private final ItemLikeRepository itemLikeRepository;
+    private final ItemCommentRepository itemCommentRepository;
     private final CollectionRepository collectionRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
     public record Input(UUID itemId, UUID requesterId, DomainPageRequest pageRequest) {}
-    public record LikerSummary(UUID userId, String name, String username, String profilePictureURL) {}
-    public record Output(List<LikerSummary> likers, int totalPages, long totalElements, int currentPage) {}
+    public record CommenterSummary(UUID commentId, UUID userId, String username, String profilePictureURL, String content, String createdAt) {}
+    public record Output(List<CommenterSummary> commenterSummaries, int totalPages, long totalElements, int currentPage) {}
 
-    public Output execute(Input input) {
+        public Output execute(Input input) {
         Item item = itemRepository.findById(input.itemId())
             .orElseThrow(() -> new RuntimeException("Item not found"));
 
@@ -41,34 +41,39 @@ public class FetchItemLikesUseCase {
         if (!collection.getUserId().equals(input.requesterId()) && collection.getVisibility() == Visibility.PRIVATE)
             throw new RuntimeException("Unauthorized access to private collection"); // Implement better exception handling as needed
 
-        DomainPageResult<ItemLike> pageableItemLikes = itemLikeRepository.findByItemId(input.itemId(), input.pageRequest());
+        DomainPageResult<ItemComment> commentPage = itemCommentRepository.findByItemId(input.itemId(), input.pageRequest());
 
-        List<UUID> likerIds = pageableItemLikes.content().stream()
-            .map(ItemLike::getLikerId)
+        List<UUID> authorsIds = commentPage.content().stream()
+            .map(ItemComment::getAuthorId)
             .toList();
 
-        List<User> users = userRepository.findAllByIds(likerIds);
+        List<User> users = userRepository.findAllByIds(authorsIds);
 
         Map<UUID, User> userMap = users.stream()
             .collect(Collectors.toMap(User::getId, user -> user));
 
-        // Just to guarantee the order of likers is the same as the order of item likes, we will use graphs later for recommendations
-        List<LikerSummary> likers = pageableItemLikes.content().stream()
-            .map(liker -> userMap.get(liker.getLikerId()))
-            .filter(user -> user != null) // Technically should not happen, but just in case
-            .map(user -> new LikerSummary(
-                user.getId(),
-                user.getName(),
-                user.getUsername(),
-                user.getProfilePictureUrl()
-            ))
+        List<CommenterSummary> commentators = commentPage.content().stream()
+            .filter(comment -> userMap.containsKey(comment.getAuthorId()))
+            .map(comment -> {
+                User author = userMap.get(comment.getAuthorId());
+                
+                return new CommenterSummary(
+                    comment.getId(),
+                    author.getId(),
+                    author.getUsername(),
+                    author.getProfilePictureUrl(),
+                    comment.getContent(),
+                    comment.getCreatedAt().toString()
+                );
+            })
             .toList();
 
+
         return new Output(
-            likers, 
-            pageableItemLikes.totalPages(), 
-            pageableItemLikes.totalElements(), 
-            pageableItemLikes.page()
+            commentators, 
+            commentPage.totalPages(), 
+            commentPage.totalElements(),
+            commentPage.page()
         );
     }
 }
