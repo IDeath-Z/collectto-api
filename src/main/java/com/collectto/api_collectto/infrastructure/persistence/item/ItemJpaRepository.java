@@ -17,15 +17,19 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
     List<ItemJpaEntity> findByCollectionIdAndNameContainingIgnoreCase(UUID collectionId, String name);
 
     @Query(value = """
-        SELECT i.media_urls[1]
+    SELECT collection_id AS collectionId, media_url AS mediaUrl FROM (
+        SELECT 
+            i.collection_id,
+            i.media_urls[1] AS media_url,
+            ROW_NUMBER() OVER(PARTITION BY i.collection_id ORDER BY i.created_at DESC) as rn
         FROM items i
-        WHERE i.collection_id = :collectionId
-        AND i.media_urls IS NOT NULL
-        AND array_length(i.media_urls, 1) > 0
-        ORDER BY i.created_at DESC
-        LIMIT 3
-        """, nativeQuery = true)
-    List<String> findTop3MediaUrlsByCollectionId(@Param("collectionId") UUID collectionId);
+        WHERE i.collection_id IN :collectionIds
+          AND i.media_urls IS NOT NULL
+          AND array_length(i.media_urls, 1) > 0
+    ) AS ranked_items
+    WHERE rn <= 3
+    """, nativeQuery = true)
+    List<CollectionMediaProjection> findTop3MediaUrlsByCollectionIds(@Param("collectionIds") List<UUID> collectionIds);
 
     @Modifying @Query("UPDATE ItemJpaEntity i SET i.likesCount = i.likesCount + 1 WHERE i.id = :itemId")
     void incrementLikesCount(UUID itemId);

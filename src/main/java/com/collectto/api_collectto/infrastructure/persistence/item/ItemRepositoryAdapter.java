@@ -1,6 +1,7 @@
 package com.collectto.api_collectto.infrastructure.persistence.item;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -80,8 +81,18 @@ public class ItemRepositoryAdapter implements ItemRepository {
     }
 
     @Override
-    public List<String> findTop3MediaUrlsByCollectionId(UUID collectionId) {
-        return itemJpaRepository.findTop3MediaUrlsByCollectionId(collectionId);
+    public Map<UUID, List<String>> findTop3MediaUrlsByCollectionIds(List<UUID> collectionIds) {
+        List<CollectionMediaProjection> projections = itemJpaRepository.findTop3MediaUrlsByCollectionIds(collectionIds);
+
+        return projections.stream()
+            .collect(Collectors.groupingBy(
+                CollectionMediaProjection::getCollectionId,
+                
+                Collectors.flatMapping(
+                    proj -> proj.getMediaUrls().stream(),
+                    Collectors.toList()
+                )
+            ));
     }
 
     @Override

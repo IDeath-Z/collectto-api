@@ -1,6 +1,7 @@
 package com.collectto.api_collectto.domain.ports;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public interface ItemRepository {
     Item save(Item item);
     Optional<Item> findById(UUID itemId);
     List<Item> findByCollectionIdAndName(UUID collectionId, String name);
-    List<String> findTop3MediaUrlsByCollectionId(UUID collectionId);
+    Map<UUID, List<String>> findTop3MediaUrlsByCollectionIds(List<UUID> collectionIds);
     void incrementLikesCount(UUID itemId);
     void decrementLikesCount(UUID itemId);
     void incrementCommentsCount(UUID itemId);

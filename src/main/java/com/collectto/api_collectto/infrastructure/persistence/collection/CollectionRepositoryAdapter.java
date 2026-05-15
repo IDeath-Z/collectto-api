@@ -68,6 +68,14 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
     }
 
     @Override
+    public DomainPageResult<Collection> findVisibleCollections(UUID userId, UUID requesterId, DomainPageRequest pageRequest) {
+        PageRequest springPage = PageConverter.toSpring(pageRequest);
+        Page<CollectionJpaEntity> page = collectionsJpaRepository.findVisibleCollections(userId, requesterId, springPage);
+
+        return PageConverter.toDomain(page, collectionMapper::toDomain);
+    }
+
+    @Override
     public void incrementFollowers(UUID collectionId) {
         collectionsJpaRepository.incrementFollowers(collectionId);
     }

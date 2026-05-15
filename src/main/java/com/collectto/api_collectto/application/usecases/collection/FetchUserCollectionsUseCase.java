@@ -1,10 +1,10 @@
 package com.collectto.api_collectto.application.usecases.collection;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.entities.Collection;
-import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
@@ -25,19 +25,22 @@ public class FetchUserCollectionsUseCase {
     public record Output(List<CollectionSummary> collections, int totalPages, long totalElements, int currentPage) {}
 
     public Output execute(Input input) {
-        DomainPageResult<Collection> pageableCollections = collectionRepository.findByUserId(input.userId(), input.pageRequest());
+        DomainPageResult<Collection> pageableCollections = collectionRepository
+            .findVisibleCollections(input.userId(), input.requesterId(), input.pageRequest());
 
-        // TODO: Fix N+1 problem here, put a findAllByIds
+        List<UUID> collectionIds = pageableCollections.content().stream()
+            .map(Collection::getId)
+            .toList();
 
-        List<CollectionSummary> collections = pageableCollections.content().stream()    
-            .filter(collection -> {
-                if (collection.getUserId().equals(input.requesterId())) return true;
-                return collection.getVisibility() != Visibility.PRIVATE; // Implements FRIENDS visibility later
-            })
+        Map<UUID, List<String>> collectionImagesMap = collectionIds.isEmpty() 
+            ? Map.of() 
+            : itemRepository.findTop3MediaUrlsByCollectionIds(collectionIds);
+
+        List<CollectionSummary> collections = pageableCollections.content().stream()
             .map(collection -> new CollectionSummary(
                 collection.getId(),
                 collection.getName(),
-                itemRepository.findTop3MediaUrlsByCollectionId(collection.getId())
+                collectionImagesMap.getOrDefault(collection.getId(), List.of()) // Proteção se não houver imagens
             ))
             .toList();
 

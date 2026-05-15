@@ -14,6 +14,7 @@ public interface CollectionRepository {
     Collection save(Collection collection);
     Optional<Collection> findById(UUID id);
     List<Collection> findByUserIdAndName(UUID userId, String name);
+    DomainPageResult<Collection> findVisibleCollections(UUID userId, UUID requesterId, DomainPageRequest pageRequest);
     void incrementFollowers(UUID collectionId);
     void decrementFollowers(UUID collectionId);
 }
