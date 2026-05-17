@@ -26,6 +26,54 @@ public class Notification {
         this.createdAt = DomainValidator.requireNonNull(createdAt, "Notification created at cannot be null");
     }
 
+    public static Notification createUserFollowedNotification(UUID recipientId, UUID actorId, UUID referenceId) {
+        return new Notification(
+            UUID.randomUUID(), 
+            recipientId, 
+            actorId, 
+            NotificationContext.USER_FOLLOWED, 
+            referenceId, 
+            false, 
+            Instant.now()
+        );
+    }
+
+    public static Notification createCollectionFollowedNotification(UUID recipientId, UUID actorId, UUID referenceId) {
+        return new Notification(
+            UUID.randomUUID(), 
+            recipientId, 
+            actorId, 
+            NotificationContext.COLLECTION_FOLLOWED, 
+            referenceId, 
+            false, 
+            Instant.now()
+        );
+    }
+
+    public static Notification createItemCommentedNotification(UUID recipientId, UUID actorId, UUID referenceId) {
+        return new Notification(
+            UUID.randomUUID(), 
+            recipientId, 
+            actorId, 
+            NotificationContext.ITEM_COMMENTED, 
+            referenceId, 
+            false, 
+            Instant.now()
+        );
+    }
+
+    public static Notification createItemLikedNotification(UUID recipientId, UUID actorId, UUID referenceId) {
+        return new Notification(
+            UUID.randomUUID(), 
+            recipientId, 
+            actorId, 
+            NotificationContext.ITEM_LIKED, 
+            referenceId, 
+            false, 
+            Instant.now()
+        );
+    }
+
     public UUID getId() {
         return id;
     }
