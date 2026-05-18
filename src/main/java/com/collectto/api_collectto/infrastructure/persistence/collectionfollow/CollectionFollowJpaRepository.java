@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.infrastructure.persistence.collectionfollow;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -15,4 +16,7 @@ public interface CollectionFollowJpaRepository extends JpaRepository<CollectionF
 
     @Query("SELECT cf FROM CollectionFollowJpaEntity cf WHERE cf.id.collectionId = :collectionId")
     Page<CollectionFollowJpaEntity> findByCollectionId(@Param("collectionId") UUID collectionId, Pageable pageRequest);
+
+    @Query("SELECT cf.id.collectionId FROM CollectionFollowJpaEntity cf WHERE cf.id.followerId = :followerId")
+    Set<UUID> findFollowedCollectionIds(@Param("followerId") UUID followerId);
 }

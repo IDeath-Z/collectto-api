@@ -19,5 +19,14 @@ public interface TagJpaRepository extends JpaRepository<TagJpaEntity, UUID> {
     )
     List<TagJpaEntity> findSuggestions(@Param("prefix") String prefix, @Param("limit") int limit);
 
+    @Query(value = """
+        SELECT DISTINCT t.* FROM tags t
+        JOIN collection_tags ct ON t.tag_id = ct.tag_id
+        JOIN collection_follows ufc ON ct.collection_id = ufc.collection_id
+        WHERE ufc.follower_id = :userId
+        LIMIT 20
+        """, nativeQuery = true)
+    List<TagJpaEntity> findFavoriteTagsByUserId(@Param("userId") UUID userId);
+
     Optional<TagJpaEntity> findByName(String name);
 }

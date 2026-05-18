@@ -1,0 +1,95 @@
+package com.collectto.api_collectto.presentation.controllers;
+
+import java.util.UUID;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.collectto.api_collectto.application.usecases.explore.FetchExploreUseCase;
+import com.collectto.api_collectto.application.usecases.feed.FetchFeedUseCase;
+import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
+import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
+import com.collectto.api_collectto.presentation.dto.item.ItemResponse;
+import com.collectto.api_collectto.presentation.dto.social.ExploreCardsResponse;
+import com.collectto.api_collectto.presentation.dto.social.FeedResponse;
+
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+@CrossOrigin
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/social")
+public class SocialController {
+
+    private final FetchExploreUseCase fetchExploreUseCase;
+    private final FetchFeedUseCase fetchFeedUseCase;
+    private final TransactionalProxy transactionalProxy;
+
+    @GetMapping("/explore")
+    @Operation(summary = "Explore public items or collections", description = "Fetches a paginated list of cards.")
+    public ExploreCardsResponse getExplore(@AuthenticationPrincipal SecurityUserDetails userDetails,  @RequestParam(defaultValue = "0") int page, 
+        @RequestParam(defaultValue = "10") int size) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.execute(() -> fetchExploreUseCase.execute(new FetchExploreUseCase.Input(userId, page, size)));
+
+        return new ExploreCardsResponse(
+            output.content().stream().map(card -> new ExploreCardsResponse.ExploreCardSummary(
+                card.id(),
+                card.context(),
+                card.imageUrls(),
+                card.tags()
+            )).toList(),
+            output.size(),
+            output.page(),
+            output.hasNext()
+        );
+    }
+
+    @GetMapping("/feed")
+    @Operation(summary = "Fetch user's feed", description = "Retrieves the user's feed.")
+    public FeedResponse getFeed(@AuthenticationPrincipal SecurityUserDetails userDetails,  @RequestParam(defaultValue = "0") int page, 
+        @RequestParam(defaultValue = "10") int size) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.execute(() -> fetchFeedUseCase.execute(new FetchFeedUseCase.Input(userId, page, size)));
+
+        return new FeedResponse(
+            output.content().stream().map(feed -> new FeedResponse.FeedSummary(
+                new FeedResponse.FeedSourceSummary(
+                    feed.source().id(),
+                    feed.source().username(),
+                    feed.source().collectionName(),
+                    feed.source().avatarUrl(),
+                    feed.source().context()
+                ),
+                new ItemResponse(
+                    feed.item().getId(), 
+                    feed.item().getCollectionId(),
+                    feed.item().getUserId(),
+                    feed.item().getName(),
+                    feed.item().getDescription(),
+                    feed.item().getAcquisitionDate().toString(),
+                    feed.item().getLastUsedDate().toString(),
+                    feed.item().getMediaURLs(),
+                    feed.item().getAttributes(),
+                    feed.item().getLikesCount(),
+                    feed.item().getCommentsCount(),
+                    feed.item().getTags(),
+                    feed.item().isActive(),
+                    feed.item().getCreatedAt().toString(),
+                    feed.item().getUpdatedAt().toString()
+                )
+            )).toList(),
+            output.size(),
+            output.page(),
+            output.hasNext()
+        );
+    } 
+}
