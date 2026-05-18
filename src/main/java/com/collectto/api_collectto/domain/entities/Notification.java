@@ -26,13 +26,13 @@ public class Notification {
         this.createdAt = DomainValidator.requireNonNull(createdAt, "Notification created at cannot be null");
     }
 
-    public static Notification createUserFollowedNotification(UUID recipientId, UUID actorId, UUID referenceId) {
+    public static Notification createUserFollowRequestNotification(UUID recipientId, UUID actorId) {
         return new Notification(
             UUID.randomUUID(), 
             recipientId, 
             actorId, 
-            NotificationContext.USER_FOLLOWED, 
-            referenceId, 
+            NotificationContext.USER_FOLLOW_REQUESTED, 
+            null, // The reference in this case is actorId
             false, 
             Instant.now()
         );
@@ -114,6 +114,22 @@ public class Notification {
             this.context, 
             this.referenceId, 
             true, 
+            this.createdAt
+        );
+    }
+
+    public Notification updateContext(NotificationContext newContext) {
+        if (this.context == newContext) {
+            return this;
+        }
+
+        return new Notification(
+            this.id, 
+            this.recipientId, 
+            this.actorId, 
+            newContext, 
+            this.referenceId, 
+            false, 
             this.createdAt
         );
     }

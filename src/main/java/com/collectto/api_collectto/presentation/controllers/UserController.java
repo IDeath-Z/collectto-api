@@ -3,7 +3,10 @@ package com.collectto.api_collectto.presentation.controllers;
 import java.util.UUID;
 
 import com.collectto.api_collectto.application.usecases.user.UpdateUserUseCase;
+import com.collectto.api_collectto.application.usecases.userfollow.AcceptFollowUseCase;
+import com.collectto.api_collectto.application.usecases.userfollow.DeclineFollowUseCase;
 import com.collectto.api_collectto.application.usecases.userfollow.FollowUserUseCase;
+import com.collectto.api_collectto.application.usecases.userfollow.UnfollowUserUseCase;
 import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.user.UpdateUserRequest;
@@ -35,7 +38,10 @@ public class UserController {
     private final DeleteUserUseCase deleteUserUseCase;
     private final FetchUserUseCase fetchUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
+    private final AcceptFollowUseCase acceptFollowUseCase;
+    private final DeclineFollowUseCase declineFollowUseCase;
     private final FollowUserUseCase followUserUseCase;
+    private final UnfollowUserUseCase unfollowUserUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @PostMapping("create")
@@ -124,7 +130,37 @@ public class UserController {
     }
 
     // Follow
-    @PostMapping("/{followedId}/follow")
+    @PatchMapping("/follow/{followerId}/accept")
+    @Operation(summary = "Accept a follow request", description = "Accepts a follow request from the specified user.")
+    public UserFollowResponse acceptFollowRequest(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID followerId) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.execute(() -> acceptFollowUseCase.execute(new AcceptFollowUseCase.Input(followerId, userId)));
+        
+        return new UserFollowResponse(
+            output.followerId(),
+            output.followedId(),
+            output.status(),
+            output.createdAt()
+        );
+    }
+
+    @PatchMapping("/follow/{followerId}/decline")
+    @Operation(summary = "Decline a follow request", description = "Declines a follow request from the specified user.")
+    public UserFollowResponse declineFollowRequest(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID followerId) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.execute(() -> declineFollowUseCase.execute(new DeclineFollowUseCase.Input(followerId, userId)));
+        
+        return new UserFollowResponse(
+            output.followerId(),
+            output.followedId(),
+            output.status(),
+            output.createdAt()
+        );
+    }
+
+    @PostMapping("/follow/{followedId}")
     @Operation(summary = "Follow a user", description = "Sends a follow request to the specified user. If the request is successful, the follow status will be PENDING until accepted by the followed user.")
     public UserFollowResponse followUser(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID followedId) {
         UUID userId = userDetails.getUser().getId();
@@ -139,5 +175,15 @@ public class UserController {
             output.status(), 
             output.createdAt()
         );
-    }  
+    }
+
+    @DeleteMapping("/follow/{followedId}")
+    @Operation(summary = "Unfollow a user", description = "Removes the follow relationship with the specified user.")
+    public void unfollowUser(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID followedId) {
+        UUID userId = userDetails.getUser().getId();
+
+        transactionalProxy.execute(() -> unfollowUserUseCase.execute(
+            new UnfollowUserUseCase.Input(userId, followedId)
+        ));
+    }
 }

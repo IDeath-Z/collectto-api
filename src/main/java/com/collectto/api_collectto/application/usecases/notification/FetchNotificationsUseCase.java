@@ -102,7 +102,7 @@ public class FetchNotificationsUseCase {
                             );
                         }
                     }
-                    case USER_FOLLOWED -> {
+                    case USER_FOLLOW_REQUESTED, USER_ACCEPTED_FOLLOW_REQUEST -> {
                         referenceSummary = null;
                     }
                 }

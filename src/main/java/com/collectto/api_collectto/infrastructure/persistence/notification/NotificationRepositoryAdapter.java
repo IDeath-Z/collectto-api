@@ -29,6 +29,12 @@ public class NotificationRepositoryAdapter implements NotificationRepository {
     }
 
     @Override
+    public Optional<Notification> findByRecipientIdAndActorIdAndContext(UUID recipientId, UUID actorId, NotificationContext context) {
+        return jpaRepository.findByRecipientIdAndActorIdAndContext(recipientId, actorId, context)
+                .map(mapper::toDomain);
+    }
+
+    @Override
     public Notification save(Notification notification) {
         NotificationJpaEntity jpaEntity = mapper.toJpa(notification);
         NotificationJpaEntity savedEntity = jpaRepository.save(jpaEntity);
@@ -51,6 +57,11 @@ public class NotificationRepositoryAdapter implements NotificationRepository {
     @Override
     public void deleteById(UUID id) {
         jpaRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteByRecipientIdAndActorIdAndContext(UUID recipientId, UUID actorId, NotificationContext context) {
+        jpaRepository.deleteByRecipientIdAndActorIdAndContext(recipientId, actorId, context);
     }
 
     @Override
