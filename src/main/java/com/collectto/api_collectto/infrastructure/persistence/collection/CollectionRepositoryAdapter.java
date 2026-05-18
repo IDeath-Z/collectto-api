@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import com.collectto.api_collectto.domain.entities.Collection;
+import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.domain.shared.DomainPageResult;
@@ -78,7 +79,7 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
     @Override
     public DomainPageResult<Collection> findVisibleCollections(UUID userId, UUID requesterId, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
-        Page<CollectionJpaEntity> page = collectionsJpaRepository.findVisibleCollections(userId, requesterId, springPage);
+        Page<CollectionJpaEntity> page = collectionsJpaRepository.findVisibleCollections(userId, requesterId, Visibility.PRIVATE, springPage);
 
         return PageConverter.toDomain(page, collectionMapper::toDomain);
     }
