@@ -61,6 +61,14 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
     }
 
     @Override
+    public List<Collection> findAllByIds(List<UUID> ids) {
+        return collectionsJpaRepository.findAllById(ids)
+            .stream()
+            .map(collectionMapper::toDomain)
+            .toList();
+    }
+
+    @Override
     public List<Collection> findByUserIdAndName(UUID userId, String name) {
         return collectionsJpaRepository.findByUserIdAndNameContainingIgnoreCase(userId, name).stream()
             .map(collectionMapper::toDomain)

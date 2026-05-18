@@ -15,6 +15,7 @@ public interface ItemRepository {
     List<Item> findByUserId(UUID userId);
     Item save(Item item);
     Optional<Item> findById(UUID itemId);
+    List<Item> findAllByIds(List<UUID> ids);
     List<Item> findByCollectionIdAndName(UUID collectionId, String name);
     Map<UUID, List<String>> findTop3MediaUrlsByCollectionIds(List<UUID> collectionIds);
     void incrementLikesCount(UUID itemId);

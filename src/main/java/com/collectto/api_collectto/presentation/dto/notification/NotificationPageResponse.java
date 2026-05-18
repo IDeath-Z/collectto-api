@@ -33,8 +33,8 @@ public record NotificationPageResponse(
         @Schema(description = "Context of the notification")
         NotificationContext context,
 
-        @Schema(description = "Unique identifier of the reference entity", example = "123e4567-e89b-12d3-a456-426614174000")
-        UUID referenceId,
+        @Schema(description = "Summary of the reference entity associated with the notification")
+        ReferenceSummary reference,
 
         @Schema(description = "Indicates whether the notification has been read")
         boolean read,
@@ -52,5 +52,16 @@ public record NotificationPageResponse(
 
         @Schema(description = "URL of the actor's profile picture", example = "https://...")
         String profilePictureUrl
+    ) {}
+
+    public record ReferenceSummary(
+        @Schema(description = "Unique identifier of the reference entity, depending on the context", example = "123e4567-e89b-12d3-a456-426614174000")
+        UUID id,
+
+        @Schema(description = "Unique identifier of the parent entity, case is a collection return null", example = "123e4567-e89b-12d3-a456-426614174000")
+        UUID parentId,
+
+        @Schema(description = "URL of the reference image", example = "https://...")
+        String referenceImageUrl
     ) {}
 }

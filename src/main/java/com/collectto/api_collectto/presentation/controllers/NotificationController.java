@@ -53,7 +53,11 @@ public class NotificationController {
                         notification.actor().profilePictureUrl()
                     ),
                     notification.context(), 
-                    notification.referenceId(), 
+                    new NotificationPageResponse.ReferenceSummary(
+                        notification.reference().id(),
+                        notification.reference().parentId(),
+                        notification.reference().referenceImageUrl()
+                    ),
                     notification.isRead(), 
                     notification.createdAt()
                 ))

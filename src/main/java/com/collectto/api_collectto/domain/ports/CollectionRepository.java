@@ -13,6 +13,7 @@ public interface CollectionRepository {
     DomainPageResult<Collection> findByUserId(UUID userId, DomainPageRequest pageRequest);
     Collection save(Collection collection);
     Optional<Collection> findById(UUID id);
+    List<Collection> findAllByIds(List<UUID> ids);
     List<Collection> findByUserIdAndName(UUID userId, String name);
     DomainPageResult<Collection> findVisibleCollections(UUID userId, UUID requesterId, DomainPageRequest pageRequest);
     void incrementFollowers(UUID collectionId);

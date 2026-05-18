@@ -74,6 +74,14 @@ public class ItemRepositoryAdapter implements ItemRepository {
     }
 
     @Override
+    public List<Item> findAllByIds(List<UUID> ids) {
+        return itemJpaRepository.findAllById(ids)
+            .stream()
+            .map(itemMapper::toDomain)
+            .toList();
+    }
+
+    @Override
     public List<Item> findByCollectionIdAndName(UUID collectionId, String name) {
         return itemJpaRepository.findByCollectionIdAndNameContainingIgnoreCase(collectionId, name).stream()
             .map(itemMapper::toDomain)
