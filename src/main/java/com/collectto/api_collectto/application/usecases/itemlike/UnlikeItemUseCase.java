@@ -20,7 +20,7 @@ public class UnlikeItemUseCase {
 
     public void execute(Input input) {
         if (!itemLikeRepository.existsById(input.itemId(), input.likerId()))
-            return;
+            throw new IllegalArgumentException("User has not liked the item");
 
         itemLikeRepository.deleteById(input.itemId(), input.likerId());
         itemRepository.decrementLikesCount(input.itemId());

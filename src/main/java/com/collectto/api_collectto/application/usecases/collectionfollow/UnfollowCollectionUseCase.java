@@ -20,7 +20,7 @@ public class UnfollowCollectionUseCase {
 
     public void execute(Input input) {
         if (!collectionFollowRepository.existsById(input.followerId(), input.collectionId()))
-            return; // User is not following the collection, no need to do anything
+            throw new IllegalArgumentException("User is not following the collection");
 
         collectionFollowRepository.deleteById(input.followerId(), input.collectionId());
         collectionRepository.decrementFollowers(input.collectionId());

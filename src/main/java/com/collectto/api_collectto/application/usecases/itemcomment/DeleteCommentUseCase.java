@@ -1,6 +1,5 @@
 package com.collectto.api_collectto.application.usecases.itemcomment;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.entities.Item;
@@ -23,12 +22,8 @@ public class DeleteCommentUseCase {
     }
 
     public void execute(Input input) {
-        Optional<ItemComment> optionalComment = itemCommentRepository.findById(input.commentId());
-
-        if (optionalComment.isEmpty())
-            return;
-
-        ItemComment comment = optionalComment.get();
+        ItemComment comment = itemCommentRepository.findById(input.commentId())
+        .orElseThrow(( ) -> new IllegalArgumentException("Comment not found with ID " + input.commentId()));
 
         Item item = itemRepository.findById(comment.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("Item not found with ID " + comment.getItemId()));

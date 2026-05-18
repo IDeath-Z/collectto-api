@@ -17,7 +17,7 @@ public class DeleteUserUseCase {
             .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
         if (!user.isActive())
-            return; // User is already deactivated, no need to do anything
+            throw new IllegalStateException("User is already deactivated");
 
         User deactivatedUser = user.deactivate();
         userRepository.save(deactivatedUser);
