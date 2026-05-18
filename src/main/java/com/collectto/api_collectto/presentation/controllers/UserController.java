@@ -96,7 +96,7 @@ public class UserController {
         );
     }
 
-    @PatchMapping("/profile")
+    @PatchMapping("/update")
     @Operation(summary = "Update user profile", description = "Updates the profile of the authenticated user. Only the provided fields will be updated.")
     public UserResponse patch(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateUserRequest request) {
         UUID userId = userDetails.getUser().getId();

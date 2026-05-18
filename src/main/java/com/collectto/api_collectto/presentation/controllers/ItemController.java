@@ -200,7 +200,7 @@ public class ItemController {
     }
 
     // Likes
-    @PostMapping("{itemId}/like")
+    @PostMapping("/like/{itemId}")
     @Operation(summary = "Like an item", description = "Allows a user to like an item. If the user has already liked the item, an error will be returned.")
     public ItemLikeResponse likeItem(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId) {
         UUID userId = userDetails.getUser().getId();
@@ -219,7 +219,7 @@ public class ItemController {
         );
     }
 
-    @DeleteMapping("{itemId}/unlike")
+    @DeleteMapping("/like/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Unlike an item", description = "Allows a user to unlike an item")
     public void unlikeItem(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId) {
@@ -230,7 +230,7 @@ public class ItemController {
         ));
     }
 
-    @GetMapping("{itemId}/likes")
+    @GetMapping("/likes/{itemId}")
     @Operation(summary = "Fetch item likes", description = "Retrieves a paginated list of users who liked a specific item, including their basic information and profile picture URLs.")
     public ItemLikesPageResponse getItemLikes(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId, 
         @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {
@@ -260,7 +260,7 @@ public class ItemController {
     }
     
     // Comments
-    @PostMapping("/{itemId}/comments")
+    @PostMapping("/comment/{itemId}")
     @Operation(summary = "Comment on an item", description = "Allows a user to comment on an item. The comment will be added to the item and associated with the user.")
     public CreateCommentResponse commentOnItem(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId, @RequestBody @Valid CreateCommentRequest request) {
         UUID userId = userDetails.getUser().getId();
@@ -282,7 +282,7 @@ public class ItemController {
         );
     }
 
-    @DeleteMapping("{commentId}/comments")
+    @DeleteMapping("/comment/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a comment", description = "Allows a user to delete their own comment or comments on their item.")
     public void deleteComment(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID commentId) {
@@ -293,7 +293,7 @@ public class ItemController {
         ));
     }
 
-    @GetMapping("/itemId/comments")
+    @GetMapping("/comments/{itemId}")
     @Operation(summary = "Fetch item comments", description = "Retrieves a paginated list of comments for a specific item, including the comment content, author information, and timestamps.")
     public ItemCommentPageResponse getItemComments(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId, 
         @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {

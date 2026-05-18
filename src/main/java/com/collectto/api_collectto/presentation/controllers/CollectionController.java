@@ -167,7 +167,7 @@ public class CollectionController {
     }
 
     // Follow
-    @PostMapping("/{collectionId}/follow")
+    @PostMapping("/follow/{collectionId}")
     @Operation(summary = "Follow a collection", description = "Allows the authenticated user to follow a collection, increasing its followers count and enabling it to appear in the user's followed collections list.")
     public CollectionFollowResponse followCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID userId = userDetails.getUser().getId();
@@ -183,7 +183,7 @@ public class CollectionController {
         );
     }
 
-    @DeleteMapping("/{collectionId}/unfollow")
+    @DeleteMapping("/follow/{collectionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Unfollow a collection", description = "Allows the authenticated user to unfollow a collection, decreasing its followers count")
     public void unfollowCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
