@@ -4,8 +4,10 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.collectto.api_collectto.domain.entities.Notification;
 import com.collectto.api_collectto.domain.entities.UserFollow;
 import com.collectto.api_collectto.domain.enums.FollowStatus;
+import com.collectto.api_collectto.domain.ports.NotificationRepository;
 import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class FollowUserUseCase {
 
     private final UserFollowRepository userFollowRepository;
+    private final NotificationRepository notificationRepository;
 
     public record Input(UUID followerId, UUID followedId) {}
     public record Output(UUID followerId, UUID followedId, FollowStatus status, String createdAt) {}
@@ -24,6 +27,8 @@ public class FollowUserUseCase {
 
         Optional<UserFollow> existingFollowOpt = userFollowRepository.findById(input.followerId(), input.followedId());
 
+        UserFollow followToSave;
+
         if (existingFollowOpt.isPresent()) {
             UserFollow existingFollow = existingFollowOpt.get();
 
@@ -32,32 +37,32 @@ public class FollowUserUseCase {
             if (existingFollow.getStatus() == FollowStatus.ACCEPTED)
                 throw new IllegalStateException("Already following.");
             
-            if (existingFollow.getStatus() == FollowStatus.DECLINED) {
-                UserFollow savedNewFollow = userFollowRepository.save(existingFollow.pending());
-                
-                return new Output(
-                    savedNewFollow.getFollowerId(), 
-                    savedNewFollow.getFollowedId(), 
-                    savedNewFollow.getStatus(), 
-                    savedNewFollow.getCreatedAt().toString()
-                );
-            }
+            followToSave = existingFollow.pending(); // Declined follow can be re-requested
+        } else {
+            followToSave = new UserFollow(
+                input.followerId(),
+                input.followedId(),
+                FollowStatus.PENDING,
+                Instant.now()
+            );
         }
 
-        UserFollow newFollow = new UserFollow(
-            input.followerId(), 
-            input.followedId(), 
-            FollowStatus.PENDING, 
-            Instant.now()
-        );
+        UserFollow savedNewFollow = userFollowRepository.save(followToSave);
 
-        UserFollow savedNewFollow = userFollowRepository.save(newFollow);
+        Notification followRequestNotification = Notification.createUserFollowRequestNotification(
+            savedNewFollow.getFollowedId(),
+            savedNewFollow.getFollowerId()
+        );
+        notificationRepository.save(followRequestNotification);
 
         return new Output(
-            savedNewFollow.getFollowerId(), 
-            savedNewFollow.getFollowedId(), 
-            savedNewFollow.getStatus(), 
+            savedNewFollow.getFollowerId(),
+            savedNewFollow.getFollowedId(),
+            savedNewFollow.getStatus(),
             savedNewFollow.getCreatedAt().toString()
         );
     }
 }
+
+        
+
