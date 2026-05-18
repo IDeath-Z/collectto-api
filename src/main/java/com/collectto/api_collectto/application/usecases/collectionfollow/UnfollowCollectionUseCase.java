@@ -2,8 +2,10 @@ package com.collectto.api_collectto.application.usecases.collectionfollow;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.domain.enums.NotificationContext;
 import com.collectto.api_collectto.domain.ports.CollectionFollowRepository;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
+import com.collectto.api_collectto.domain.ports.NotificationRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +14,7 @@ public class UnfollowCollectionUseCase {
 
     private final CollectionFollowRepository collectionFollowRepository;
     private final CollectionRepository collectionRepository;
+    private final NotificationRepository notificationRepository;
 
     public record Input(UUID followerId, UUID collectionId) {}
 
@@ -21,5 +24,10 @@ public class UnfollowCollectionUseCase {
 
         collectionFollowRepository.deleteById(input.followerId(), input.collectionId());
         collectionRepository.decrementFollowers(input.collectionId());
+        notificationRepository.deleteByActorIdAndReferenceIdAndContext(
+            input.followerId(),
+            input.collectionId(),
+            NotificationContext.COLLECTION_FOLLOWED
+        );
     }
 }

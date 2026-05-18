@@ -6,7 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.collectto.api_collectto.domain.enums.NotificationContext;
+
 public interface NotificationJpaRepository extends JpaRepository<NotificationJpaEntity, UUID> {
 
     Page<NotificationJpaEntity> findByRecipientId(UUID recipientId, Pageable pageRequest);
+    void deleteByActorIdAndReferenceIdAndContext(UUID actorId, UUID referenceId, NotificationContext context);
 }

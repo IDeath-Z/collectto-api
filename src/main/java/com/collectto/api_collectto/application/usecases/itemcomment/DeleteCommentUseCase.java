@@ -5,8 +5,10 @@ import java.util.UUID;
 
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.entities.ItemComment;
+import com.collectto.api_collectto.domain.enums.NotificationContext;
 import com.collectto.api_collectto.domain.ports.ItemCommentRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
+import com.collectto.api_collectto.domain.ports.NotificationRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +17,7 @@ public class DeleteCommentUseCase {
 
     private final ItemCommentRepository itemCommentRepository;
     private final ItemRepository itemRepository;
+    private final NotificationRepository notificationRepository;
 
     public record Input(UUID commentId, UUID userId) {
     }
@@ -35,5 +38,10 @@ public class DeleteCommentUseCase {
 
         itemCommentRepository.deleteById(comment.getId());
         itemRepository.decrementCommentsCount(comment.getItemId());
+        notificationRepository.deleteByActorIdAndReferenceIdAndContext(
+            comment.getAuthorId(), 
+            comment.getId(), 
+            NotificationContext.ITEM_COMMENTED
+        );
     }
 }

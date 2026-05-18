@@ -7,17 +7,20 @@ import com.collectto.api_collectto.application.usecases.collectionfollow.FollowC
 import com.collectto.api_collectto.application.usecases.collectionfollow.UnfollowCollectionUseCase;
 import com.collectto.api_collectto.domain.ports.CollectionFollowRepository;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
+import com.collectto.api_collectto.domain.ports.NotificationRepository;
 
 @Configuration
 public class CollectionFollowConfig {
 
     @Bean
-    public FollowCollectionUseCase createCollectionFollowUseCase(CollectionFollowRepository collectionFollowRepository, CollectionRepository collectionRepository) {
-        return new FollowCollectionUseCase(collectionFollowRepository, collectionRepository);
+    public FollowCollectionUseCase createCollectionFollowUseCase(CollectionFollowRepository collectionFollowRepository, 
+        CollectionRepository collectionRepository, NotificationRepository notificationRepository) {
+        return new FollowCollectionUseCase(collectionFollowRepository, collectionRepository, notificationRepository);
     }
 
     @Bean
-    public UnfollowCollectionUseCase createUnfollowCollectionUseCase(CollectionFollowRepository collectionFollowRepository, CollectionRepository collectionRepository) {
-        return new UnfollowCollectionUseCase(collectionFollowRepository, collectionRepository);
+    public UnfollowCollectionUseCase createUnfollowCollectionUseCase(CollectionFollowRepository collectionFollowRepository, 
+        CollectionRepository collectionRepository, NotificationRepository notificationRepository) {
+        return new UnfollowCollectionUseCase(collectionFollowRepository, collectionRepository, notificationRepository);
     }
 }

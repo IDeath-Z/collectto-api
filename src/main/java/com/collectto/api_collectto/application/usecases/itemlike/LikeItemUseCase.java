@@ -6,10 +6,12 @@ import java.util.UUID;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.entities.ItemLike;
+import com.collectto.api_collectto.domain.entities.Notification;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemLikeRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
+import com.collectto.api_collectto.domain.ports.NotificationRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,7 @@ public class LikeItemUseCase {
     private final ItemLikeRepository itemLikeRepository;
     private final ItemRepository itemRepository;
     private final CollectionRepository collectionRepository;
+    private final NotificationRepository notificationRepository;
 
     public record Input(UUID itemId, UUID likerId) {}
     public record Output(UUID itemId, UUID likerId, String createdAt) {}
@@ -44,6 +47,13 @@ public class LikeItemUseCase {
 
         ItemLike savedLike = itemLikeRepository.save(newLike);
         itemRepository.incrementLikesCount(savedLike.getItemId());
+
+        Notification notification = Notification.createItemCommentedNotification(
+            collection.getUserId(),
+            savedLike.getLikerId(),
+            savedLike.getItemId()
+        );
+        notificationRepository.save(notification);
 
         return new Output(
             savedLike.getItemId(), 

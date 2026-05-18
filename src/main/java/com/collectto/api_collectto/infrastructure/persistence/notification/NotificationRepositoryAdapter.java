@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import com.collectto.api_collectto.domain.entities.Notification;
+import com.collectto.api_collectto.domain.enums.NotificationContext;
 import com.collectto.api_collectto.domain.ports.NotificationRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.domain.shared.DomainPageResult;
@@ -50,5 +51,10 @@ public class NotificationRepositoryAdapter implements NotificationRepository {
     @Override
     public void deleteById(UUID id) {
         jpaRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteByActorIdAndReferenceIdAndContext(UUID actorId, UUID referenceId, NotificationContext context) {
+        jpaRepository.deleteByActorIdAndReferenceIdAndContext(actorId, referenceId, context);
     }
 }

@@ -6,10 +6,12 @@ import java.util.UUID;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.entities.ItemComment;
+import com.collectto.api_collectto.domain.entities.Notification;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemCommentRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
+import com.collectto.api_collectto.domain.ports.NotificationRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,7 @@ public class CommentItemUseCase {
     private final ItemCommentRepository itemCommentRepository;
     private final ItemRepository itemRepository;
     private final CollectionRepository collectionRepository;
+    private final NotificationRepository notificationRepository;
 
     public record Input(UUID itemId, UUID authorId, String content) {}
     public record Output(UUID commentId, UUID itemId, UUID authorId, String content, String createdAt) {}
@@ -33,10 +36,8 @@ public class CommentItemUseCase {
         if (!collection.getUserId().equals(input.authorId()) && collection.getVisibility() == Visibility.PRIVATE)
             throw new RuntimeException("Unauthorized access to private collection"); // Implement better exception handling as needed
 
-        UUID commentId = UUID.randomUUID();
-
         ItemComment comment = new ItemComment(
-            commentId,
+            UUID.randomUUID(),
             input.itemId(),
             input.authorId(),
             input.content(),
@@ -45,6 +46,13 @@ public class CommentItemUseCase {
 
         ItemComment savedComment = itemCommentRepository.save(comment);
         itemRepository.incrementCommentsCount(savedComment.getItemId());
+
+        Notification notification = Notification.createItemCommentedNotification(
+            collection.getUserId(), 
+            comment.getAuthorId(), 
+            comment.getId()
+        );
+        notificationRepository.save(notification);
 
         return new Output(
             savedComment.getId(),

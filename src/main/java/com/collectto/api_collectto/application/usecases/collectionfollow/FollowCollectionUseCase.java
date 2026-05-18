@@ -5,9 +5,11 @@ import java.util.UUID;
 
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.CollectionFollow;
+import com.collectto.api_collectto.domain.entities.Notification;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionFollowRepository;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
+import com.collectto.api_collectto.domain.ports.NotificationRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +18,7 @@ public class FollowCollectionUseCase {
 
     private final CollectionFollowRepository collectionFollowRepository;
     private final CollectionRepository collectionRepository;
+    private final NotificationRepository notificationRepository;
 
     public record Input(UUID followerId, UUID collectionId) {}
     public record Output(UUID followerId, UUID collectionId, String createdAt) {}
@@ -41,6 +44,13 @@ public class FollowCollectionUseCase {
 
         CollectionFollow savedFollow = collectionFollowRepository.save(newFollow);
         collectionRepository.incrementFollowers(savedFollow.getCollectionId());
+
+        Notification notification = Notification.createCollectionFollowedNotification(
+            collection.getUserId(),
+            savedFollow.getFollowerId(),
+            savedFollow.getCollectionId()
+        );
+        notificationRepository.save(notification);
 
         return new Output(
             savedFollow.getFollowerId(),

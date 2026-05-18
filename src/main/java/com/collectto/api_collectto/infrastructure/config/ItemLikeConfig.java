@@ -9,6 +9,7 @@ import com.collectto.api_collectto.application.usecases.itemlike.UnlikeItemUseCa
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemLikeRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
+import com.collectto.api_collectto.domain.ports.NotificationRepository;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
 @Configuration
@@ -21,12 +22,13 @@ public class ItemLikeConfig {
     }
 
     @Bean
-    public LikeItemUseCase likeItemUseCase(ItemLikeRepository itemLikeRepository, ItemRepository itemRepository, CollectionRepository collectionRepository) {
-        return new LikeItemUseCase(itemLikeRepository, itemRepository, collectionRepository);
+    public LikeItemUseCase likeItemUseCase(ItemLikeRepository itemLikeRepository, ItemRepository itemRepository, CollectionRepository collectionRepository,
+        NotificationRepository notificationRepository) {
+        return new LikeItemUseCase(itemLikeRepository, itemRepository, collectionRepository, notificationRepository);
     }
 
     @Bean
-    public UnlikeItemUseCase unlikeItemUseCase(ItemLikeRepository itemLikeRepository, ItemRepository itemRepository) {
-        return new UnlikeItemUseCase(itemLikeRepository, itemRepository);
+    public UnlikeItemUseCase unlikeItemUseCase(ItemLikeRepository itemLikeRepository, ItemRepository itemRepository, NotificationRepository notificationRepository) {
+        return new UnlikeItemUseCase(itemLikeRepository, itemRepository, notificationRepository);
     }
 }
