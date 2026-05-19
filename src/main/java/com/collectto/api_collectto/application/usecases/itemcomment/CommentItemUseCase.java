@@ -44,12 +44,14 @@ public class CommentItemUseCase {
         ItemComment savedComment = itemCommentRepository.save(comment);
         itemRepository.incrementCommentsCount(savedComment.getItemId());
 
-        Notification notification = Notification.createItemCommentedNotification(
-            collection.getUserId(), 
-            savedComment.getAuthorId(), 
-            savedComment.getId()
-        );
-        notificationRepository.save(notification);
+        if (!savedComment.getAuthorId().equals(collection.getUserId())) {
+            Notification notification = Notification.createItemCommentedNotification(
+                collection.getUserId(), 
+                savedComment.getAuthorId(), 
+                savedComment.getId()
+            );
+            notificationRepository.save(notification);
+        }
 
         return new Output(
             savedComment.getId(),

@@ -46,12 +46,14 @@ public class LikeItemUseCase {
         ItemLike savedLike = itemLikeRepository.save(newLike);
         itemRepository.incrementLikesCount(savedLike.getItemId());
 
-        Notification notification = Notification.createItemLikedNotification(
-            collection.getUserId(),
-            savedLike.getLikerId(),
-            savedLike.getItemId()
-        );
-        notificationRepository.save(notification);
+        if (!savedLike.getLikerId().equals(collection.getUserId())) {
+            Notification notification = Notification.createItemLikedNotification(
+                collection.getUserId(),
+                savedLike.getLikerId(),
+                savedLike.getItemId()
+            );
+            notificationRepository.save(notification);
+        }
 
         return new Output(
             savedLike.getItemId(), 
