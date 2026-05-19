@@ -36,6 +36,22 @@ public class Collection {
         this.updatedAt = DomainValidator.requireNonNull(updatedAt, "Updated at timestamp cannot be null"); 
     }
 
+    public static Collection createNewCollection(UUID userId, String name, String description, String coverImageUrl, List<String> tags) {
+        return new Collection(
+            UUID.randomUUID(),
+            userId,
+            name,
+            description,
+            coverImageUrl,
+            Visibility.PRIVATE,
+            0, // Initial followers count
+            tags,
+            true, // isActive
+            Instant.now(),
+            Instant.now()
+        );
+    }
+
     public UUID getId() {
         return id;
     }

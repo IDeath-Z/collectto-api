@@ -40,6 +40,24 @@ public class User {
         this.creationDate = DomainValidator.requireNonNull(creationDate, "Creation date is required");
     }
 
+    public static User createNewUser(String name, String username, String email, String passwordHash, LocalDate birthdayDate) {
+        return new User(
+            UUID.randomUUID(),
+            name,
+            username,
+            email,
+            passwordHash,
+            null,
+            null,
+            null,
+            0,
+            0,
+            true,
+            birthdayDate,
+            Instant.now()
+        );
+    }
+
     public UUID getId() {
         return id;
     }

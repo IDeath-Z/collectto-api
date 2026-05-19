@@ -23,6 +23,15 @@ public class UserFollow {
         this.createdAt = DomainValidator.requireNonNull(createdAt, "Creation date cannot be null");
     }
 
+    public static UserFollow createNewFollow(UUID followerId, UUID followedId) {
+        return new UserFollow(
+            followerId,
+            followedId,
+            FollowStatus.PENDING,
+            Instant.now()
+        );
+    }
+
     public UUID getFollowerId() {
         return followerId;
     }

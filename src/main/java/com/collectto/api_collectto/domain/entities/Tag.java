@@ -17,6 +17,14 @@ public class Tag {
         this.createdAt = DomainValidator.requireNonNull(createdAt, "Created at timestamp cannot be null");
     }
 
+    public static Tag createNewTag(String name) {
+        return new Tag(
+            UUID.randomUUID(),
+            name,
+            Instant.now()
+        );
+    }
+
     public UUID getId() {
         return id;
     }

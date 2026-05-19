@@ -46,6 +46,27 @@ public class Item {
         this.updatedAt = DomainValidator.requireNonNull(updatedAt, "Updated at timestamp cannot be null");
     }
 
+    public static Item createNewItem(UUID collectionId, UUID userId, String name, String description, LocalDate acquisitionDate,
+        LocalDate lastUsedDate, List<String> mediaURLs, Map<String, Object> attributes, List<String> tags) {
+        return new Item(
+            UUID.randomUUID(),
+            collectionId,
+            userId,
+            name,
+            description,
+            acquisitionDate,
+            lastUsedDate,
+            mediaURLs,
+            attributes,
+            0,
+            0,
+            tags,
+            true,
+            Instant.now(),
+            Instant.now()
+        );
+    }
+
     public UUID getId() {
         return id;
     }

@@ -17,6 +17,14 @@ public class CollectionFollow {
         this.createdAt = DomainValidator.requireNonNull(createdAt, "Creation timestamp cannot be null");
     }
 
+    public static CollectionFollow createNewFollow(UUID followerId, UUID collectionId) {
+        return new CollectionFollow(
+            followerId,
+            collectionId,
+            Instant.now()
+        );
+    }
+
     public UUID getFollowerId() {
         return followerId;
     }

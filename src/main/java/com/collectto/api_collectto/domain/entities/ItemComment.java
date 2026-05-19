@@ -21,6 +21,16 @@ public class ItemComment {
         this.createdAt = DomainValidator.requireNonNull(createdAt, "Creation date cannot be null");
     }
 
+    public static ItemComment createNewComment(UUID itemId, UUID authorId, String content) {
+        return new ItemComment(
+            UUID.randomUUID(),
+            itemId,
+            authorId,
+            content,
+            Instant.now()
+        );
+    }
+
     public UUID getId() {
         return id;
     }

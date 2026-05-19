@@ -17,6 +17,14 @@ public class ItemLike {
         this.createdAt = DomainValidator.requireNonNull(createdAt, "Creation timestamp cannot be null");
     }
 
+    public static ItemLike createNewLike(UUID itemId, UUID likerId) {
+        return new ItemLike(
+            itemId,
+            likerId,
+            Instant.now()
+        );
+    }
+
     public UUID getItemId() {
         return itemId;
     }
