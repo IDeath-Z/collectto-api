@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.collection.CreateCollectionUseCase;
+import com.collectto.api_collectto.application.usecases.collection.DeleteCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchUserCollectionsUseCase;
 import com.collectto.api_collectto.application.usecases.collection.UpdateCollectionUseCase;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class CollectionController {
 
     private final CreateCollectionUseCase createCollectionUseCase;
+    private final DeleteCollectionUseCase deleteCollectionUseCase;
     private final FetchCollectionUseCase fetchCollectionUseCase;
     private final FetchUserCollectionsUseCase fetchUserCollectionsUseCase;
     private final UpdateCollectionUseCase updateCollectionUseCase;
@@ -79,6 +81,17 @@ public class CollectionController {
             output.createdAt(),
             output.updatedAt()
         );
+    }
+
+    @DeleteMapping("{collectionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a collection", description = "Deletes a collection by its ID. Only the owner of the collection can perform this action.")
+    public void deleteCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
+        UUID userId = userDetails.getUser().getId();
+
+        transactionalProxy.execute(() -> deleteCollectionUseCase.execute(
+            new DeleteCollectionUseCase.Input(collectionId, userId)
+        ));
     }
 
     @GetMapping("{collectionId}")

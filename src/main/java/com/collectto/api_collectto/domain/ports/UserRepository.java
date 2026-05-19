@@ -18,4 +18,6 @@ public interface UserRepository {
     void incrementFollowing(UUID userId);
     void decrementFollowers(UUID userId);
     void decrementFollowing(UUID userId);
+    void deactivateUser(UUID userId);
+    void reactivateUser(UUID userId);
 }

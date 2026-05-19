@@ -53,6 +53,9 @@ public class UserJpaEntity {
     @Column(name = "is_active", nullable = false, insertable = false)
     private boolean isActive;
 
+    @Column(name = "deactivated_at")
+    private Instant deactivatedAt;
+
     @Column(name = "birthday_date", nullable = false)
     private LocalDate birthdayDate;
 

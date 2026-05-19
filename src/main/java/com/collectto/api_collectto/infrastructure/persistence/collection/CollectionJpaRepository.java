@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.infrastructure.persistence.collection;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -73,4 +74,21 @@ public interface CollectionJpaRepository extends JpaRepository<CollectionJpaEnti
     
     @Modifying @Query("UPDATE CollectionJpaEntity c SET c.followersCount = c.followersCount - 1 WHERE c.id = :collectionId")
     void decrementFollowers(UUID collectionId);
+
+    @Modifying @Query("UPDATE CollectionJpaEntity c SET c.isActive = false, c.deactivatedAt = CURRENT_TIMESTAMP WHERE c.id = :collectionId")
+    void deactivateCollection(@Param("collectionId") UUID collectionId);
+
+    @Modifying @Query(value = """
+        DELETE FROM collections 
+        WHERE is_active = false 
+        AND deactivated_at <= :cutoffDate
+    """, nativeQuery = true)
+    int purgeOldDeactivatedCollections(@Param("cutoffDate") Instant cutoffDate);
+
+    @Query(value = """
+        SELECT * FROM collections 
+        WHERE is_active = false 
+        AND deactivated_at <= :cutoffDate
+    """, nativeQuery = true)
+    List<CollectionJpaEntity> findCollectionsToPurge(@Param("cutoffDate") Instant cutoffDate);
 }

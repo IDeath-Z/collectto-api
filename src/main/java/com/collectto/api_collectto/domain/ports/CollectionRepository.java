@@ -18,4 +18,5 @@ public interface CollectionRepository {
     DomainPageResult<Collection> findVisibleCollections(UUID userId, UUID requesterId, DomainPageRequest pageRequest);
     void incrementFollowers(UUID collectionId);
     void decrementFollowers(UUID collectionId);
+    void deactivateCollection(UUID collectionId);
 }

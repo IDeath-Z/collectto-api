@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
+import com.collectto.api_collectto.application.usecases.item.DeleteItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchCollectionItemsUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
@@ -20,6 +21,11 @@ public class ItemConfig {
         return new CreateItemUseCase(itemRepository, collectionRepository, storageProvider, storageUrlPaths);
     }
 
+    @Bean
+    public DeleteItemUseCase deleteItemUseCase(ItemRepository itemRepository) {
+        return new DeleteItemUseCase(itemRepository);
+    }
+    
     @Bean
     public FetchCollectionItemsUseCase fetchCollectionItemsUseCase(ItemRepository itemRepository, CollectionRepository collectionRepository) {
         return new FetchCollectionItemsUseCase(itemRepository, collectionRepository);

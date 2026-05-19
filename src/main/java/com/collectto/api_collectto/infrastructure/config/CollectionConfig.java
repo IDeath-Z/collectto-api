@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.collectto.api_collectto.application.usecases.collection.CreateCollectionUseCase;
+import com.collectto.api_collectto.application.usecases.collection.DeleteCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchCollectionUseCase;
 import com.collectto.api_collectto.application.usecases.collection.FetchUserCollectionsUseCase;
 import com.collectto.api_collectto.application.usecases.collection.UpdateCollectionUseCase;
@@ -18,6 +19,11 @@ public class CollectionConfig {
     @Bean
     public CreateCollectionUseCase createCollectionUseCase(CollectionRepository collectionRepository, StorageProvider storageProvider, StorageUrlPaths storageUrlPaths) {
         return new CreateCollectionUseCase(collectionRepository, storageProvider, storageUrlPaths);
+    }
+
+    @Bean
+    public DeleteCollectionUseCase deleteCollectionUseCase(CollectionRepository collectionRepository) {
+        return new DeleteCollectionUseCase(collectionRepository);
     }
 
     @Bean

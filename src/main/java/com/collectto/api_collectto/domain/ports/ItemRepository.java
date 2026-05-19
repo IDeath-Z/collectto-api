@@ -22,4 +22,5 @@ public interface ItemRepository {
     void decrementLikesCount(UUID itemId);
     void incrementCommentsCount(UUID itemId);
     void decrementCommentsCount(UUID itemId);
+    void deactivateItem(UUID itemId);
 }

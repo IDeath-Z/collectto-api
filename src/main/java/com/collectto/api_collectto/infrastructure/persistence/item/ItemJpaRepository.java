@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.infrastructure.persistence.item;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -94,4 +95,21 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
 
     @Modifying @Query("UPDATE ItemJpaEntity i SET i.commentsCount = i.commentsCount - 1 WHERE i.id = :itemId")
     void decrementCommentsCount(UUID itemId);
+
+    @Modifying @Query("UPDATE ItemJpaEntity i SET i.isActive = false, i.deactivatedAt = CURRENT_TIMESTAMP WHERE i.id = :itemId")
+    void deactivateItem(@Param("itemId") UUID itemId);
+
+    @Modifying @Query(value = """
+        DELETE FROM items 
+        WHERE is_active = false 
+        AND deactivated_at <= :cutoffDate
+    """, nativeQuery = true)
+    int purgeOldDeactivatedItems(@Param("cutoffDate") Instant cutoffDate);
+
+    @Query(value = """
+        SELECT * FROM items 
+        WHERE is_active = false 
+        AND deactivated_at <= :cutoffDate
+    """, nativeQuery = true)
+    List<ItemJpaEntity> findItemsToPurge(@Param("cutoffDate") Instant cutoffDate);
 }

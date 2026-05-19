@@ -63,6 +63,9 @@ public class CollectionJpaEntity {
     @Column(name = "is_active", nullable = false, insertable = false)
     private boolean isActive;
 
+    @Column(name = "deactivated_at")
+    private Instant deactivatedAt;
+
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     @CreationTimestamp
     private Instant createdAt;

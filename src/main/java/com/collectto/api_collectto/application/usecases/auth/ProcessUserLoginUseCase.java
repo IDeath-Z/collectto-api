@@ -18,8 +18,7 @@ public class ProcessUserLoginUseCase {
 
     public String execute(User user) {
         if (!user.isActive()) {
-            User activatedUser = user.activate();
-            userRepository.save(activatedUser);
+            userRepository.reactivateUser(user.getId());
         }
 
        return tokenProvider.generate(user.getEmail(), genExpirationDate());

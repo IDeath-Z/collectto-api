@@ -93,4 +93,9 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
     public void decrementFollowers(UUID collectionId) {
         collectionsJpaRepository.decrementFollowers(collectionId);
     }
+
+    @Override
+    public void deactivateCollection(UUID collectionId) {
+        collectionsJpaRepository.deactivateCollection(collectionId);
+    }
 }

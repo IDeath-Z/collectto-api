@@ -72,4 +72,14 @@ public class UserRepositoryAdapter implements UserRepository {
     public void decrementFollowing(UUID userId) {
         userJpaRepository.decrementFollowing(userId);
     }
+
+    @Override
+    public void deactivateUser(UUID userId) {
+        userJpaRepository.deactivateUser(userId);
+    }
+
+    @Override
+    public void reactivateUser(UUID userId) {
+        userJpaRepository.reactivateAccount(userId);
+    }
 }

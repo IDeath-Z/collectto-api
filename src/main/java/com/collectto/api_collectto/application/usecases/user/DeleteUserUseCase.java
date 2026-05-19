@@ -19,7 +19,6 @@ public class DeleteUserUseCase {
         if (!user.isActive())
             throw new IllegalStateException("User is already deactivated");
 
-        User deactivatedUser = user.deactivate();
-        userRepository.save(deactivatedUser);
+        userRepository.deactivateUser(userId);
     }
 }

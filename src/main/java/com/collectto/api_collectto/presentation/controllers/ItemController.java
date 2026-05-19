@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.item.CreateItemUseCase;
+import com.collectto.api_collectto.application.usecases.item.DeleteItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchCollectionItemsUseCase;
 import com.collectto.api_collectto.application.usecases.item.FetchItemUseCase;
 import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
@@ -52,6 +53,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ItemController {
 
     private final CreateItemUseCase createItemUseCase;
+    private final DeleteItemUseCase deleteItemUseCase;
     private final FetchCollectionItemsUseCase fetchCollectionItemsUseCase;
     private final FetchItemUseCase fetchItemUseCase;
     private final UpdateItemUseCase updateItemUseCase;
@@ -99,6 +101,17 @@ public class ItemController {
             output.createdAt(),
             output.updatedAt()
         );
+    }
+
+    @DeleteMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete an item", description = "Deletes an item by its ID. Only the owner of the item can perform this action.")
+    public void deleteItem(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID itemId) {
+        UUID userId = userDetails.getUser().getId();
+
+        transactionalProxy.execute(() -> deleteItemUseCase.execute(
+            new DeleteItemUseCase.Input(itemId, userId)
+        ));
     }
 
     @GetMapping("/by-collection/{collectionId}")

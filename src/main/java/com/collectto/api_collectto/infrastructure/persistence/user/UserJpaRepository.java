@@ -1,5 +1,7 @@
 package com.collectto.api_collectto.infrastructure.persistence.user;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,4 +27,24 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
 
     @Modifying @Query("UPDATE UserJpaEntity u SET u.followingCount = u.followingCount - 1 WHERE u.id = :userId AND u.followingCount > 0")
     void decrementFollowing(@Param("userId") UUID userId);
+
+    @Modifying @Query("UPDATE UserJpaEntity u SET u.isActive = false, u.deactivatedAt = CURRENT_TIMESTAMP WHERE u.id = :userId")
+    void deactivateUser(@Param("userId") UUID userId);
+
+    @Modifying @Query("UPDATE UserJpaEntity u SET u.isActive = true, u.deactivatedAt = null WHERE u.id = :userId")
+    void reactivateAccount(@Param("userId") UUID userId);
+
+    @Modifying @Query(value = """
+        DELETE FROM users 
+        WHERE is_active = false 
+        AND deactivated_at <= :cutoffDate
+    """, nativeQuery = true)
+    int purgeOldDeactivatedUsers(@Param("cutoffDate") Instant cutoffDate);
+
+    @Query(value = """
+        SELECT * FROM users 
+        WHERE is_active = false 
+        AND deactivated_at <= :cutoffDate
+    """, nativeQuery = true)
+    List<UserJpaEntity> findUsersToPurge(@Param("cutoffDate") Instant cutoffDate);
 }

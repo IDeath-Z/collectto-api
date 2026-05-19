@@ -122,4 +122,9 @@ public class ItemRepositoryAdapter implements ItemRepository {
     public void decrementCommentsCount(UUID itemId) {
         itemJpaRepository.decrementCommentsCount(itemId);
     }
+
+    @Override
+    public void deactivateItem(UUID itemId) {
+        itemJpaRepository.deactivateItem(itemId);
+    }
 }
