@@ -47,17 +47,17 @@ public class NotificationController {
                 .map(notification -> new NotificationPageResponse.NotificationSummary(
                     notification.id(), 
                     notification.recipientId(), 
-                    new NotificationPageResponse.ActorSummary(
+                    notification.actor() != null ? new NotificationPageResponse.ActorSummary(
                         notification.actor().id(), 
                         notification.actor().username(), 
                         notification.actor().profilePictureUrl()
-                    ),
+                    ) : null,
                     notification.context(), 
-                    new NotificationPageResponse.ReferenceSummary(
+                    notification.reference() != null ? new NotificationPageResponse.ReferenceSummary(
                         notification.reference().id(),
                         notification.reference().parentId(),
                         notification.reference().referenceImageUrl()
-                    ),
+                    ) : null,
                     notification.isRead(), 
                     notification.createdAt()
                 ))

@@ -39,7 +39,7 @@ public class NotificationJpaEntity {
     @Column(name = "is_read", nullable = false)
     private boolean isRead;
 
-    @Column(name = "updated_at", nullable = false, insertable = false)
+    @Column(name = "created_at", nullable = false, insertable = false)
     @CreationTimestamp
     private Instant createdAt;
 }
