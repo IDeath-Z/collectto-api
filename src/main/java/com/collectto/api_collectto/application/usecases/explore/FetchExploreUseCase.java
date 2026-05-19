@@ -2,6 +2,7 @@ package com.collectto.api_collectto.application.usecases.explore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -18,37 +19,55 @@ public class FetchExploreUseCase {
 
     private final ExploreRepository exploreRepository;
 
-    public record Input(UUID userId, int page, int size) {}
+    public record Input(UUID requesterId, int page, int size) {}
     public record Output(List<DomainExploreCard> content, int page, int size, boolean hasNext) {}
 
     public Output execute(Input input) {
         DomainPageRequest pageRequest = new DomainPageRequest(input.page(), input.size() / 2, SortBy.CREATED_AT_DESC);
         List<DomainExploreCard> exploreFeed = new ArrayList<>();
         
-        Set<UUID> favoriteTagIds = exploreRepository.getFavoriteTagIds(input.userId());
+        Set<UUID> favoriteTagIds = exploreRepository.getFavoriteTagIds(input.requesterId());
 
-        List<DomainExploreCard> items = new ArrayList<>(exploreRepository.getItemsByUserTagsAffinity(favoriteTagIds, pageRequest));
+        List<DomainExploreCard> items = new ArrayList<>();
+        Set<UUID> addedItemIds = new HashSet<>();
+
+        for (DomainExploreCard card : exploreRepository.getItemsByUserTagsAffinity(input.requesterId(), favoriteTagIds, pageRequest)) {
+            if (addedItemIds.add(card.id())) items.add(card);
+        }
         
         int missingItems = pageRequest.size() - items.size();
         if (missingItems > 0) {
-            items.addAll(exploreRepository.getItemsByPopularity(new DomainPageRequest(pageRequest.page(), missingItems, pageRequest.sortBy())));
-            
-            int stillMissing = pageRequest.size() - items.size();
-            if (stillMissing > 0) {
-                items.addAll(exploreRepository.getItemsByMostRecent(new DomainPageRequest(pageRequest.page(), stillMissing, pageRequest.sortBy())));
+            for (DomainExploreCard card : exploreRepository.getItemsByPopularity(input.requesterId(), new DomainPageRequest(pageRequest.page(), missingItems, pageRequest.sortBy()))) {
+                if (addedItemIds.add(card.id())) items.add(card);
+            }
+        }
+        
+        missingItems = pageRequest.size() - items.size();
+        if (missingItems > 0) {
+            for (DomainExploreCard card : exploreRepository.getItemsByMostRecent(input.requesterId(), new DomainPageRequest(pageRequest.page(), missingItems, pageRequest.sortBy()))) {
+                if (addedItemIds.add(card.id())) items.add(card);
             }
         }
         exploreFeed.addAll(items);
 
-        List<DomainExploreCard> collections = new ArrayList<>(exploreRepository.getCollectionsByUserTagsAffinity(favoriteTagIds, pageRequest));
+        List<DomainExploreCard> collections = new ArrayList<>();
+        Set<UUID> addedCollectionIds = new HashSet<>();
+
+        for (DomainExploreCard card : exploreRepository.getCollectionsByUserTagsAffinity(input.requesterId(), favoriteTagIds, pageRequest)) {
+            if (addedCollectionIds.add(card.id())) collections.add(card);
+        }
         
         int missingCollections = pageRequest.size() - collections.size();
         if (missingCollections > 0) {
-            collections.addAll(exploreRepository.getCollectionsByPopularity(new DomainPageRequest(pageRequest.page(), missingCollections, pageRequest.sortBy())));
-            
-            int stillMissing = pageRequest.size() - collections.size();
-            if (stillMissing > 0) {
-                collections.addAll(exploreRepository.getCollectionsByMostRecent(new DomainPageRequest(pageRequest.page(), stillMissing, pageRequest.sortBy())));
+            for (DomainExploreCard card : exploreRepository.getCollectionsByPopularity(input.requesterId(), new DomainPageRequest(pageRequest.page(), missingCollections, pageRequest.sortBy()))) {
+                if (addedCollectionIds.add(card.id())) collections.add(card);
+            }
+        }
+        
+        missingCollections = pageRequest.size() - collections.size();
+        if (missingCollections > 0) {
+            for (DomainExploreCard card : exploreRepository.getCollectionsByMostRecent(input.requesterId(), new DomainPageRequest(pageRequest.page(), missingCollections, pageRequest.sortBy()))) {
+                if (addedCollectionIds.add(card.id())) collections.add(card);
             }
         }
         exploreFeed.addAll(collections);

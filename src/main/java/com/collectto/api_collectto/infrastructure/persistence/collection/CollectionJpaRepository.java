@@ -45,12 +45,13 @@ public interface CollectionJpaRepository extends JpaRepository<CollectionJpaEnti
         SELECT DISTINCT c FROM CollectionJpaEntity c 
         JOIN FETCH c.tags t 
         WHERE t.id IN :tagIds 
-        AND c.isActive = true AND c.visibility = :privateVisibility
+        AND c.isActive = true AND c.visibility = :publicVisibility
+        AND c.user.id != :requesterId 
     """)
     List<CollectionJpaEntity> findRecommendedByTags(
-        @Param("tagIds") 
-        Set<UUID> tagIds,
+        @Param("tagIds") Set<UUID> tagIds,
         @Param("publicVisibility") Visibility publicVisibility,
+        @Param("requesterId") UUID requesterId,
         Pageable pageable
     );
 
@@ -58,17 +59,27 @@ public interface CollectionJpaRepository extends JpaRepository<CollectionJpaEnti
         SELECT DISTINCT c FROM CollectionJpaEntity c 
         LEFT JOIN FETCH c.tags t 
         WHERE c.isActive = true AND c.visibility = :publicVisibility
+        AND c.user.id != :requesterId 
         ORDER BY c.followersCount DESC
     """)
-    List<CollectionJpaEntity> findTrendingCollections(@Param("publicVisibility") Visibility publicVisibility, Pageable pageable);
+    List<CollectionJpaEntity> findTrendingCollections(
+        @Param("publicVisibility") Visibility publicVisibility, 
+        @Param("requesterId") UUID requesterId,
+        Pageable pageable
+    );
 
     @Query("""
         SELECT DISTINCT c FROM CollectionJpaEntity c 
         LEFT JOIN FETCH c.tags t 
         WHERE c.isActive = true AND c.visibility = :publicVisibility
+        AND c.user.id != :requesterId 
         ORDER BY c.createdAt DESC
     """)
-    List<CollectionJpaEntity> findLatestCollections(@Param("publicVisibility") Visibility publicVisibility, Pageable pageable);
+    List<CollectionJpaEntity> findLatestCollections(
+        @Param("publicVisibility") Visibility publicVisibility, 
+        @Param("requesterId") UUID requesterId,
+        Pageable pageable
+    );
 
     @Query(value = """
         SELECT c.collection_id as collectionId, 

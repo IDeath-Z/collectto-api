@@ -54,26 +54,39 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         JOIN i.collection c
         WHERE t.id IN :tagIds 
         AND i.isActive = true AND c.visibility = 'PUBLIC'
+        AND i.user.id != :requesterId 
     """)
-    List<ItemJpaEntity> findRecommendedByTags(@Param("tagIds") Set<UUID> tagIds, Pageable pageable);
+    List<ItemJpaEntity> findRecommendedByTags(
+        @Param("tagIds") Set<UUID> tagIds, 
+        @Param("requesterId") UUID requesterId,
+        Pageable pageable
+    );
 
     @Query("""
         SELECT DISTINCT i FROM ItemJpaEntity i 
         LEFT JOIN FETCH i.tags t
         JOIN i.collection c
         WHERE i.isActive = true AND c.visibility = 'PUBLIC'
+        AND i.user.id != :requesterId 
         ORDER BY i.likesCount DESC
     """)
-    List<ItemJpaEntity> findTrendingItems(Pageable pageable);
+    List<ItemJpaEntity> findTrendingItems(
+        @Param("requesterId") UUID requesterId,
+        Pageable pageable
+    );
 
     @Query("""
         SELECT DISTINCT i FROM ItemJpaEntity i 
         LEFT JOIN FETCH i.tags t
         JOIN i.collection c
         WHERE i.isActive = true AND c.visibility = 'PUBLIC'
+        AND i.user.id != :requesterId 
         ORDER BY i.createdAt DESC
     """)
-    List<ItemJpaEntity> findLatestItems(Pageable pageable);
+    List<ItemJpaEntity> findLatestItems(
+        @Param("requesterId") UUID requesterId,
+        Pageable pageable
+    );
 
     @Query("""
         SELECT DISTINCT i FROM ItemJpaEntity i 

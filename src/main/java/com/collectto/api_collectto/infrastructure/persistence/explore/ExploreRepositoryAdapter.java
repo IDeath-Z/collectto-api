@@ -41,54 +41,54 @@ public class ExploreRepositoryAdapter implements ExploreRepository {
     }
 
     @Override
-    public List<DomainExploreCard> getItemsByUserTagsAffinity(Set<UUID> tags, DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getItemsByUserTagsAffinity(UUID requesterId, Set<UUID> tags, DomainPageRequest pageRequest) {
         if (tags.isEmpty())
             return List.of();
 
         PageRequest springPage = PageConverter.toSpring(pageRequest);
 
         return exploreMapper.toItemDomain(
-            itemRepository.findRecommendedByTags(tags, springPage),
+            itemRepository.findRecommendedByTags(tags, requesterId, springPage),
             SocialContext.ITEM
         );
     }
 
     @Override
-    public List<DomainExploreCard> getItemsByPopularity(DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getItemsByPopularity(UUID requesterId, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
         return exploreMapper.toItemDomain(
-            itemRepository.findTrendingItems(springPage),
+            itemRepository.findTrendingItems(requesterId, springPage),
             SocialContext.ITEM
         );
     }
 
     @Override
-    public List<DomainExploreCard> getItemsByMostRecent(DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getItemsByMostRecent(UUID requesterId, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
         return exploreMapper.toItemDomain(
-            itemRepository.findLatestItems(springPage),
+            itemRepository.findLatestItems(requesterId, springPage),
             SocialContext.ITEM
         );
     }
 
     @Override
-    public List<DomainExploreCard> getCollectionsByUserTagsAffinity(Set<UUID> tags, DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getCollectionsByUserTagsAffinity(UUID requesterId, Set<UUID> tags, DomainPageRequest pageRequest) {
         if (tags.isEmpty()) 
             return List.of();
 
         PageRequest springPage = PageConverter.toSpring(pageRequest);
 
-        List<CollectionJpaEntity> entities = collectionRepository.findRecommendedByTags(tags, Visibility.PUBLIC,springPage);
+        List<CollectionJpaEntity> entities = collectionRepository.findRecommendedByTags(tags, Visibility.PUBLIC,requesterId, springPage);
         Set<UUID> collectionIds = entities.stream().map(CollectionJpaEntity::getId).collect(Collectors.toSet());
 
         return exploreMapper.toCollectionDomain(entities, mapMedias(collectionIds), SocialContext.COLLECTION);
     }
 
     @Override
-    public List<DomainExploreCard> getCollectionsByPopularity(DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getCollectionsByPopularity(UUID requesterId, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
 
-        List<CollectionJpaEntity> entities = collectionRepository.findTrendingCollections(Visibility.PUBLIC, springPage);
+        List<CollectionJpaEntity> entities = collectionRepository.findTrendingCollections(Visibility.PUBLIC, requesterId, springPage);
 
         if (entities.isEmpty())
             return List.of();
@@ -99,10 +99,10 @@ public class ExploreRepositoryAdapter implements ExploreRepository {
     }
 
     @Override
-    public List<DomainExploreCard> getCollectionsByMostRecent(DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getCollectionsByMostRecent(UUID requesterId, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
 
-        List<CollectionJpaEntity> entities = collectionRepository.findLatestCollections(Visibility.PUBLIC, springPage);
+        List<CollectionJpaEntity> entities = collectionRepository.findLatestCollections(Visibility.PUBLIC, requesterId, springPage);
 
         if (entities.isEmpty())
             return List.of();
