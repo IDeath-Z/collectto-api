@@ -40,7 +40,7 @@ public class FetchUserCollectionsUseCase {
             .map(collection -> new CollectionSummary(
                 collection.getId(),
                 collection.getName(),
-                collectionImagesMap.getOrDefault(collection.getId(), List.of()) // Proteção se não houver imagens
+                collectionImagesMap.getOrDefault(collection.getId(), List.of())
             ))
             .toList();
 
