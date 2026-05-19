@@ -1,6 +1,5 @@
 package com.collectto.api_collectto.application.usecases.userfollow;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,11 +38,9 @@ public class FollowUserUseCase {
             
             followToSave = existingFollow.pending(); // Declined follow can be re-requested
         } else {
-            followToSave = new UserFollow(
+            followToSave = UserFollow.createNewFollow(
                 input.followerId(),
-                input.followedId(),
-                FollowStatus.PENDING,
-                Instant.now()
+                input.followedId()
             );
         }
 

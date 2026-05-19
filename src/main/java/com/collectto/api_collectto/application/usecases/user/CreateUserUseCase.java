@@ -1,8 +1,6 @@
 package com.collectto.api_collectto.application.usecases.user;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
 
 import com.collectto.api_collectto.application.exceptions.EmailAlreadyExistsException;
 import com.collectto.api_collectto.application.exceptions.UsernameAlreadyExistsException;
@@ -28,20 +26,12 @@ public class CreateUserUseCase {
         if (userRepository.existsByUsername(input.username()))
             throw new UsernameAlreadyExistsException(input.username());
 
-        User user = new User(
-            UUID.randomUUID(),
+        User user = User.createNewUser(
             input.name(),
             input.username(),
             input.email(),
             passwordHasher.hash(input.password()),
-            null,
-            null,
-            null,
-            0,
-            0,
-            true,
-            LocalDate.parse(input.birthdayDate()),
-            Instant.now()
+            LocalDate.parse(input.birthdayDate())
         );
 
         User savedUser = userRepository.save(user);

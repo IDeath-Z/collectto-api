@@ -1,6 +1,5 @@
 package com.collectto.api_collectto.application.usecases.collection;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +23,6 @@ public class CreateCollectionUseCase {
         int followersCount, List<String> tags, boolean isActive, String createdAt, String updatedAt) {}
                 
     public Output execute(Input input) {
-        UUID collectionId = UUID.randomUUID();
         String coverImageUrl = input.coverImageUrl() == null
             ? null
             : storageProvider.buildPublicUrl(input.coverImageUrl());
@@ -32,18 +30,12 @@ public class CreateCollectionUseCase {
         if (coverImageUrl != null && !storageUrlPaths.isCollectionPathValid(input.coverImageUrl()))
             throw new RuntimeException("Invalid cover image path"); // Implement better validation as needed
 
-        Collection collection = new Collection(
-            collectionId,
-            input.userId(),
-            input.name(),
-            input.description(),
-            coverImageUrl,
-            Visibility.PRIVATE, // Default visibility, can be changed later
-            0,
-            input.tags(),
-            true,
-            Instant.now(),
-            Instant.now()
+        Collection collection = Collection.createNewCollection(
+            input.userId(), 
+            input.name(), 
+            input.description(), 
+            coverImageUrl, 
+            input.tags()
         );
 
         Collection savedCollection = collectionsRepository.save(collection);

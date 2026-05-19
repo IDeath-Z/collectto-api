@@ -1,6 +1,5 @@
 package com.collectto.api_collectto.application.usecases.collectionfollow;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.entities.Collection;
@@ -36,10 +35,9 @@ public class FollowCollectionUseCase {
         if (collectionFollowRepository.existsById(input.followerId(), input.collectionId()))
             throw new IllegalStateException("You are already following this collection."); // Implement better exception handling as needed
 
-        CollectionFollow newFollow = new CollectionFollow(
+        CollectionFollow newFollow = CollectionFollow.createNewFollow(
             input.followerId(), 
-            input.collectionId(), 
-            Instant.now()
+            input.collectionId()
         );
 
         CollectionFollow savedFollow = collectionFollowRepository.save(newFollow);

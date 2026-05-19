@@ -1,6 +1,5 @@
 package com.collectto.api_collectto.application.usecases.item;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,6 @@ public class CreateItemUseCase {
         if (!collection.getUserId().equals(input.userId()))
             throw new RuntimeException("User is not the owner of the collection");
 
-        UUID itemId = UUID.randomUUID();
         List<String> imageFilesUrls = (input.imageFilesUrls() == null || input.imageFilesUrls().isEmpty())
             ? null
             : input.imageFilesUrls().stream()
@@ -49,8 +47,7 @@ public class CreateItemUseCase {
                 .map(storageProvider::buildPublicUrl)
                 .toList();
 
-        Item item = new Item(
-            itemId,
+        Item item = Item.createNewItem(
             input.collectionId(),
             input.userId(),
             input.name(),
@@ -59,12 +56,7 @@ public class CreateItemUseCase {
             LocalDate.parse(input.lastUsedDate()),
             imageFilesUrls,
             input.attributes(),
-            0,
-            0,
-            input.tags(),
-            true,
-            Instant.now(),
-            Instant.now()
+            input.tags()
         );
 
         Item savedItem = itemRepository.save(item);

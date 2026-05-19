@@ -1,6 +1,5 @@
 package com.collectto.api_collectto.application.usecases.itemcomment;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.entities.Collection;
@@ -36,12 +35,10 @@ public class CommentItemUseCase {
         if (!collection.getUserId().equals(input.authorId()) && collection.getVisibility() == Visibility.PRIVATE)
             throw new RuntimeException("Unauthorized access to private collection"); // Implement better exception handling as needed
 
-        ItemComment comment = new ItemComment(
-            UUID.randomUUID(),
+        ItemComment comment = ItemComment.createNewComment(
             input.itemId(),
             input.authorId(),
-            input.content(),
-            Instant.now()
+            input.content()
         );
 
         ItemComment savedComment = itemCommentRepository.save(comment);

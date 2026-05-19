@@ -1,6 +1,5 @@
 package com.collectto.api_collectto.application.usecases.itemlike;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.entities.Collection;
@@ -39,16 +38,15 @@ public class LikeItemUseCase {
         if (itemLikeRepository.existsById(input.itemId(), input.likerId()))
             throw new RuntimeException("You already liked this item"); // Implement better exception handling as needed
 
-        ItemLike newLike = new ItemLike(
+        ItemLike newLike = ItemLike.createNewLike(
             input.itemId(), 
-            input.likerId(), 
-            Instant.now()
+            input.likerId()
         );
 
         ItemLike savedLike = itemLikeRepository.save(newLike);
         itemRepository.incrementLikesCount(savedLike.getItemId());
 
-        Notification notification = Notification.createItemCommentedNotification(
+        Notification notification = Notification.createItemLikedNotification(
             collection.getUserId(),
             savedLike.getLikerId(),
             savedLike.getItemId()
