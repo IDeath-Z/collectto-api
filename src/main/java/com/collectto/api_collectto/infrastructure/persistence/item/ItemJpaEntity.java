@@ -17,7 +17,6 @@ import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaEntity;
 import com.collectto.api_collectto.infrastructure.persistence.user.UserJpaEntity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -37,7 +36,7 @@ import lombok.Setter;
 public class ItemJpaEntity {
 
     @Id
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "item_id", nullable = false, unique = true)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -60,7 +59,7 @@ public class ItemJpaEntity {
     @Column(name = "last_used_date")
     private LocalDate lastUsedDate;
 
-    @ElementCollection
+    @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "media_urls")
     private List<String> mediaUrls;
 
@@ -75,7 +74,7 @@ public class ItemJpaEntity {
     private int commentsCount;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "collection_tags", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @JoinTable(name = "item_tags", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<TagJpaEntity> tags = new HashSet<>();
 
     @Column(name = "is_active", nullable = false, insertable = false)
