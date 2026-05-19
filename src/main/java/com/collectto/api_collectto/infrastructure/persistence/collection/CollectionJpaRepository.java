@@ -21,6 +21,18 @@ public interface CollectionJpaRepository extends JpaRepository<CollectionJpaEnti
     boolean existsByUserIdAndName(UUID userId, String name);
     List<CollectionJpaEntity> findByUserIdAndNameContainingIgnoreCase(UUID userId, String name);
 
+    @Query("""
+        SELECT c FROM CollectionJpaEntity c 
+        WHERE c.isActive = true 
+        AND c.visibility = :publicVisibility 
+        AND (c.name ILIKE %:query% OR c.description ILIKE %:query%)
+    """)
+    Page<CollectionJpaEntity> searchPublicCollections(
+            @Param("query") String query, 
+            @Param("publicVisibility") Visibility publicVisibility, 
+            Pageable pageable
+        );
+    
     @Query("SELECT c FROM CollectionJpaEntity c WHERE c.user.id = :userId AND (c.user.id = :requesterId OR c.visibility <> :privateVisibility)")
     Page<CollectionJpaEntity> findVisibleCollections(
         @Param("userId") UUID userId, 

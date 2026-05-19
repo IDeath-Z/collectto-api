@@ -61,5 +61,5 @@ public class UserJpaEntity {
 
     @Column(name = "creation_date", nullable = false, insertable = false, updatable = false)
     @CreationTimestamp
-    private Instant creationDate;
+    private Instant createdAt;
 }

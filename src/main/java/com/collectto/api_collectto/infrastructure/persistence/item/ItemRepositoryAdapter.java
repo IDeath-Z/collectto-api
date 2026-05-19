@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import com.collectto.api_collectto.domain.entities.Item;
+import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.domain.shared.DomainPageResult;
@@ -86,6 +87,14 @@ public class ItemRepositoryAdapter implements ItemRepository {
         return itemJpaRepository.findByCollectionIdAndNameContainingIgnoreCase(collectionId, name).stream()
             .map(itemMapper::toDomain)
             .toList();
+    }
+
+    @Override
+    public DomainPageResult<Item> searchPublicItems(String query, DomainPageRequest pageRequest) {
+        PageRequest springPage = PageConverter.toSpring(pageRequest);
+        Page<ItemJpaEntity> page = itemJpaRepository.searchPublicItems(query, Visibility.PUBLIC, springPage);
+
+        return PageConverter.toDomain(page, itemMapper::toDomain);
     }
 
     @Override

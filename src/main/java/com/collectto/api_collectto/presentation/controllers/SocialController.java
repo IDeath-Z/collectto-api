@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,11 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.explore.FetchExploreUseCase;
 import com.collectto.api_collectto.application.usecases.feed.FetchFeedUseCase;
+import com.collectto.api_collectto.application.usecases.search.FetchGlobalSearchUseCase;
 import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.item.ItemResponse;
 import com.collectto.api_collectto.presentation.dto.social.ExploreCardsResponse;
 import com.collectto.api_collectto.presentation.dto.social.FeedResponse;
+import com.collectto.api_collectto.presentation.dto.social.GlobalSearchResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class SocialController {
 
     private final FetchExploreUseCase fetchExploreUseCase;
     private final FetchFeedUseCase fetchFeedUseCase;
+    private final FetchGlobalSearchUseCase globalSearchUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @GetMapping("/explore")
@@ -91,5 +95,22 @@ public class SocialController {
             output.page(),
             output.hasNext()
         );
-    } 
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Global search", description = "Searches for users, collections, and items based on a query string.")
+    public GlobalSearchResponse search(@RequestParam(value = "term", defaultValue = "") String query, @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        var output = transactionalProxy.execute(() -> 
+            globalSearchUseCase.execute(new FetchGlobalSearchUseCase.Input(query, page, size))
+        );
+
+        return new GlobalSearchResponse(
+            List.copyOf(output.content()),
+            output.page(),
+            output.size(),
+            output.hasNext()
+        );
+    }
 }

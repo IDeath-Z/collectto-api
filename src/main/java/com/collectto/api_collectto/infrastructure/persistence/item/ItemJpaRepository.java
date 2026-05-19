@@ -20,6 +20,19 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
     List<ItemJpaEntity> findByUserId(UUID userId);
     List<ItemJpaEntity> findByCollectionIdAndNameContainingIgnoreCase(UUID collectionId, String name);
 
+    @Query("""
+        SELECT i FROM ItemJpaEntity i 
+        WHERE i.isActive = true 
+        AND i.collection.isActive = true 
+        AND i.collection.visibility = :publicVisibility 
+        AND (i.name ILIKE %:query% OR i.description ILIKE %:query%)
+    """)
+    Page<ItemJpaEntity> searchPublicItems(
+        @Param("query") String query, 
+        @Param("publicVisibility") Visibility publicVisibility, 
+        Pageable pageable
+    );
+
     @Query(value = """
     SELECT collection_id AS collectionId, media_url AS mediaUrl FROM (
         SELECT 

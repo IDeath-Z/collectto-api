@@ -21,7 +21,7 @@ public class UserMapper {
         entity.setFollowingCount(user.getFollowingCount());
         entity.setActive(user.isActive());
         entity.setBirthdayDate(user.getBirthdayDate());
-        entity.setCreationDate(user.getCreationDate());
+        entity.setCreatedAt(user.getCreationDate());
         return entity;
     }
 
@@ -39,7 +39,7 @@ public class UserMapper {
             entity.getFollowingCount(),
             entity.isActive(),
             entity.getBirthdayDate(),
-            entity.getCreationDate()
+            entity.getCreatedAt()
         );
     }
 }

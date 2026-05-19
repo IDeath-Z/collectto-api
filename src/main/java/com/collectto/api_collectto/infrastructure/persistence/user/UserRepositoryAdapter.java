@@ -4,10 +4,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
+import com.collectto.api_collectto.domain.shared.DomainPageRequest;
+import com.collectto.api_collectto.domain.shared.DomainPageResult;
+import com.collectto.api_collectto.infrastructure.persistence.shared.PageConverter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -51,6 +56,14 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         return userJpaRepository.findByEmail(email).map(userMapper::toDomain);
+    }
+
+    @Override
+    public DomainPageResult<User> searchActiveUsers(String query, DomainPageRequest pageRequest) {
+        PageRequest springPage = PageConverter.toSpring(pageRequest);
+        Page<UserJpaEntity> page = userJpaRepository.searchActiveUsers(query, springPage);
+        
+        return PageConverter.toDomain(page, userMapper::toDomain);
     }
 
     @Override
