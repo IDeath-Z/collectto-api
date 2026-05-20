@@ -78,7 +78,17 @@ public class UserController {
 
         return new CurrentUserInfoResponse(
             output.id(),
-            output.username()
+            output.name(),
+            output.username(),
+            output.email(),
+            output.bio(),
+            output.profilePictureUrl(),
+            output.profileBackgroundUrl(),
+            output.followersCount(),
+            output.followingCount(),
+            output.isActive(),
+            output.birthdayDate(),
+            output.creationDate()
         );
     }
 
@@ -100,21 +110,18 @@ public class UserController {
             output.id(),
             output.name(),
             output.username(),
-            output.email(),
             output.bio(),
             output.profilePictureUrl(),
             output.profileBackgroundUrl(),
             output.followersCount(),
             output.followingCount(),
-            output.isActive(),
-            output.birthdayDate(),
             output.creationDate()
         );
     }
 
     @PatchMapping("/update")
     @Operation(summary = "Update user profile", description = "Updates the profile of the authenticated user. Only the provided fields will be updated.")
-    public UserResponse patch(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateUserRequest request) {
+    public CurrentUserInfoResponse patch(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateUserRequest request) {
         UUID userId = userDetails.getUser().getId();
 
         var output = transactionalProxy.execute(() -> updateUserUseCase.execute(
@@ -129,7 +136,7 @@ public class UserController {
             )
         ));
 
-        return new UserResponse(
+        return new CurrentUserInfoResponse(
             output.id(),
             output.name(),
             output.username(),

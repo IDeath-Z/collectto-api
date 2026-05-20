@@ -11,7 +11,8 @@ public class FetchCurrentUserInfoUseCase {
 
     private final UserRepository userRepository;
 
-    public record Output(UUID id, String username) {}
+        public record Output(UUID id, String name, String username, String email, String bio, String profilePictureUrl,
+        String profileBackgroundUrl, int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {}
 
     public Output execute(UUID userId) {
         User user = userRepository.findById(userId)
@@ -19,7 +20,17 @@ public class FetchCurrentUserInfoUseCase {
 
         return new Output(
             user.getId(),
-            user.getUsername()
+            user.getName(),
+            user.getUsername(),
+            user.getEmail(),
+            user.getBio(),
+            user.getProfilePictureUrl(),
+            user.getProfileBackgroundUrl(),
+            user.getFollowersCount(),
+            user.getFollowingCount(),
+            user.isActive(),
+            user.getBirthdayDate().toString(),
+            user.getCreationDate().toString()
         );
     }
 }

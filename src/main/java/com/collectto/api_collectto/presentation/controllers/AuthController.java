@@ -32,6 +32,6 @@ public class AuthController {
     public LoginResponse login(@RequestBody LoginRequest request) {
         var user = springSecurityAuthentication.authenticate(request.email(), request.password());
         var token = transactionalProxy.execute(() ->  processUserLoginUseCase.execute(user));
-        return new LoginResponse(token); // Implement response entity later
+        return new LoginResponse(user.getId(), token); // Implement response entity later
     }
 }

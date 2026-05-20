@@ -14,9 +14,6 @@ public record UserResponse(
     @Schema(description = "Unique username", example = "maria_silva") 
     String username,
     
-    @Schema(description = "User email address", example = "maria@email.com", format = "email")
-    String email,
-    
     @Schema(description = "User bio", example = "Collecting memories")
     String bio,
     
@@ -31,12 +28,6 @@ public record UserResponse(
     
     @Schema(description = "Number of following")
     int followingCount,
-    
-    @Schema(description = "User active status")
-    boolean isActive,
-    
-    @Schema(description = "User birthday date", example = "1990-01-01")
-    String birthdayDate,
     
     @Schema(description = "Timestamp of user creation", example = "2026-01-01T00:00:00Z")
     String createdAt
