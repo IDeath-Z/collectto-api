@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.collectto.api_collectto.application.usecases.user.CreateUserUseCase;
 import com.collectto.api_collectto.application.usecases.user.DeleteUserUseCase;
+import com.collectto.api_collectto.application.usecases.user.FetchCurrentUserInfoUseCase;
 import com.collectto.api_collectto.application.usecases.user.FetchUserUseCase;
 import com.collectto.api_collectto.presentation.dto.user.CreateUserRequest;
 import com.collectto.api_collectto.presentation.dto.user.CreateUserResponse;
+import com.collectto.api_collectto.presentation.dto.user.CurrentUserInfoResponse;
 import com.collectto.api_collectto.presentation.dto.user.UserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +38,7 @@ public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
+    private final FetchCurrentUserInfoUseCase fetchCurrentUserInfoUseCase;
     private final FetchUserUseCase fetchUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final AcceptFollowUseCase acceptFollowUseCase;
@@ -64,6 +67,19 @@ public class UserController {
             output.email(),
             output.creationDate()
         ); // Implement response entity later
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "Fetch authenticated user details", description = "Retrieves the details of the currently authenticated user.")
+    public CurrentUserInfoResponse getAuthenticatedUser(@AuthenticationPrincipal SecurityUserDetails userDetails) {
+        UUID userId = userDetails.getUser().getId();
+
+        var output = transactionalProxy.executeReadOnly(() -> fetchCurrentUserInfoUseCase.execute(userId));
+
+        return new CurrentUserInfoResponse(
+            output.id(),
+            output.username()
+        );
     }
 
     @DeleteMapping("/me")

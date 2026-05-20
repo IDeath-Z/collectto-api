@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.collectto.api_collectto.application.usecases.user.CreateUserUseCase;
 import com.collectto.api_collectto.application.usecases.user.DeleteUserUseCase;
+import com.collectto.api_collectto.application.usecases.user.FetchCurrentUserInfoUseCase;
 import com.collectto.api_collectto.application.usecases.user.FetchUserUseCase;
 import com.collectto.api_collectto.application.usecases.user.UpdateUserUseCase;
 import com.collectto.api_collectto.domain.ports.PasswordHasher;
@@ -23,6 +24,11 @@ public class UserConfig {
     @Bean
     public DeleteUserUseCase deleteUserUseCase(UserRepository userRepository) {
         return new DeleteUserUseCase(userRepository);
+    }
+
+    @Bean
+    public FetchCurrentUserInfoUseCase fetchCurrentUserInfoUseCase(UserRepository userRepository) {
+        return new FetchCurrentUserInfoUseCase(userRepository);
     }
 
     @Bean
