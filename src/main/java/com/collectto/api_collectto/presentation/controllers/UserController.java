@@ -17,10 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.collectto.api_collectto.application.usecases.user.ChangePasswordUseCase;
 import com.collectto.api_collectto.application.usecases.user.CreateUserUseCase;
 import com.collectto.api_collectto.application.usecases.user.DeleteUserUseCase;
 import com.collectto.api_collectto.application.usecases.user.FetchCurrentUserInfoUseCase;
 import com.collectto.api_collectto.application.usecases.user.FetchUserUseCase;
+import com.collectto.api_collectto.presentation.dto.user.ChangePasswordRequest;
 import com.collectto.api_collectto.presentation.dto.user.CreateUserRequest;
 import com.collectto.api_collectto.presentation.dto.user.CreateUserResponse;
 import com.collectto.api_collectto.presentation.dto.user.CurrentUserInfoResponse;
@@ -30,12 +32,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 
+
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
+    private final ChangePasswordUseCase changePasswordUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
     private final FetchCurrentUserInfoUseCase fetchCurrentUserInfoUseCase;
@@ -47,7 +51,23 @@ public class UserController {
     private final UnfollowUserUseCase unfollowUserUseCase;
     private final TransactionalProxy transactionalProxy;
 
-    @PostMapping("create")
+    @PatchMapping("/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Change user password", description = "Allows the authenticated user to change their password by providing the current password and a new password.")
+    public void changePassword(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody ChangePasswordRequest request) {
+        UUID userId = userDetails.getUser().getId();
+
+        transactionalProxy.execute(() -> changePasswordUseCase.execute(
+            new ChangePasswordUseCase.Input(
+                userId,
+                request.currentPassword(),
+                request.newPassword()
+            )
+        ));
+    }
+    
+
+    @PostMapping("/create")
     @Operation(summary = "Create a new user", description = "Registers a new user in the system with the provided details.")
     public CreateUserResponse create(@RequestBody @Valid CreateUserRequest request) {
         var output = transactionalProxy.execute(() -> createUserUseCase.execute(

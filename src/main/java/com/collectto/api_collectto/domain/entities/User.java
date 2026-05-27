@@ -155,4 +155,22 @@ public class User {
             this.creationDate
         );
     }
+
+    public User updatePassword(String newPasswordHash) {
+        return new User(
+            this.id,
+            this.name,
+            this.username,
+            this.email,
+            newPasswordHash,
+            this.bio,
+            this.profilePictureUrl,
+            this.profileBackgroundUrl,
+            this.followersCount,
+            this.followingCount,
+            this.isActive,
+            this.birthdayDate,
+            this.creationDate
+        );
+    }
 }

@@ -3,6 +3,7 @@ package com.collectto.api_collectto.infrastructure.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.collectto.api_collectto.application.usecases.user.ChangePasswordUseCase;
 import com.collectto.api_collectto.application.usecases.user.CreateUserUseCase;
 import com.collectto.api_collectto.application.usecases.user.DeleteUserUseCase;
 import com.collectto.api_collectto.application.usecases.user.FetchCurrentUserInfoUseCase;
@@ -15,6 +16,11 @@ import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 
 @Configuration
 public class UserConfig {
+
+    @Bean
+    public ChangePasswordUseCase changePasswordUseCase(UserRepository userRepository, PasswordHasher passwordHasher) {
+        return new ChangePasswordUseCase(userRepository, passwordHasher);
+    }
 
     @Bean
     public CreateUserUseCase createUserUseCase(UserRepository userRepository, PasswordHasher passwordHasher) {
