@@ -2,6 +2,7 @@ package com.collectto.api_collectto.application.usecases.collectionfollow;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.enums.NotificationContext;
 import com.collectto.api_collectto.domain.ports.CollectionFollowRepository;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
@@ -20,7 +21,7 @@ public class UnfollowCollectionUseCase {
 
     public void execute(Input input) {
         if (!collectionFollowRepository.existsById(input.followerId(), input.collectionId()))
-            throw new IllegalArgumentException("User is not following the collection");
+            throw new ResourceNotFoundException("User is not following the collection with id: " + input.collectionId());
 
         collectionFollowRepository.deleteById(input.followerId(), input.collectionId());
         collectionRepository.decrementFollowers(input.collectionId());

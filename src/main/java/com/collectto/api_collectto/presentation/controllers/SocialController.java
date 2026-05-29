@@ -3,6 +3,7 @@ package com.collectto.api_collectto.presentation.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
@@ -37,13 +37,13 @@ public class SocialController {
 
     @GetMapping("/explore")
     @Operation(summary = "Explore public items or collections", description = "Fetches a paginated list of cards.")
-    public ExploreCardsResponse getExplore(@AuthenticationPrincipal SecurityUserDetails userDetails,  @RequestParam(defaultValue = "0") int page, 
+    public ResponseEntity<ExploreCardsResponse> getExplore(@AuthenticationPrincipal SecurityUserDetails userDetails,  @RequestParam(defaultValue = "0") int page, 
         @RequestParam(defaultValue = "10") int size) {
         UUID userId = userDetails.getUser().getId();
 
         var output = transactionalProxy.execute(() -> fetchExploreUseCase.execute(new FetchExploreUseCase.Input(userId, page, size)));
 
-        return new ExploreCardsResponse(
+        return ResponseEntity.ok(new ExploreCardsResponse(
             output.content().stream().map(card -> new ExploreCardsResponse.ExploreCardSummary(
                 card.id(),
                 card.context(),
@@ -53,18 +53,18 @@ public class SocialController {
             output.size(),
             output.page(),
             output.hasNext()
-        );
+        ));
     }
 
     @GetMapping("/feed")
     @Operation(summary = "Fetch user's feed", description = "Retrieves the user's feed.")
-    public FeedResponse getFeed(@AuthenticationPrincipal SecurityUserDetails userDetails,  @RequestParam(defaultValue = "0") int page, 
+    public ResponseEntity<FeedResponse> getFeed(@AuthenticationPrincipal SecurityUserDetails userDetails,  @RequestParam(defaultValue = "0") int page, 
         @RequestParam(defaultValue = "10") int size) {
         UUID userId = userDetails.getUser().getId();
 
         var output = transactionalProxy.execute(() -> fetchFeedUseCase.execute(new FetchFeedUseCase.Input(userId, page, size)));
 
-        return new FeedResponse(
+        return ResponseEntity.ok(new FeedResponse(
             output.content().stream().map(feed -> new FeedResponse.FeedSummary(
                 new FeedResponse.FeedSourceSummary(
                     feed.source().id(),
@@ -94,23 +94,23 @@ public class SocialController {
             output.size(),
             output.page(),
             output.hasNext()
-        );
+        ));
     }
 
     @GetMapping("/search")
     @Operation(summary = "Global search", description = "Searches for users, collections, and items based on a query string.")
-    public GlobalSearchResponse search(@RequestParam(value = "term", defaultValue = "") String query, @RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<GlobalSearchResponse> search(@RequestParam(value = "term", defaultValue = "") String query, @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "10") int size) {
 
         var output = transactionalProxy.execute(() -> 
             globalSearchUseCase.execute(new FetchGlobalSearchUseCase.Input(query, page, size))
         );
 
-        return new GlobalSearchResponse(
+        return ResponseEntity.ok(new GlobalSearchResponse(
             List.copyOf(output.content()),
             output.page(),
             output.size(),
             output.hasNext()
-        );
+        ));
     }
 }

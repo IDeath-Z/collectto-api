@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,9 +30,9 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Authenticate user and generate JWT token", description = "Validates user credentials and returns a JWT access token for authenticated sessions.")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         var user = springSecurityAuthentication.authenticate(request.email(), request.password());
         var token = transactionalProxy.execute(() ->  processUserLoginUseCase.execute(user));
-        return new LoginResponse(user.getId(), token); // Implement response entity later
+        return ResponseEntity.ok(new LoginResponse(user.getId(), token));
     }
 }

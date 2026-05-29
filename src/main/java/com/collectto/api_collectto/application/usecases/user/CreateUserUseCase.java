@@ -2,8 +2,7 @@ package com.collectto.api_collectto.application.usecases.user;
 
 import java.time.LocalDate;
 
-import com.collectto.api_collectto.application.exceptions.EmailAlreadyExistsException;
-import com.collectto.api_collectto.application.exceptions.UsernameAlreadyExistsException;
+import com.collectto.api_collectto.application.exceptions.ResourceAlreadyExistsException;
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.PasswordHasher;
 import com.collectto.api_collectto.domain.ports.UserRepository;
@@ -22,9 +21,9 @@ public class CreateUserUseCase {
             
     public Output execute(Input input) {
         if (userRepository.existsByEmail(input.email()))
-            throw new EmailAlreadyExistsException(input.email());
+            throw new ResourceAlreadyExistsException("Email already in use");
         if (userRepository.existsByUsername(input.username()))
-            throw new UsernameAlreadyExistsException(input.username());
+            throw new ResourceAlreadyExistsException("Username already in use");
 
         User user = User.createNewUser(
             input.name(),

@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.entities.ItemComment;
@@ -13,6 +15,7 @@ import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemCommentRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
+import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import com.collectto.api_collectto.domain.shared.DomainPageResult;
@@ -26,6 +29,7 @@ public class FetchItemCommentsUseCase {
     private final CollectionRepository collectionRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final UserFollowRepository userFollowRepository;
 
     public record Input(UUID itemId, UUID requesterId, DomainPageRequest pageRequest) {}
     public record CommenterSummary(UUID commentId, UUID userId, String username, String profilePictureURL, String content, String createdAt) {}
@@ -33,13 +37,19 @@ public class FetchItemCommentsUseCase {
 
         public Output execute(Input input) {
         Item item = itemRepository.findById(input.itemId())
-            .orElseThrow(() -> new RuntimeException("Item not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Item not found with id: " + input.itemId()));
 
         Collection collection = collectionRepository.findById(item.getCollectionId())
-            .orElseThrow(() -> new RuntimeException("Collection not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Collection not found with id: " + item.getCollectionId()));
 
-        if (!collection.getUserId().equals(input.requesterId()) && collection.getVisibility() == Visibility.PRIVATE)
-            throw new RuntimeException("Unauthorized access to private collection"); // Implement better exception handling as needed
+        if (!collection.getUserId().equals(input.requesterId())) {
+            if (collection.getVisibility() == Visibility.PRIVATE)
+                throw new ForbiddenActionException("User does not have permission to view comments on this item");
+
+            if (collection.getVisibility() == Visibility.FRIENDS)
+                if (!userFollowRepository.isFollowing(input.requesterId(), collection.getUserId()))
+                    throw new ForbiddenActionException("User does not have permission to view comments on this item");
+        }
 
         DomainPageResult<ItemComment> commentPage = itemCommentRepository.findByItemId(input.itemId(), input.pageRequest());
 

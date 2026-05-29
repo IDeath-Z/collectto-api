@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
@@ -31,17 +34,17 @@ public class CreateItemUseCase {
     
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.collectionId())
-                .orElseThrow(() -> new RuntimeException("Collection not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Collection not found with id: " + input.collectionId()));
 
         if (!collection.getUserId().equals(input.userId()))
-            throw new RuntimeException("User is not the owner of the collection");
+            throw new ForbiddenActionException("User do not have permission to add items to this collection");
 
         List<String> imageFilesUrls = (input.imageFilesUrls() == null || input.imageFilesUrls().isEmpty())
             ? null
             : input.imageFilesUrls().stream()
                 .filter(path -> {
                     if (!storageUrlPaths.isItemPathValid(path))
-                        throw new RuntimeException("Invalid image path"); // Implement better validation as needed
+                        throw new BusinessRuleException("Invalid image path: " + path);
                     return true;
                 })
                 .map(storageProvider::buildPublicUrl)

@@ -2,6 +2,8 @@ package com.collectto.api_collectto.application.usecases.userfollow;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.UserFollow;
 import com.collectto.api_collectto.domain.enums.FollowStatus;
 import com.collectto.api_collectto.domain.enums.NotificationContext;
@@ -22,13 +24,13 @@ public class UnfollowUserUseCase {
 
     public void execute(Input input) {
         if (input.followerId().equals(input.followedId()))
-            throw new IllegalArgumentException("Follower and followed users must be different.");
+            throw new BusinessRuleException("Follower and followed users must be different");
 
         UserFollow existingFollow = userFollowRepository.findById(input.followerId(), input.followedId())
-            .orElseThrow(() -> new IllegalStateException("Follow relationship not found."));
+            .orElseThrow(() -> new ResourceNotFoundException("Following relationship not found with followerId: " + input.followerId() + " and followedId: " + input.followedId()));
 
         if (existingFollow.getStatus() == FollowStatus.DECLINED)
-            throw new IllegalStateException("Cannot unfollow a declined request.");
+            throw new BusinessRuleException("Cannot unfollow a declined request");
 
         userFollowRepository.deleteById(existingFollow.getFollowerId(), existingFollow.getFollowedId());
 
@@ -42,6 +44,7 @@ public class UnfollowUserUseCase {
         }
         if (existingFollow.getStatus() == FollowStatus.ACCEPTED) {
             userRepository.decrementFollowers(existingFollow.getFollowedId());
+            userRepository.decrementFollowing(existingFollow.getFollowerId());
             notificationRepository.deleteByRecipientIdAndActorIdAndContext(
                 existingFollow.getFollowedId(), 
                 existingFollow.getFollowerId(), 

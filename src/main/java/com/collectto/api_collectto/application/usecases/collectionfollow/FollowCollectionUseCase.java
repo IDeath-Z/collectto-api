@@ -2,6 +2,10 @@ package com.collectto.api_collectto.application.usecases.collectionfollow;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
+import com.collectto.api_collectto.application.exceptions.ResourceAlreadyExistsException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.CollectionFollow;
 import com.collectto.api_collectto.domain.entities.Notification;
@@ -9,6 +13,7 @@ import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionFollowRepository;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.NotificationRepository;
+import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +22,7 @@ public class FollowCollectionUseCase {
 
     private final CollectionFollowRepository collectionFollowRepository;
     private final CollectionRepository collectionRepository;
+    private final UserFollowRepository userFollowRepository;
     private final NotificationRepository notificationRepository;
 
     public record Input(UUID followerId, UUID collectionId) {}
@@ -24,16 +30,20 @@ public class FollowCollectionUseCase {
 
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.collectionId())
-            .orElseThrow(() -> new RuntimeException("Collection not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Collection not found with id: " + input.collectionId()));
 
         if (collection.getUserId().equals(input.followerId()))
-            throw new RuntimeException("User cannot follow their own collection"); //Implement better exception handling as needed
+            throw new BusinessRuleException("User cannot follow their own collection");
 
         if (collection.getVisibility() == Visibility.PRIVATE)
-            throw new RuntimeException("Unauthorized access to private collection"); // Implement better exception handling as needed
+             throw new ForbiddenActionException("User does not have permission to follow this collection");
+
+        if (collection.getVisibility() == Visibility.FRIENDS)
+                if (!userFollowRepository.isFollowing(input.followerId(), collection.getUserId()))
+                    throw new ForbiddenActionException("User does not have permission to follow this collection");
 
         if (collectionFollowRepository.existsById(input.followerId(), input.collectionId()))
-            throw new IllegalStateException("You are already following this collection."); // Implement better exception handling as needed
+            throw new ResourceAlreadyExistsException("You are already following this collection.");
 
         CollectionFollow newFollow = CollectionFollow.createNewFollow(
             input.followerId(), 
@@ -56,5 +66,4 @@ public class FollowCollectionUseCase {
             savedFollow.getCreatedAt().toString()
         );
     }
-
 }

@@ -11,6 +11,7 @@ import com.collectto.api_collectto.application.usecases.item.UpdateItemUseCase;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
+import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 
 @Configuration
@@ -27,13 +28,13 @@ public class ItemConfig {
     }
     
     @Bean
-    public FetchCollectionItemsUseCase fetchCollectionItemsUseCase(ItemRepository itemRepository, CollectionRepository collectionRepository) {
-        return new FetchCollectionItemsUseCase(itemRepository, collectionRepository);
+    public FetchCollectionItemsUseCase fetchCollectionItemsUseCase(ItemRepository itemRepository, CollectionRepository collectionRepository, UserFollowRepository userFollowRepository) {
+        return new FetchCollectionItemsUseCase(itemRepository, collectionRepository, userFollowRepository);
     }
 
     @Bean
-    public FetchItemUseCase fetchItemUseCase(ItemRepository itemRepository, CollectionRepository collectionRepository) {
-        return new FetchItemUseCase(itemRepository, collectionRepository);
+    public FetchItemUseCase fetchItemUseCase(ItemRepository itemRepository, CollectionRepository collectionRepository, UserFollowRepository userFollowRepository) {
+        return new FetchItemUseCase(itemRepository, collectionRepository, userFollowRepository);
     }
 
     @Bean

@@ -2,6 +2,7 @@ package com.collectto.api_collectto.presentation.controllers;
 
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class NotificationController {
 
     @GetMapping()
     @Operation(summary = "Fetch paginated notifications for the authenticated user", description = "Retrieves a paginated list of notifications for the authenticated user. Supports pagination and sorting.")
-    public NotificationPageResponse getNotifications(@AuthenticationPrincipal SecurityUserDetails userDetails,
+    public ResponseEntity<NotificationPageResponse> getNotifications(@AuthenticationPrincipal SecurityUserDetails userDetails,
         @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {
         UUID userId = userDetails.getUser().getId();
 
@@ -42,7 +42,7 @@ public class NotificationController {
             )
         ));
             
-        return new NotificationPageResponse(
+        return ResponseEntity.ok(new NotificationPageResponse(
             output.notifications().stream()
                 .map(notification -> new NotificationPageResponse.NotificationSummary(
                     notification.id(), 
@@ -65,6 +65,6 @@ public class NotificationController {
             output.totalPages(), 
             output.totalElements(), 
             output.currentPage()
-        );
+        ));
     } 
 }

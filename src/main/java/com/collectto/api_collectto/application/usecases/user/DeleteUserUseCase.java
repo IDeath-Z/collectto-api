@@ -2,6 +2,7 @@ package com.collectto.api_collectto.application.usecases.user;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
@@ -14,11 +15,8 @@ public class DeleteUserUseCase {
 
     public void execute(UUID userId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
-        if (!user.isActive())
-            throw new IllegalStateException("User is already deactivated");
-
-        userRepository.deactivateUser(userId);
+        userRepository.deactivateUser(user.getId());
     }
 }

@@ -3,7 +3,8 @@ package com.collectto.api_collectto.application.usecases.user;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.ports.StorageProvider;
-
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
@@ -25,7 +26,7 @@ public class UpdateUserUseCase {
 
     public Output execute(Input input) {
         User user = userRepository.findById(input.id())
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + input.id()));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + input.id()));
 
         String oldPictureUrl = user.getProfilePictureUrl();
         String oldBackgroundUrl = user.getProfileBackgroundUrl();
@@ -45,7 +46,7 @@ public class UpdateUserUseCase {
                 finalPictureUrl = oldPictureUrl;
             } else { // Validates and builds URL for new picture
                 if (!storageUrlPaths.isProfilePictureValid(input.profilePictureUrl()))
-                    throw new RuntimeException("Invalid profile image path");
+                    throw new BusinessRuleException("Invalid profile image path: " + input.profilePictureUrl());
                 finalPictureUrl = storageProvider.buildPublicUrl(input.profilePictureUrl());
                 deleteOldPicture = true;
             }
@@ -60,7 +61,7 @@ public class UpdateUserUseCase {
                 finalBackgroundUrl = oldBackgroundUrl;
             } else {
                 if (!storageUrlPaths.isProfileBackgroundValid(input.profileBackgroundUrl()))
-                    throw new RuntimeException("Invalid background image path");
+                    throw new BusinessRuleException("Invalid background image path: " + input.profileBackgroundUrl());
                 finalBackgroundUrl = storageProvider.buildPublicUrl(input.profileBackgroundUrl());
                 deleteOldBackground = true;
             }

@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
@@ -28,10 +31,10 @@ public class UpdateItemUseCase {
 
     public Output execute(Input input) {
         Item item = itemRepository.findById(input.itemId())
-            .orElseThrow(() -> new RuntimeException("Item not found with id: " + input.itemId()));
+            .orElseThrow(() -> new ResourceNotFoundException("Item not found with id: " + input.itemId()));
 
         if (!item.getUserId().equals(input.requesterId()))
-            throw new RuntimeException("Unauthorized");
+            throw new ForbiddenActionException("User does not have permission to update items of this collection");
 
         List<String> oldImageUrls = item.getMediaURLs() != null ? item.getMediaURLs() : List.of();
         
@@ -47,7 +50,7 @@ public class UpdateItemUseCase {
                         return path;
                     }
                     if (!storageUrlPaths.isItemPathValid(path)) {
-                        throw new RuntimeException("Invalid image path: " + path);
+                        throw new BusinessRuleException("Invalid image path: " + path);
                     }
                     return storageProvider.buildPublicUrl(path);
                 })

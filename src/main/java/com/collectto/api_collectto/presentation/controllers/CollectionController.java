@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.collectto.api_collectto.application.usecases.collection.CreateCollectionUseCase;
@@ -33,10 +32,11 @@ import com.collectto.api_collectto.presentation.dto.collection.CollectionRespons
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @CrossOrigin
 @RestController
@@ -55,7 +55,7 @@ public class CollectionController {
 
     @PostMapping(value = "/create")
     @Operation(summary = "Create a new collection", description = "Registers a new collection in the system with the provided details.")
-    public CollectionResponse create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateCollectionRequest request) {
+    public ResponseEntity<CollectionResponse> create(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid CreateCollectionRequest request) {
         UUID userId = userDetails.getUser().getId();
 
         var output = transactionalProxy.execute(() -> createCollectionUseCase.execute(
@@ -68,42 +68,44 @@ public class CollectionController {
             )
         ));
         
-        return new CollectionResponse(
-            output.id(),
-            output.userId(),
-            output.name(),
-            output.description(),
-            output.coverImageURL(),
-            output.visibility(),
-            output.followersCount(),
-            output.tags(),
-            output.isActive(),
-            output.createdAt(),
-            output.updatedAt()
-        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(new CollectionResponse(
+                output.id(),
+                output.userId(),
+                output.name(),
+                output.description(),
+                output.coverImageURL(),
+                output.visibility(),
+                output.followersCount(),
+                output.tags(),
+                output.isActive(),
+                output.createdAt(),
+                output.updatedAt()
+            ));
     }
 
-    @DeleteMapping("{collectionId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{collectionId}")
     @Operation(summary = "Delete a collection", description = "Deletes a collection by its ID. Only the owner of the collection can perform this action.")
-    public void deleteCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
+    public ResponseEntity<Void> deleteCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID userId = userDetails.getUser().getId();
 
         transactionalProxy.execute(() -> deleteCollectionUseCase.execute(
             new DeleteCollectionUseCase.Input(collectionId, userId)
         ));
+
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("{collectionId}")
+    @GetMapping("/{collectionId}")
     @Operation(summary = "Fetch collection details", description = "Retrieves the details of a specific collection by its ID, with visibility filtering based on the requester's relationship to the collection owner.")
-    public CollectionResponse getCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
+    public ResponseEntity<CollectionResponse> getCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID requesterId = userDetails.getUser().getId();
 
         var output = transactionalProxy.executeReadOnly(() -> fetchCollectionUseCase.execute(
             new FetchCollectionUseCase.Input(collectionId, requesterId)
         ));
 
-        return new CollectionResponse(
+        return ResponseEntity.ok(new CollectionResponse(
             output.id(),
             output.userId(),
             output.name(),
@@ -115,12 +117,12 @@ public class CollectionController {
             output.isActive(),
             output.createdAt(),
             output.updatedAt()
-        );
+        ));
     }
     
     @GetMapping("/by-user/{userId}")
     @Operation(summary = "Fetch paginated collections of a user", description = "Retrieves a paginated list of collections for a specific user, with visibility filtering based on the requester's relationship to the collection owner.")
-    public CollectionPageResponse getPaginatedCollections(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID userId,
+    public ResponseEntity<CollectionPageResponse> getPaginatedCollections(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID userId,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "CREATED_AT_DESC") SortBy sortBy) {
             
         UUID requesterId = userDetails.getUser().getId();
@@ -133,7 +135,7 @@ public class CollectionController {
             )
         ));
         
-        return new CollectionPageResponse(
+        return ResponseEntity.ok(new CollectionPageResponse(
             output.collections().stream()
                 .map(collection -> new CollectionPageResponse.CollectionSummaryResponse(
                     collection.id(),
@@ -144,17 +146,18 @@ public class CollectionController {
             output.totalPages(),
             output.totalElements(),
             output.currentPage()
-        );
+        ));
     }
 
-    @PatchMapping("/update")
+    @PatchMapping("/update/{collectionId}")
     @Operation(summary = "Update an existing collection", description = "Updates the details of an existing collection. Only the fields provided in the request will be updated.")
-    public CollectionResponse patchCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid UpdateCollectionRequest request) {
+    public ResponseEntity<CollectionResponse> patchCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId, 
+        @RequestBody @Valid UpdateCollectionRequest request) {
         UUID requesterId = userDetails.getUser().getId();
 
         var output = transactionalProxy.execute(() -> updateCollectionUseCase.execute(
             new UpdateCollectionUseCase.Input(
-                request.id(),
+                collectionId,
                 requesterId,
                 request.name(),
                 request.description(),
@@ -164,7 +167,7 @@ public class CollectionController {
             )
         ));
 
-        return new CollectionResponse(
+        return ResponseEntity.ok(new CollectionResponse(
             output.id(),
             output.userId(),
             output.name(),
@@ -176,34 +179,36 @@ public class CollectionController {
             output.isActive(),
             output.createdAt(),
             output.updatedAt()
-        );
+        ));
     }
 
     // Follow
     @PostMapping("/follow/{collectionId}")
     @Operation(summary = "Follow a collection", description = "Allows the authenticated user to follow a collection, increasing its followers count and enabling it to appear in the user's followed collections list.")
-    public CollectionFollowResponse followCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
+    public ResponseEntity<CollectionFollowResponse> followCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID userId = userDetails.getUser().getId();
 
         var output = transactionalProxy.execute(() -> followCollectionUseCase.execute(
             new FollowCollectionUseCase.Input(userId, collectionId)
         ));
         
-        return new CollectionFollowResponse(
-            output.followerId(),
-            output.collectionId(),
-            output.createdAt()
-        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(new CollectionFollowResponse(
+                output.followerId(),
+                output.collectionId(),
+                output.createdAt()
+            ));
     }
 
     @DeleteMapping("/follow/{collectionId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Unfollow a collection", description = "Allows the authenticated user to unfollow a collection, decreasing its followers count")
-    public void unfollowCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
+    public ResponseEntity<Void> unfollowCollection(@AuthenticationPrincipal SecurityUserDetails userDetails, @PathVariable UUID collectionId) {
         UUID userId = userDetails.getUser().getId();
 
         transactionalProxy.execute(() -> unfollowCollectionUseCase.execute(
             new UnfollowCollectionUseCase.Input(userId, collectionId)       
         ));
+        
+        return ResponseEntity.noContent().build();
     }
 }

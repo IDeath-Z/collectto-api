@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.user;
 
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,7 @@ public class FetchUserUseCase {
 
     public Output execute(Input input) {
         User user = userRepository.findById(input.userId())
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + input.userId())); //Create custom exception as needed
-
-        if (!user.isActive())
-            throw new RuntimeException("User with id " + input.userId() + " is deactivated."); //Create custom exception as needed
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + input.userId()));
 
         return new Output(
             user.getId(),

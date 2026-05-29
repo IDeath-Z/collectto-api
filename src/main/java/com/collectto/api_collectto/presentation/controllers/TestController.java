@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,7 @@ public class TestController {
 
     @GetMapping("/hello")
     @Operation(summary = "Test endpoint", description = "Returns a simple greeting message to verify that the API is working, with you are not authenticated return an error.")
-    public String hello() {
-        return "Hello, World!";
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok("Hello, World!");
     }
 }

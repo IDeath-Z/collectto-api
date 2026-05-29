@@ -2,6 +2,8 @@ package com.collectto.api_collectto.application.usecases.item;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 
@@ -16,13 +18,10 @@ public class DeleteItemUseCase {
 
     public void execute(Input input) {
         Item item = itemRepository.findById(input.itemId())
-            .orElseThrow(() -> new RuntimeException("Item not found with id: " + input.itemId()));
+            .orElseThrow(() -> new ResourceNotFoundException("Item not found with id: " + input.itemId()));
 
         if (!item.getUserId().equals(input.requesterId()))
-            throw new IllegalStateException("Only the owner can delete the item");
-
-        if (!item.isActive())
-            throw new IllegalStateException("Item is already deactivated");
+            throw new ForbiddenActionException("User does not have permission to delete this item");
 
         itemRepository.deactivateItem(input.itemId());
     }

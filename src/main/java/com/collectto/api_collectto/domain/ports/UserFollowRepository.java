@@ -14,5 +14,6 @@ public interface UserFollowRepository {
     UserFollow save(UserFollow userFollow);
     DomainPageResult<UserFollow> findByFollowerIdAndStatus(UUID followerId, FollowStatus status, DomainPageRequest pageRequest);
     DomainPageResult<UserFollow> findByFollowedIdAndStatus(UUID followedId, FollowStatus status, DomainPageRequest pageRequest);
+    boolean isFollowing(UUID followerId, UUID followedId);
     void deleteById(UUID followerId, UUID followedId);
 }

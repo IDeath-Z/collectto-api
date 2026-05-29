@@ -3,9 +3,12 @@ package com.collectto.api_collectto.application.usecases.collection;
 import java.util.List;
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
+import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class FetchCollectionUseCase {
     
     private final CollectionRepository collectionRepository;
+    private final UserFollowRepository userFollowRepository;
 
     public record Input(UUID collectionId, UUID requesterId) {}
 
@@ -22,25 +26,29 @@ public class FetchCollectionUseCase {
     public Output execute(Input input) {
 
         Collection collection = collectionRepository.findById(input.collectionId())
-            .orElseThrow(() -> new RuntimeException("Collection not found")); // Implement proper exception handling as needed
+            .orElseThrow(() -> new ResourceNotFoundException("Collection not found with id: " + input.collectionId()));
 
         if (!collection.getUserId().equals(input.requesterId())) {
             if (collection.getVisibility() == Visibility.PRIVATE)
-                throw new RuntimeException("Collection is private"); // Implement FRIENDS visibility later, and proper exception handling as needed
+                throw new ForbiddenActionException("User does not have permission to access this collection");
+
+            if (collection.getVisibility() == Visibility.FRIENDS)
+                if (!userFollowRepository.isFollowing(input.requesterId(), collection.getUserId()))
+                    throw new ForbiddenActionException("User does not have permission to access this collection");
         }
 
         return new Output(
-                collection.getId(),
-                collection.getUserId(),
-                collection.getName(),
-                collection.getDescription(),
-                collection.getCoverImageUrl(),
-                collection.getVisibility(),
-                collection.getFollowersCount(),
-                collection.getTags(),
-                collection.isActive(),
-                collection.getCreatedAt().toString(),
-                collection.getUpdatedAt().toString()
+            collection.getId(),
+            collection.getUserId(),
+            collection.getName(),
+            collection.getDescription(),
+            collection.getCoverImageUrl(),
+            collection.getVisibility(),
+            collection.getFollowersCount(),
+            collection.getTags(),
+            collection.isActive(),
+            collection.getCreatedAt().toString(),
+            collection.getUpdatedAt().toString()
         );
     }
 }

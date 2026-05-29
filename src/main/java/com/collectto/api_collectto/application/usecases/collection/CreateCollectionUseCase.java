@@ -3,6 +3,7 @@ package com.collectto.api_collectto.application.usecases.collection;
 import java.util.List;
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
@@ -28,7 +29,7 @@ public class CreateCollectionUseCase {
             : storageProvider.buildPublicUrl(input.coverImageUrl());
 
         if (coverImageUrl != null && !storageUrlPaths.isCollectionPathValid(input.coverImageUrl()))
-            throw new RuntimeException("Invalid cover image path"); // Implement better validation as needed
+            throw new BusinessRuleException("Invalid cover image path: " + input.coverImageUrl());
 
         Collection collection = Collection.createNewCollection(
             input.userId(), 

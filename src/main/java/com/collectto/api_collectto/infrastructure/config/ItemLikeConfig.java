@@ -10,6 +10,7 @@ import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemLikeRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.ports.NotificationRepository;
+import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 
 @Configuration
@@ -17,14 +18,14 @@ public class ItemLikeConfig {
 
     @Bean
     FetchItemLikesUseCase fetchItemLikesUseCase(ItemLikeRepository itemLikeRepository, CollectionRepository collectionRepository, 
-        ItemRepository itemRepository, UserRepository userRepository) {
-        return new FetchItemLikesUseCase(itemLikeRepository, collectionRepository, itemRepository, userRepository);
+        ItemRepository itemRepository, UserRepository userRepository, UserFollowRepository userFollowRepository) {
+        return new FetchItemLikesUseCase(itemLikeRepository, collectionRepository, itemRepository, userRepository, userFollowRepository);
     }
 
     @Bean
     public LikeItemUseCase likeItemUseCase(ItemLikeRepository itemLikeRepository, ItemRepository itemRepository, CollectionRepository collectionRepository,
-        NotificationRepository notificationRepository) {
-        return new LikeItemUseCase(itemLikeRepository, itemRepository, collectionRepository, notificationRepository);
+        UserFollowRepository userFollowRepository, NotificationRepository notificationRepository) {
+        return new LikeItemUseCase(itemLikeRepository, itemRepository, collectionRepository, userFollowRepository, notificationRepository);
     }
 
     @Bean

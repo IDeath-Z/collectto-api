@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
+import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +20,7 @@ public class FetchItemUseCase {
 
     private final ItemRepository itemRepository;
     private final CollectionRepository collectionRepository;
+    private final UserFollowRepository userFollowRepository;
 
    public record Input(UUID itemId, UUID collectionId, UUID requesterId) {}
 
@@ -28,13 +32,19 @@ public class FetchItemUseCase {
 
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.collectionId())
-            .orElseThrow(() -> new RuntimeException("Collection not found")); // Implement better exception handling as needed
+            .orElseThrow(() -> new ResourceNotFoundException("Collection not found with id: " + input.collectionId()));
 
-        if (!collection.getUserId().equals(input.requesterId()) && collection.getVisibility() == Visibility.PRIVATE)
-            throw new RuntimeException("Unauthorized access to private collection"); // Implement better exception handling as needed
+        if (!collection.getUserId().equals(input.requesterId())) {
+            if (collection.getVisibility() == Visibility.PRIVATE)
+                throw new ForbiddenActionException("User does not have permission to access items of this collection");
+
+            if (collection.getVisibility() == Visibility.FRIENDS)
+                if (!userFollowRepository.isFollowing(input.requesterId(), collection.getUserId()))
+                    throw new ForbiddenActionException("User does not have permission to access items of this collection");
+        }
 
         Item item = itemRepository.findById(input.itemId())
-            .orElseThrow(() -> new RuntimeException("Item not found")); // Implement better exception handling as needed
+            .orElseThrow(() -> new ResourceNotFoundException("Item not found with id: " + input.itemId()));
 
         return new Output(
             item.getId(),

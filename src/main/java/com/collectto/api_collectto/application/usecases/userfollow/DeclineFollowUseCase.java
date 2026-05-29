@@ -2,6 +2,8 @@ package com.collectto.api_collectto.application.usecases.userfollow;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.UserFollow;
 import com.collectto.api_collectto.domain.enums.FollowStatus;
 import com.collectto.api_collectto.domain.enums.NotificationContext;
@@ -21,10 +23,10 @@ public class DeclineFollowUseCase {
 
     public Output execute(Input input) {
         if (input.followerId().equals(input.followedId()))
-            throw new IllegalArgumentException("Follower and followed users must be different.");
+            throw new BusinessRuleException("Follower and followed users must be different.");
 
         UserFollow followRequest = userFollowRepository.findById(input.followerId(), input.followedId())
-            .orElseThrow(() -> new IllegalStateException("Follow request not found."));
+            .orElseThrow(() -> new ResourceNotFoundException("Follow request not found with followerId: " + input.followerId() + " and followedId: " + input.followedId()));
 
         userFollowRepository.save(followRequest.decline());
         notificationRepository.deleteByRecipientIdAndActorIdAndContext(

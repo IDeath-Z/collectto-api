@@ -2,6 +2,7 @@ package com.collectto.api_collectto.presentation.controllers;
 
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ public class UploadController {
 
     @PostMapping("/presigned-urls")
     @Operation(summary = "Generate pre-signed upload URLs", description = "Returns pre-signed URLs for direct upload to storage. Valid for 5 minutes.")
-    public GenerateUploadUrlsResponse generatePresignedUrls(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid GenerateUploadUrlsRequest request) {
+    public ResponseEntity<GenerateUploadUrlsResponse> generatePresignedUrls(@AuthenticationPrincipal SecurityUserDetails userDetails, @RequestBody @Valid GenerateUploadUrlsRequest request) {
         UUID userId = userDetails.getUser().getId();
 
         var output = generateUploadUrlsUseCase.execute(new GenerateUploadUrlsUseCase.Input(
@@ -40,11 +41,11 @@ public class UploadController {
                 .toList()
         ));
 
-        return new GenerateUploadUrlsResponse(
+        return ResponseEntity.ok(new GenerateUploadUrlsResponse(
             output.resourceId(),
             output.files().stream()
                 .map(file -> new GenerateUploadUrlsResponse.FileOutput(file.filePath(), file.uploadUrl()))
                 .toList()
-        ); // Implements response entity later
+        ));
     }
 }

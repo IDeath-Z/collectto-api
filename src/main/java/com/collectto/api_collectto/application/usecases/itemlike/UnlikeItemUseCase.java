@@ -2,6 +2,7 @@ package com.collectto.api_collectto.application.usecases.itemlike;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.enums.NotificationContext;
 import com.collectto.api_collectto.domain.ports.ItemLikeRepository;
 import com.collectto.api_collectto.domain.ports.ItemRepository;
@@ -20,7 +21,7 @@ public class UnlikeItemUseCase {
 
     public void execute(Input input) {
         if (!itemLikeRepository.existsById(input.itemId(), input.likerId()))
-            throw new IllegalArgumentException("User has not liked the item");
+            throw new ResourceNotFoundException("User has not liked the item with id: " + input.itemId());
 
         itemLikeRepository.deleteById(input.itemId(), input.likerId());
         itemRepository.decrementLikesCount(input.itemId());

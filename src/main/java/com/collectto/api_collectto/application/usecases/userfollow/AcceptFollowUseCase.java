@@ -3,6 +3,8 @@ package com.collectto.api_collectto.application.usecases.userfollow;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Notification;
 import com.collectto.api_collectto.domain.entities.UserFollow;
 import com.collectto.api_collectto.domain.enums.FollowStatus;
@@ -25,18 +27,19 @@ public class AcceptFollowUseCase {
 
     public Output execute(Input input) {
         if (input.followerId().equals(input.followedId()))
-            throw new IllegalArgumentException("Follower and followed users must be different.");
+            throw new BusinessRuleException("Follower and followed users must be different.");
 
         UserFollow followRequest = userFollowRepository.findById(input.followerId(), input.followedId())
-            .orElseThrow(() -> new IllegalStateException("Follow request not found."));
+            .orElseThrow(() -> new ResourceNotFoundException("Follow request not found with followerId: " + input.followerId() + " and followedId: " + input.followedId()));
 
         if (followRequest.getStatus() == FollowStatus.ACCEPTED)
-            throw new IllegalStateException("Already following.");
+            throw new BusinessRuleException("Already following");
         if (followRequest.getStatus() == FollowStatus.DECLINED)
-            throw new IllegalStateException("Cannot accept a declined follow request.");
+            throw new BusinessRuleException("Cannot accept a declined follow request");
 
         UserFollow acceptedFollow = userFollowRepository.save(followRequest.accept());
         userRepository.incrementFollowers(acceptedFollow.getFollowedId());
+        userRepository.incrementFollowing(acceptedFollow.getFollowerId());
 
         Optional<Notification> notificationOpt = notificationRepository.findByRecipientIdAndActorIdAndContext(
             input.followedId(), 

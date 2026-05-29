@@ -1,7 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.collection;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.collectto.api_collectto.domain.enums.Visibility;
 
@@ -9,9 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "UpdateCollectionRequest", description = "Request Payload for updating a collection")
 public record UpdateCollectionRequest(
-    @Schema(description = "ID of the collection to update", example = "123e4567-e89b-12d3-a456-426614174000")
-    UUID id,
-
     @Schema(description = "Name of the collection", example = "My Updated Collection")
     String name,
 

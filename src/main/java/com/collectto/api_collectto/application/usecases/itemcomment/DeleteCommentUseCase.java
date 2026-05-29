@@ -2,6 +2,8 @@ package com.collectto.api_collectto.application.usecases.itemcomment;
 
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Item;
 import com.collectto.api_collectto.domain.entities.ItemComment;
 import com.collectto.api_collectto.domain.enums.NotificationContext;
@@ -23,13 +25,13 @@ public class DeleteCommentUseCase {
 
     public void execute(Input input) {
         ItemComment comment = itemCommentRepository.findById(input.commentId())
-        .orElseThrow(( ) -> new IllegalArgumentException("Comment not found with ID " + input.commentId()));
+        .orElseThrow(( ) -> new ResourceNotFoundException("Comment not found with ID " + input.commentId()));
 
         Item item = itemRepository.findById(comment.getItemId())
-                .orElseThrow(() -> new IllegalArgumentException("Item not found with ID " + comment.getItemId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Item not found with ID " + comment.getItemId()));
 
         if (!comment.getAuthorId().equals(input.userId()) && !item.getUserId().equals(input.userId()))
-            throw new IllegalArgumentException("User is not the author of the comment or the owner of the item");
+            throw new BusinessRuleException("User is not the author of the comment or the owner of the item");
 
         itemCommentRepository.deleteById(comment.getId());
         itemRepository.decrementCommentsCount(comment.getItemId());

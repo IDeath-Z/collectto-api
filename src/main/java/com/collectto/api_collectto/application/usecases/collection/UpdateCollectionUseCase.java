@@ -3,6 +3,9 @@ package com.collectto.api_collectto.application.usecases.collection;
 import java.util.List;
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
+import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
+import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
 import com.collectto.api_collectto.domain.entities.Collection;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.ports.CollectionRepository;
@@ -25,10 +28,10 @@ public class UpdateCollectionUseCase {
 
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.id())
-            .orElseThrow(() -> new RuntimeException("Collection not found")); // Implement proper exception handling as needed
+            .orElseThrow(() -> new ResourceNotFoundException("Collection not found with id: " + input.id()));
 
         if (!collection.getUserId().equals(input.requesterId()))
-            throw new RuntimeException("Unauthorized"); // Implement proper exception handling as needed
+            throw new ForbiddenActionException("User does not have permission to update this collection");
 
         String oldCoverImageUrl = collection.getCoverImageUrl();
         String finalCoverImageUrl = null;
@@ -42,7 +45,7 @@ public class UpdateCollectionUseCase {
                 finalCoverImageUrl = oldCoverImageUrl;
             } else { // Validates and builds URL for new cover image
                 if (!storageUrlPaths.isCollectionPathValid(input.coverImageUrl()))
-                    throw new RuntimeException("Invalid cover image path");
+                    throw new BusinessRuleException("Invalid cover image path: " + input.coverImageUrl());
                 
                 finalCoverImageUrl = storageProvider.buildPublicUrl(input.coverImageUrl());
                 deleteOldCover = true;

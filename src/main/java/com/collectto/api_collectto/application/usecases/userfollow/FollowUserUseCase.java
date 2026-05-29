@@ -3,6 +3,7 @@ package com.collectto.api_collectto.application.usecases.userfollow;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
 import com.collectto.api_collectto.domain.entities.Notification;
 import com.collectto.api_collectto.domain.entities.UserFollow;
 import com.collectto.api_collectto.domain.enums.FollowStatus;
@@ -22,7 +23,7 @@ public class FollowUserUseCase {
 
     public Output execute(Input input) {
         if (input.followerId().equals(input.followedId()))
-            throw new IllegalArgumentException("Follower and followed users must be different.");
+            throw new BusinessRuleException("Follower and followed users must be different.");
 
         Optional<UserFollow> existingFollowOpt = userFollowRepository.findById(input.followerId(), input.followedId());
 
@@ -32,9 +33,9 @@ public class FollowUserUseCase {
             UserFollow existingFollow = existingFollowOpt.get();
 
             if (existingFollow.getStatus() == FollowStatus.PENDING)
-                throw new IllegalStateException("Request already sent."); //Implement better exception handling as needed
+                throw new BusinessRuleException("Request already sent.");
             if (existingFollow.getStatus() == FollowStatus.ACCEPTED)
-                throw new IllegalStateException("Already following.");
+                throw new BusinessRuleException("Already following.");
             
             followToSave = existingFollow.pending(); // Declined follow can be re-requested
         } else {
