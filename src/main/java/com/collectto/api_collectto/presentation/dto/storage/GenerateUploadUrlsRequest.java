@@ -11,11 +11,8 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "GenerateUploadUrlsRequest", description = "Request payload for generating pre-signed upload URLs")
 public record GenerateUploadUrlsRequest(
-        @NotNull @Schema(description = "Unique identifier for the resource, can be a collection ID, item ID, or user ID depending on the context", example = "123e4567-e89b-12d3-a456-426614174000") 
+        @Schema(description = "Unique identifier for the resource, can be a collection ID or item ID", example = "123e4567-e89b-12d3-a456-426614174000") 
         UUID resourceId,
-                
-        @Schema(description = "Parent identifier, used only for ITEM context (specify the collection ID)", example = "123e4567-e89b-12d3-a456-426614174000") 
-        UUID parentId,
         
         @NotNull @Schema(description = "Context for the upload, options are PROFILE_PICTURE, PROFILE_BACKGROUND, COLLECTION or ITEM", example = "COLLECTION")
         UploadContext context,

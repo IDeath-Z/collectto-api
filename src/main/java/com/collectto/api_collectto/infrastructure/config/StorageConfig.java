@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.collectto.api_collectto.application.usecases.storage.GenerateUploadUrlsUseCase;
+import com.collectto.api_collectto.domain.ports.CollectionRepository;
+import com.collectto.api_collectto.domain.ports.ItemRepository;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
 import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 
@@ -32,7 +34,8 @@ public class StorageConfig {
     }
 
     @Bean
-    public GenerateUploadUrlsUseCase generateUploadUrlsUseCase(StorageProvider storageProvider, StorageUrlPaths storageUrlPaths) {
-        return new GenerateUploadUrlsUseCase(storageProvider, storageUrlPaths, presignedUrlExpirationMinutes);
+    public GenerateUploadUrlsUseCase generateUploadUrlsUseCase(StorageProvider storageProvider, StorageUrlPaths storageUrlPaths, 
+        CollectionRepository collectionRepository, ItemRepository itemRepository) {
+        return new GenerateUploadUrlsUseCase(storageProvider, storageUrlPaths, presignedUrlExpirationMinutes, collectionRepository, itemRepository);
     }
 }

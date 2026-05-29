@@ -34,7 +34,6 @@ public class UploadController {
         var output = generateUploadUrlsUseCase.execute(new GenerateUploadUrlsUseCase.Input(
             userId,
             request.resourceId(),
-            request.parentId(),
             request.context(),
             request.files().stream()
                 .map(file -> new GenerateUploadUrlsUseCase.FileInput(file.fileName(), file.contentType()))
