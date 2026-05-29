@@ -2,6 +2,7 @@ package com.collectto.api_collectto.infrastructure.persistence.item;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,9 +17,10 @@ import com.collectto.api_collectto.domain.enums.Visibility;
 
 public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
     
-    Page<ItemJpaEntity> findByCollectionId(UUID collectionId, Pageable pageable);
-    List<ItemJpaEntity> findByUserId(UUID userId);
-    List<ItemJpaEntity> findByCollectionIdAndNameContainingIgnoreCase(UUID collectionId, String name);
+    Optional<ItemJpaEntity> findByIdAndIsActiveTrue(UUID id);
+    Page<ItemJpaEntity> findByCollectionIdAndIsActiveTrue(UUID collectionId, Pageable pageable);
+    List<ItemJpaEntity> findByUserIdAndIsActiveTrue(UUID userId);
+    List<ItemJpaEntity> findByCollectionIdAndNameContainingIgnoreCaseAndIsActiveTrue(UUID collectionId, String name);
 
     @Query("""
         SELECT i FROM ItemJpaEntity i 
@@ -41,6 +43,7 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
             ROW_NUMBER() OVER(PARTITION BY i.collection_id ORDER BY i.created_at DESC) as rn
         FROM items i
         WHERE i.collection_id IN :collectionIds
+          AND i.is_active = true
           AND i.media_urls IS NOT NULL
           AND array_length(i.media_urls, 1) > 0
     ) AS ranked_items
@@ -53,7 +56,9 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         JOIN FETCH i.tags t
         JOIN i.collection c
         WHERE t.id IN :tagIds 
-        AND i.isActive = true AND c.visibility = 'PUBLIC'
+        AND i.isActive = true 
+        AND c.isActive = true
+        AND c.visibility = 'PUBLIC'
         AND i.user.id != :requesterId 
     """)
     List<ItemJpaEntity> findRecommendedByTags(
@@ -66,7 +71,9 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         SELECT DISTINCT i FROM ItemJpaEntity i 
         LEFT JOIN FETCH i.tags t
         JOIN i.collection c
-        WHERE i.isActive = true AND c.visibility = 'PUBLIC'
+        WHERE i.isActive = true 
+        AND c.isActive = true
+        AND c.visibility = 'PUBLIC'
         AND i.user.id != :requesterId 
         ORDER BY i.likesCount DESC
     """)
@@ -79,7 +86,9 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         SELECT DISTINCT i FROM ItemJpaEntity i 
         LEFT JOIN FETCH i.tags t
         JOIN i.collection c
-        WHERE i.isActive = true AND c.visibility = 'PUBLIC'
+        WHERE i.isActive = true 
+        AND c.isActive = true
+        AND c.visibility = 'PUBLIC'
         AND i.user.id != :requesterId 
         ORDER BY i.createdAt DESC
     """)
@@ -94,6 +103,7 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         JOIN FETCH i.collection c
         LEFT JOIN FETCH i.tags t
         WHERE i.isActive = true 
+        AND c.isActive = true
         AND (u.id IN :followedUsers OR c.id IN :followedCollections)
         AND (
             c.visibility = :publicVisibility 

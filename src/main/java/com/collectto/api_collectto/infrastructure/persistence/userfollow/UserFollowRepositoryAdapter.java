@@ -51,6 +51,11 @@ public class UserFollowRepositoryAdapter implements UserFollowRepository {
     }
 
     @Override
+    public boolean isFollowing(UUID followerId, UUID followedId) {
+        return userFollowJpaRepository.existsByIdFollowerIdAndIdFollowedIdAndStatus(followerId, followedId, FollowStatus.ACCEPTED);
+    }
+
+    @Override
     public void deleteById(UUID followerId, UUID followedId) {
         userFollowJpaRepository.deleteById(new UserFollowJpaId(followerId, followedId));
     }

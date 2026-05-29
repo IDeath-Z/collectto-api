@@ -37,4 +37,6 @@ public interface UserFollowJpaRepository extends JpaRepository<UserFollowJpaEnti
         AND uf2.status = :status
     """)
     Set<UUID> findMutualFriendIds(@Param("userId") UUID userId, @Param("status") FollowStatus status);
+
+    boolean existsByIdFollowerIdAndIdFollowedIdAndStatus(UUID followerId, UUID followedId, FollowStatus status);
 }

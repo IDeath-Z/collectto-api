@@ -35,7 +35,7 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
     @Override
     public DomainPageResult<Collection> findByUserId(UUID userId, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
-        Page<CollectionJpaEntity> page = collectionsJpaRepository.findByUserId(userId, springPage);
+        Page<CollectionJpaEntity> page = collectionsJpaRepository.findByUserIdAndIsActiveTrue(userId, springPage);
     
         return PageConverter.toDomain(page, collectionMapper::toDomain);
     }
@@ -58,7 +58,7 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
 
     @Override
     public Optional<Collection> findById(UUID id) {
-        return collectionsJpaRepository.findById(id).map(collectionMapper::toDomain);
+        return collectionsJpaRepository.findByIdAndIsActiveTrue(id).map(collectionMapper::toDomain);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
 
     @Override
     public List<Collection> findByUserIdAndName(UUID userId, String name) {
-        return collectionsJpaRepository.findByUserIdAndNameContainingIgnoreCase(userId, name).stream()
+        return collectionsJpaRepository.findByUserIdAndNameContainingIgnoreCaseAndIsActiveTrue(userId, name).stream()
             .map(collectionMapper::toDomain)
             .toList();
     }

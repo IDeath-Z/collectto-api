@@ -39,14 +39,14 @@ public class ItemRepositoryAdapter implements ItemRepository {
     @Override
     public DomainPageResult<Item> findByCollectionId(UUID collectionId, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
-        Page<ItemJpaEntity> page = itemJpaRepository.findByCollectionId(collectionId, springPage);
+        Page<ItemJpaEntity> page = itemJpaRepository.findByCollectionIdAndIsActiveTrue(collectionId, springPage);
 
         return PageConverter.toDomain(page, itemMapper::toDomain);
     }
 
     @Override
     public List<Item> findByUserId(UUID userId) {
-        return itemJpaRepository.findByUserId(userId).stream()
+        return itemJpaRepository.findByUserIdAndIsActiveTrue(userId).stream()
             .map(itemMapper::toDomain)
             .toList();
     }
@@ -71,7 +71,7 @@ public class ItemRepositoryAdapter implements ItemRepository {
 
     @Override
     public Optional<Item> findById(UUID itemId) {
-        return itemJpaRepository.findById(itemId).map(itemMapper::toDomain);
+        return itemJpaRepository.findByIdAndIsActiveTrue(itemId).map(itemMapper::toDomain);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ItemRepositoryAdapter implements ItemRepository {
 
     @Override
     public List<Item> findByCollectionIdAndName(UUID collectionId, String name) {
-        return itemJpaRepository.findByCollectionIdAndNameContainingIgnoreCase(collectionId, name).stream()
+        return itemJpaRepository.findByCollectionIdAndNameContainingIgnoreCaseAndIsActiveTrue(collectionId, name).stream()
             .map(itemMapper::toDomain)
             .toList();
     }
