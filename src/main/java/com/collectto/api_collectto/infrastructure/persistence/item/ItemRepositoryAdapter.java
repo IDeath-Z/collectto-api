@@ -53,13 +53,10 @@ public class ItemRepositoryAdapter implements ItemRepository {
 
     @Override
     public Item save(Item item) {
-        CollectionJpaEntity collection = collectionsJpaRepository.findById(item.getCollectionId())
-            .orElseThrow(() -> new RuntimeException("Collection not found"));
+        CollectionJpaEntity collectionProxy = collectionsJpaRepository.getReferenceById(item.getCollectionId());
+        UserJpaEntity userProxy = userJpaRepository.getReferenceById(item.getUserId());
 
-        UserJpaEntity user = userJpaRepository.findById(item.getUserId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
-
-        ItemJpaEntity entity = itemMapper.toJpa(item, collection, user);
+        ItemJpaEntity entity = itemMapper.toJpa(item, collectionProxy, userProxy);
 
         Set<TagJpaEntity> tagEntities = item.getTags().stream()
             .map(tagResolverHelper::findOrCreate)

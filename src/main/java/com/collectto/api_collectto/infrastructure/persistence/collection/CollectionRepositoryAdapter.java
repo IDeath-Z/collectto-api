@@ -42,10 +42,9 @@ public class CollectionRepositoryAdapter implements CollectionRepository {
 
     @Override
     public Collection save(Collection collection) {
-        UserJpaEntity user = userJpaRepository.findById(collection.getUserId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        UserJpaEntity userProxy = userJpaRepository.getReferenceById(collection.getUserId());
 
-        CollectionJpaEntity entity = collectionMapper.toJpa(collection, user);
+        CollectionJpaEntity entity = collectionMapper.toJpa(collection, userProxy);
 
         Set<TagJpaEntity> tagEntities = collection.getTags().stream()
             .map(tagResolverHelper::findOrCreate)
