@@ -1,0 +1,18 @@
+id,name,username,email,passwordHash,followersCount,followingCount,birthday,creationDate,expectedMessage
+null,Jane Doe,@jane.doe,jane@example.com,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,User ID is required
+550e8400-e29b-41d4-a716-446655440000,null,@jane.doe,jane@example.com,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Name is required
+550e8400-e29b-41d4-a716-446655440000,,@jane.doe,jane@example.com,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Name is required
+550e8400-e29b-41d4-a716-446655440000,"   ",@jane.doe,jane@example.com,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Name is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,null,jane@example.com,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Username is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,,jane@example.com,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Username is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,"   ",jane@example.com,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Username is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,null,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Email is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,,thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Email is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,"   ",thisIsAHash,0,0,1990-01-01,2026-05-29T10:00:00Z,Email is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,jane@example.com,null,0,0,1990-01-01,2026-05-29T10:00:00Z,Password is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,jane@example.com,,0,0,1990-01-01,2026-05-29T10:00:00Z,Password is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,jane@example.com,"   ",0,0,1990-01-01,2026-05-29T10:00:00Z,Password is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,jane@example.com,thisIsAHash,-1,0,1990-01-01,2026-05-29T10:00:00Z,Followers count cannot be negative
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,jane@example.com,thisIsAHash,0,-1,1990-01-01,2026-05-29T10:00:00Z,Following count cannot be negative
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,jane@example.com,thisIsAHash,0,0,null,2026-05-29T10:00:00Z,Birthday date is required
+550e8400-e29b-41d4-a716-446655440000,Jane Doe,@jane.doe,jane@example.com,thisIsAHash,0,0,1990-01-01,null,Creation date is required
