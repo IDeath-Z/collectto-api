@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.user;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.ports.StorageProvider;
@@ -73,7 +74,7 @@ public class UpdateUserUseCase {
             input.bio(), 
             finalPictureUrl,
             finalBackgroundUrl, 
-            input.birthdayDate()
+            LocalDate.parse(input.birthdayDate())
         );
         
         User savedUser = userRepository.save(updatedUser);

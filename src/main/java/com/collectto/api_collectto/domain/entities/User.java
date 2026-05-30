@@ -132,7 +132,7 @@ public class User {
     }
 
     public User updateProfile(String name, String username, String bio, String profilePictureUrl,
-        String profileBackgroundUrl, String birthdayDate) {
+        String profileBackgroundUrl, LocalDate birthdayDate) {
         String processPicture = (profilePictureUrl != null && profilePictureUrl.isEmpty()) ? null : 
             (profilePictureUrl != null) ? profilePictureUrl : this.profilePictureUrl;
 
@@ -151,7 +151,7 @@ public class User {
             this.followersCount,
             this.followingCount,
             this.isActive,
-            birthdayDate != null ? LocalDate.parse(birthdayDate) : this.birthdayDate,
+            birthdayDate != null ? birthdayDate : this.birthdayDate,
             this.creationDate
         );
     }
