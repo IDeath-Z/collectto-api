@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "CreateUserRequest", description = "Payload for user creation")
 public record CreateUserRequest(
@@ -20,7 +21,7 @@ public record CreateUserRequest(
     @NotBlank @Schema(description = "Plain-text password (will be hashed on the backend)", example = "StrongPassword@123") 
     String password,
             
-    @NotBlank @Schema(description = """
+    @NotNull @Schema(description = """
                 Birth date as an ISO-8601 string.
                 Accepted format: yyyy-MM-dd (e.g., 2002-07-15).
                 """, example = "2002-07-15", format = "date", pattern = "yyyy-MM-dd") 
