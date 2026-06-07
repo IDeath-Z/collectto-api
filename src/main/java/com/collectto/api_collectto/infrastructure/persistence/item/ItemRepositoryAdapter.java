@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -101,9 +102,8 @@ public class ItemRepositoryAdapter implements ItemRepository {
         return projections.stream()
             .collect(Collectors.groupingBy(
                 CollectionMediaProjection::getCollectionId,
-                
                 Collectors.flatMapping(
-                    proj -> proj.getMediaUrls().stream(),
+                    proj -> proj.getMediaUrls() != null ? proj.getMediaUrls().stream() : Stream.empty(),
                     Collectors.toList()
                 )
             ));
