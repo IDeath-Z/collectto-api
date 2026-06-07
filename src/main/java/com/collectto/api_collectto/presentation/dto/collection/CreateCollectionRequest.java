@@ -10,7 +10,7 @@ public record CreateCollectionRequest(
         @NotBlank @Schema(description = "Collection name", example = "My Collection") 
         String name,
                 
-        @NotBlank @Schema(description = "Collection description", example = "A collection of my favorite items") 
+        @Schema(description = "Collection description", example = "A collection of my favorite items") 
         String description,
 
         @Schema(description = "Collection cover image path", example = "collections/userId/collectionId/filename.jpg") 
