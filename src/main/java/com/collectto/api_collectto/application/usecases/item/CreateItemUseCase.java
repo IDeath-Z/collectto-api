@@ -25,8 +25,8 @@ public class CreateItemUseCase {
     private final StorageProvider storageProvider;
     private final StorageUrlPaths storageUrlPaths;
 
-    public record Input(UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-        String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
+    public record Input(UUID collectionId, UUID userId, String name, String description, LocalDate acquisitionDate,
+        LocalDate lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
             
     public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
         String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
@@ -55,8 +55,8 @@ public class CreateItemUseCase {
             input.userId(),
             input.name(),
             input.description(),
-            LocalDate.parse(input.acquisitionDate()),
-            LocalDate.parse(input.lastUsedDate()),
+            input.acquisitionDate(),
+            input.lastUsedDate(),
             imageFilesUrls,
             input.attributes(),
             input.tags()

@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.item;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,10 +21,10 @@ public record CreateItemRequest(
     String description,
             
     @Schema(description = "Date when the item was acquired", example = "2026-01-15")
-    String acquisitionDate,
+    LocalDate acquisitionDate,
                 
     @Schema(description = "Date when the item was last used", example = "2026-06-01")
-    String lastUsedDate,
+    LocalDate lastUsedDate,
 
     @Schema(description = "List of image file paths associated with the item", example = "[\"items/userId/collectionId/itemId/filename.jpg\"]") 
     List<String> imageFilesUrls,
