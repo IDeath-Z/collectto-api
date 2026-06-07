@@ -36,7 +36,7 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
     );
 
     @Query(value = """
-    SELECT collection_id AS collectionId, media_url AS mediaUrl FROM (
+    SELECT collection_id AS "collectionId", ARRAY[media_url] AS "mediaUrls" FROM (
         SELECT 
             i.collection_id,
             i.media_urls[1] AS media_url,
