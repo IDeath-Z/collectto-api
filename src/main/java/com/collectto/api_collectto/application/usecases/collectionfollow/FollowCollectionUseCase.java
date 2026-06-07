@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.collectionfollow;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
@@ -26,7 +27,7 @@ public class FollowCollectionUseCase {
     private final NotificationRepository notificationRepository;
 
     public record Input(UUID followerId, UUID collectionId) {}
-    public record Output(UUID followerId, UUID collectionId, String createdAt) {}
+    public record Output(UUID followerId, UUID collectionId, Instant createdAt) {}
 
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.collectionId())
@@ -63,7 +64,7 @@ public class FollowCollectionUseCase {
         return new Output(
             savedFollow.getFollowerId(),
             savedFollow.getCollectionId(),
-            savedFollow.getCreatedAt().toString()
+            savedFollow.getCreatedAt()
         );
     }
 }

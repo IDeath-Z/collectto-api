@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.collection;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,5 +13,5 @@ public record CollectionFollowResponse(
     UUID collectionId,
     
     @Schema(description = "Timestamp of when the follow was created", example = "2026-01-01T00:00:00Z")
-    String createdAt
+    Instant createdAt
 ) {}

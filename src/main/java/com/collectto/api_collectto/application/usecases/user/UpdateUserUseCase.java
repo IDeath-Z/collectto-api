@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.user;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -20,10 +21,10 @@ public class UpdateUserUseCase {
     private final StorageUrlPaths storageUrlPaths;
 
     public record Input(UUID id, String name, String username, String bio, String profilePictureUrl,
-        String profileBackgroundUrl, String birthdayDate) {}       
+        String profileBackgroundUrl, LocalDate birthdayDate) {}       
     public record Output(UUID id, String name, String username, String email, String bio, String profilePictureUrl,
         String profileBackgroundUrl,
-        int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {}
+        int followersCount, int followingCount, boolean isActive, LocalDate birthdayDate, Instant creationDate) {}
 
     public Output execute(Input input) {
         User user = userRepository.findById(input.id())
@@ -74,7 +75,7 @@ public class UpdateUserUseCase {
             input.bio(), 
             finalPictureUrl,
             finalBackgroundUrl, 
-            LocalDate.parse(input.birthdayDate())
+            input.birthdayDate()
         );
         
         User savedUser = userRepository.save(updatedUser);
@@ -95,8 +96,8 @@ public class UpdateUserUseCase {
             savedUser.getFollowersCount(),
             savedUser.getFollowingCount(),
             savedUser.isActive(),
-            savedUser.getBirthdayDate().toString(),
-            savedUser.getCreationDate().toString()
+            savedUser.getBirthdayDate(),
+            savedUser.getCreationDate()
         );
     }
 }

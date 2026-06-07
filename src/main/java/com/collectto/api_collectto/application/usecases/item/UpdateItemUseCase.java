@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.item;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +26,9 @@ public class UpdateItemUseCase {
     public record Input(UUID itemId, UUID requesterId, String name, String description, LocalDate acquisitionDate, 
         List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
 
-    public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-        String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
-        int commentsCount, boolean isActive, String createdAt, String updatedAt) {}
+    public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, LocalDate acquisitionDate,
+        LocalDate lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
+        int commentsCount, boolean isActive, Instant createdAt, Instant updatedAt) {}
 
     public Output execute(Input input) {
         Item item = itemRepository.findById(input.itemId())
@@ -74,16 +75,16 @@ public class UpdateItemUseCase {
             savedItem.getUserId(), 
             savedItem.getName(), 
             savedItem.getDescription(), 
-            savedItem.getAcquisitionDate().toString(),
-            savedItem.getLastUsedDate().toString(), 
+            savedItem.getAcquisitionDate(),
+            savedItem.getLastUsedDate(), 
             savedItem.getMediaURLs(), 
             savedItem.getAttributes(), 
             savedItem.getTags(), 
             savedItem.getLikesCount(),
             savedItem.getCommentsCount(), 
             savedItem.isActive(), 
-            savedItem.getCreatedAt().toString(), 
-            savedItem.getUpdatedAt().toString()
+            savedItem.getCreatedAt(), 
+            savedItem.getUpdatedAt()
         );
     }
 }

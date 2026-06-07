@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.user;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,5 +31,5 @@ public record UserResponse(
     int followingCount,
     
     @Schema(description = "Timestamp of user creation", example = "2026-01-01T00:00:00Z")
-    String createdAt
+    Instant createdAt
 ) {}

@@ -1,6 +1,8 @@
 package com.collectto.api_collectto.application.usecases.user;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.collectto.api_collectto.application.exceptions.ResourceAlreadyExistsException;
 import com.collectto.api_collectto.domain.entities.User;
@@ -15,9 +17,9 @@ public class CreateUserUseCase {
     private final UserRepository userRepository;
     private final PasswordHasher passwordHasher;
 
-    public record Input(String name, String username, String email, String password, String birthdayDate) {}
-    public record Output(String id, String name, String username, String email, String bio, String profilePictureUrl, String profileBackgroundUrl,
-        int followersCount, int followingCount, boolean isActive, String birthdayDate, String creationDate) {}
+    public record Input(String name, String username, String email, String password, LocalDate birthdayDate) {}
+    public record Output(UUID id, String name, String username, String email, String bio, String profilePictureUrl, String profileBackgroundUrl,
+        int followersCount, int followingCount, boolean isActive, LocalDate birthdayDate, Instant creationDate) {}
             
     public Output execute(Input input) {
         if (userRepository.existsByEmail(input.email()))
@@ -30,13 +32,13 @@ public class CreateUserUseCase {
             input.username(),
             input.email(),
             passwordHasher.hash(input.password()),
-            LocalDate.parse(input.birthdayDate())
+            input.birthdayDate()
         );
 
         User savedUser = userRepository.save(user);
 
         return new Output(
-            savedUser.getId().toString(),
+            savedUser.getId(),
             savedUser.getName(),
             savedUser.getUsername(),
             savedUser.getEmail(),
@@ -46,8 +48,8 @@ public class CreateUserUseCase {
             savedUser.getFollowersCount(),
             savedUser.getFollowingCount(),
             savedUser.isActive(),
-            savedUser.getBirthdayDate().toString(),
-            savedUser.getCreationDate().toString()
+            savedUser.getBirthdayDate(),
+            savedUser.getCreationDate()
         );
     }
 

@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.userfollow;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
@@ -19,7 +20,7 @@ public class DeclineFollowUseCase {
     private final NotificationRepository notificationRepository;
 
     public record Input(UUID followerId, UUID followedId) {}
-    public record Output(UUID followerId, UUID followedId, FollowStatus status, String createdAt) {}
+    public record Output(UUID followerId, UUID followedId, FollowStatus status, Instant createdAt) {}
 
     public Output execute(Input input) {
         if (input.followerId().equals(input.followedId()))
@@ -39,7 +40,7 @@ public class DeclineFollowUseCase {
             followRequest.getFollowerId(),
             followRequest.getFollowedId(),
             followRequest.getStatus(),
-            followRequest.getCreatedAt().toString()
+            followRequest.getCreatedAt()
         );
     }
 }

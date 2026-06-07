@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.notification;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public record NotificationPageResponse(
         boolean read,
 
         @Schema(description = "Timestamp of when the notification was created", example = "2026-06-01T12:34:56Z")
-        String createdAt
+        Instant createdAt
     ) {}
 
     public record ActorSummary(

@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.item;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public record ItemCommentPageResponse(
         String content,
 
         @Schema(description = "Timestamp when the comment was created", example = "2026-01-01T12:00:00Z")
-        String createdAt
+        Instant createdAt
     ) {} 
 }
 

@@ -1,5 +1,7 @@
 package com.collectto.api_collectto.presentation.dto.user;
 
+import java.time.LocalDate;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "UpdateUserRequest", description = "Request payload for updating user profile")
@@ -20,5 +22,5 @@ public record UpdateUserRequest(
     String profileBackgroundUrl,
 
     @Schema(description = "User birthday date", example = "1990-01-01") 
-    String birthdayDate
+    LocalDate birthdayDate
 ) {}

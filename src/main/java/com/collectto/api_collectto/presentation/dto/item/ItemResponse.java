@@ -1,5 +1,7 @@
 package com.collectto.api_collectto.presentation.dto.item;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,10 +26,10 @@ public record ItemResponse(
     String description,
             
     @Schema(description = "Item acquisition date", example = "2026-01-15") 
-    String acquisitionDate,
+    LocalDate acquisitionDate,
             
     @Schema(description = "Item last used date", example = "2026-06-01") 
-    String lastUsedDate,
+    LocalDate lastUsedDate,
             
     @Schema(description = "URLs of the item image files", example = "[\"https://example.com/images/item.jpg\"]") 
     List<String> imageFilesUrls,
@@ -48,8 +50,8 @@ public record ItemResponse(
     boolean active,
             
     @Schema(description = "Item creation timestamp", example = "2026-01-01T00:00:00Z") 
-    String createdAt,
+    Instant createdAt,
             
     @Schema(description = "Item last update timestamp", example = "2026-01-02T00:00:00Z") 
-    String updatedAt
+    Instant updatedAt
 ) {}

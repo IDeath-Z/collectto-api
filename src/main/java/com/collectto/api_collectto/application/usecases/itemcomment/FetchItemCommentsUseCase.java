@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.itemcomment;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -32,7 +33,7 @@ public class FetchItemCommentsUseCase {
     private final UserFollowRepository userFollowRepository;
 
     public record Input(UUID itemId, UUID requesterId, DomainPageRequest pageRequest) {}
-    public record CommenterSummary(UUID commentId, UUID userId, String username, String profilePictureURL, String content, String createdAt) {}
+    public record CommenterSummary(UUID commentId, UUID userId, String username, String profilePictureURL, String content, Instant createdAt) {}
     public record Output(List<CommenterSummary> commenterSummaries, int totalPages, long totalElements, int currentPage) {}
 
         public Output execute(Input input) {
@@ -73,7 +74,7 @@ public class FetchItemCommentsUseCase {
                     author.getUsername(),
                     author.getProfilePictureUrl(),
                     comment.getContent(),
-                    comment.getCreatedAt().toString()
+                    comment.getCreatedAt()
                 );
             })
             .toList();

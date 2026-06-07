@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.collection;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class FetchCollectionUseCase {
     public record Input(UUID collectionId, UUID requesterId) {}
 
     public record Output(UUID id, UUID userId, String name, String description, String coverImageURL, 
-        Visibility visibility, int followersCount, List<String> tags, boolean isActive, String createdAt, String updatedAt) {}
+        Visibility visibility, int followersCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {}
 
     public Output execute(Input input) {
 
@@ -47,8 +48,8 @@ public class FetchCollectionUseCase {
             collection.getFollowersCount(),
             collection.getTags(),
             collection.isActive(),
-            collection.getCreatedAt().toString(),
-            collection.getUpdatedAt().toString()
+            collection.getCreatedAt(),
+            collection.getUpdatedAt()
         );
     }
 }

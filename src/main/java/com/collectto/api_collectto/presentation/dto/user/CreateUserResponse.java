@@ -1,10 +1,13 @@
 package com.collectto.api_collectto.presentation.dto.user;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record CreateUserResponse(
     @Schema(description = "Unique user identifier", example = "123e4567-e89b-12d3-a456-426614174000") 
-    String id,
+    UUID id,
             
     @Schema(description = "User full name", example = "Maria Silva") 
     String name,
@@ -16,5 +19,5 @@ public record CreateUserResponse(
     String email,
                         
     @Schema(description = "Timestamp of user creation", example = "2026-01-01T00:00:00Z") 
-    String createdAt
+    Instant createdAt
 ) {}

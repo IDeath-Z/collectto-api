@@ -1,5 +1,7 @@
 package com.collectto.api_collectto.presentation.dto.user;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,8 +38,8 @@ public record CurrentUserInfoResponse(
     boolean isActive,
     
     @Schema(description = "User birthday date", example = "1990-01-01")
-    String birthdayDate,
+    LocalDate birthdayDate,
     
     @Schema(description = "Timestamp of user creation", example = "2026-01-01T00:00:00Z")
-    String createdAt
+    Instant createdAt
 ) {}

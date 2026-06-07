@@ -1,5 +1,7 @@
 package com.collectto.api_collectto.presentation.dto.user;
 
+import java.time.LocalDate;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,5 +24,5 @@ public record CreateUserRequest(
                 Birth date as an ISO-8601 string.
                 Accepted format: yyyy-MM-dd (e.g., 2002-07-15).
                 """, example = "2002-07-15", format = "date", pattern = "yyyy-MM-dd") 
-    String birthdayDate
+    LocalDate birthdayDate
 ) {}

@@ -1,5 +1,7 @@
 package com.collectto.api_collectto.application.usecases.item;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,9 +28,9 @@ public class FetchItemUseCase {
 
     public record ItemSummary(UUID id, String name, List<String> imagesURL) {}
 
-    public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, String acquisitionDate,
-        String lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
-        int commentsCount, boolean isActive, String createdAt, String updatedAt) {}
+    public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, LocalDate acquisitionDate,
+        LocalDate lastUsedDate, List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags, int likesCount, 
+        int commentsCount, boolean isActive, Instant createdAt, Instant updatedAt) {}
 
     public Output execute(Input input) {
         Collection collection = collectionRepository.findById(input.collectionId())
@@ -52,16 +54,16 @@ public class FetchItemUseCase {
             item.getUserId(),
             item.getName(),
             item.getDescription(),
-            item.getAcquisitionDate().toString(),
-            item.getLastUsedDate().toString(),
+            item.getAcquisitionDate(),
+            item.getLastUsedDate(),
             item.getMediaURLs(),
             item.getAttributes(),
             item.getTags(),
             item.getLikesCount(),
             item.getCommentsCount(),
             item.isActive(),
-            item.getCreatedAt().toString(),
-            item.getUpdatedAt().toString()
+            item.getCreatedAt(),
+            item.getUpdatedAt()
         );
     }
 }

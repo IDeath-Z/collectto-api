@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.item;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,5 +13,5 @@ public record ItemLikeResponse(
     UUID likerId,
 
     @Schema(description = "Timestamp when the like was created", example = "2026-06-01T12:00:00Z")
-    String createdAt
+    Instant createdAt
 ) {}

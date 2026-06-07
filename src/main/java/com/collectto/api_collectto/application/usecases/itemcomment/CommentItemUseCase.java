@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.itemcomment;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
@@ -27,7 +28,7 @@ public class CommentItemUseCase {
     private final NotificationRepository notificationRepository;
 
     public record Input(UUID itemId, UUID authorId, String content) {}
-    public record Output(UUID commentId, UUID itemId, UUID authorId, String content, String createdAt) {}
+    public record Output(UUID commentId, UUID itemId, UUID authorId, String content, Instant createdAt) {}
 
     public Output execute(Input input) {
         Item item = itemRepository.findById(input.itemId())
@@ -68,7 +69,7 @@ public class CommentItemUseCase {
             savedComment.getItemId(),
             savedComment.getAuthorId(),
             savedComment.getContent(),
-            savedComment.getCreatedAt().toString()
+            savedComment.getCreatedAt()
         );
     }
 }

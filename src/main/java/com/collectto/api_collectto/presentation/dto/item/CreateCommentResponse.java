@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.item;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,5 +19,5 @@ public record CreateCommentResponse(
     String content,
     
     @Schema(description = "Timestamp when the comment was created", example = "2026-06-01T12:34:56Z")
-    String createdAt
+    Instant createdAt
 ) {}

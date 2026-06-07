@@ -5,6 +5,7 @@ import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.UserRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -14,7 +15,7 @@ public class FetchUserUseCase {
 
     public record Input(UUID userId) {}
     public record Output(UUID id, String name, String username, String bio, String profilePictureUrl,
-        String profileBackgroundUrl, int followersCount, int followingCount, String creationDate) {}
+        String profileBackgroundUrl, int followersCount, int followingCount, Instant creationDate) {}
 
     public Output execute(Input input) {
         User user = userRepository.findById(input.userId())
@@ -29,7 +30,7 @@ public class FetchUserUseCase {
             user.getProfileBackgroundUrl(),
             user.getFollowersCount(),
             user.getFollowingCount(),
-            user.getCreationDate().toString()
+            user.getCreationDate()
         );
     }
 }

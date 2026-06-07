@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.itemlike;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
@@ -28,7 +29,7 @@ public class LikeItemUseCase {
     private final NotificationRepository notificationRepository;
 
     public record Input(UUID itemId, UUID likerId) {}
-    public record Output(UUID itemId, UUID likerId, String createdAt) {}
+    public record Output(UUID itemId, UUID likerId, Instant createdAt) {}
 
     public Output execute(Input input) {
         Item item = itemRepository.findById(input.itemId())
@@ -69,7 +70,7 @@ public class LikeItemUseCase {
         return new Output(
             savedLike.getItemId(), 
             savedLike.getLikerId(), 
-            savedLike.getCreatedAt().toString()
+            savedLike.getCreatedAt()
         );
     }
 }

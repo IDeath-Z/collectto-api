@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.user;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import com.collectto.api_collectto.domain.enums.FollowStatus;
@@ -17,5 +18,5 @@ public record UserFollowResponse(
     FollowStatus status,
 
     @Schema(description = "Timestamp of when the follow request was created", example = "2026-01-01T00:00:00Z")
-    String createdAt
+    Instant createdAt
 ) {}

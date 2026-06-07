@@ -79,16 +79,16 @@ public class SocialController {
                     feed.item().getUserId(),
                     feed.item().getName(),
                     feed.item().getDescription(),
-                    feed.item().getAcquisitionDate().toString(),
-                    feed.item().getLastUsedDate().toString(),
+                    feed.item().getAcquisitionDate(),
+                    feed.item().getLastUsedDate(),
                     feed.item().getMediaURLs(),
                     feed.item().getAttributes(),
                     feed.item().getLikesCount(),
                     feed.item().getCommentsCount(),
                     feed.item().getTags(),
                     feed.item().isActive(),
-                    feed.item().getCreatedAt().toString(),
-                    feed.item().getUpdatedAt().toString()
+                    feed.item().getCreatedAt(),
+                    feed.item().getUpdatedAt()
                 )
             )).toList(),
             output.size(),

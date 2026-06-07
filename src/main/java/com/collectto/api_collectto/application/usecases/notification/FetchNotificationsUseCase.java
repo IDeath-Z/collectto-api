@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.notification;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class FetchNotificationsUseCase {
     public record Input(UUID recipientId, DomainPageRequest pageRequest) {}
     public record ActorSummary(UUID id, String username, String profilePictureUrl) {}
     public record ReferenceSummary(UUID id, UUID parentId, String referenceImageUrl) {}
-    public record NotificationSummary(UUID id, UUID recipientId, ActorSummary actor, NotificationContext context, ReferenceSummary reference, boolean isRead, String createdAt) {}
+    public record NotificationSummary(UUID id, UUID recipientId, ActorSummary actor, NotificationContext context, ReferenceSummary reference, boolean isRead, Instant createdAt) {}
     public record Output(List<NotificationSummary> notifications, int totalPages, long totalElements, int currentPage) {}
 
     public Output execute(Input input) {
@@ -108,9 +109,13 @@ public class FetchNotificationsUseCase {
                 }
 
                 return new NotificationSummary(
-                    notification.getId(), notification.getRecipientId(), actorSummary, 
-                    notification.getContext(), referenceSummary, notification.isRead(), 
-                    notification.getCreatedAt().toString()
+                    notification.getId(),
+                    notification.getRecipientId(),
+                    actorSummary, 
+                    notification.getContext(),
+                    referenceSummary, 
+                    notification.isRead(), 
+                    notification.getCreatedAt()
                 );
             })
             .toList();

@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.presentation.dto.collection;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,8 +39,8 @@ public record CollectionResponse(
         boolean active, // Using 'active' as the field name to avoid confusion with 'isActive' in JSON
                 
         @Schema(description = "Collection creation timestamp", example = "2023-01-01T00:00:00Z")
-        String createdAt,
+        Instant createdAt,
                 
         @Schema(description = "Collection last update timestamp", example = "2023-01-02T00:00:00Z")
-        String updatedAt
+        Instant updatedAt
 ) {}
