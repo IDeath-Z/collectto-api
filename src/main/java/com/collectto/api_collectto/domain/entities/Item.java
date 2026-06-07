@@ -127,11 +127,11 @@ public class Item {
         return updatedAt;
     }
 
-    public Item updateItem(String name, String description, LocalDate acquisitionDate, List<String> mediaURLs, 
+    public Item updateItem(UUID collectionId, String name, String description, LocalDate acquisitionDate, List<String> mediaURLs, 
         Map<String, Object> attributes, List<String> tags) {
         return new Item(
             this.id,
-            this.collectionId,
+            collectionId != null ? collectionId : this.collectionId,
             this.userId,
             name != null ? name : this.name,
             description != null ? description : this.description,

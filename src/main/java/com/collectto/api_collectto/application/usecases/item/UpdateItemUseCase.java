@@ -23,7 +23,7 @@ public class UpdateItemUseCase {
     private final StorageProvider storageProvider;
     private final StorageUrlPaths storageUrlPaths;
 
-    public record Input(UUID itemId, UUID requesterId, String name, String description, LocalDate acquisitionDate, 
+    public record Input(UUID itemId, UUID requesterId, UUID collectionId, String name, String description, LocalDate acquisitionDate, 
         List<String> imageFilesUrls, Map<String, Object> attributes, List<String> tags) {}
 
     public record Output(UUID id, UUID collectionId, UUID userId, String name, String description, LocalDate acquisitionDate,
@@ -58,7 +58,7 @@ public class UpdateItemUseCase {
                 .toList();
         }
 
-        Item updatedItem = item.updateItem(input.name(), input.description(), input.acquisitionDate(), processedImageUrls, 
+        Item updatedItem = item.updateItem(input.collectionId(), input.name(), input.description(), input.acquisitionDate(), processedImageUrls, 
             input.attributes(), input.tags());
         Item savedItem = itemRepository.save(updatedItem);
 

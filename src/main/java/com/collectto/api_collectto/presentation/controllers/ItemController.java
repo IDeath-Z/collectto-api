@@ -186,6 +186,7 @@ public class ItemController {
             new UpdateItemUseCase.Input(
                 itemId,
                 userId,
+                request.collectionId(),
                 request.name(),
                 request.description(),
                 request.acquisitionDate(),

@@ -3,11 +3,15 @@ package com.collectto.api_collectto.presentation.dto.item;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "UpdateItemRequest", description = "Request payload for updating an existing item")
 public record UpdateItemRequest(
+    @Schema(description = "ID of the collection to update", example = "123e4567-e89b-12d3-a456-426614174000")
+    UUID collectionId,
+
     @Schema(description = "Name of the item", example = "Vintage Camera")
     String name,
 
