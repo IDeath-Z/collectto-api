@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.collectto.api_collectto.domain.ports.StorageProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.StringPrivateKeySupplier;
+import com.oracle.bmc.model.BmcException;
 import com.oracle.bmc.objectstorage.ObjectStorage;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.CreatePreauthenticatedRequestDetails;
@@ -129,8 +130,15 @@ public class OracleStorageProvider implements StorageProvider {
                 .build();
 
             client.deleteObject(request);
+            
+        } catch (BmcException e) {
+            if (e.getStatusCode() == 404) {
+                return;
+            }
+            throw new RuntimeException("Error from Oracle Cloud while deleting image: " + e.getMessage());
+            
         } catch (Exception e) {
-            throw new RuntimeException("Error while deleting image: " + e.getMessage()); // Implement better error handling as needed
+            throw new RuntimeException("Unexpected error while deleting image: " + e.getMessage());
         }
     }
 
