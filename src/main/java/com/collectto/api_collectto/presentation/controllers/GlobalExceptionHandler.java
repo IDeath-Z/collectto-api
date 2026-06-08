@@ -9,6 +9,7 @@ import com.collectto.api_collectto.application.exceptions.BusinessRuleException;
 import com.collectto.api_collectto.application.exceptions.ForbiddenActionException;
 import com.collectto.api_collectto.application.exceptions.ResourceAlreadyExistsException;
 import com.collectto.api_collectto.application.exceptions.ResourceNotFoundException;
+import com.collectto.api_collectto.application.exceptions.UnauthorizedException;
 import com.collectto.api_collectto.presentation.dto.exceptions.ApiErrorResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ public class GlobalExceptionHandler {
         ApiErrorResponse error = new ApiErrorResponse(
             Instant.now(),
             status.value(),
-            "Bad Request",
+            status.getReasonPhrase(),
             e.getMessage(),
             request.getRequestURI()
         );
@@ -43,7 +44,7 @@ public class GlobalExceptionHandler {
         ApiErrorResponse error = new ApiErrorResponse(
             Instant.now(),
             status.value(),
-            "Resource Not Found",
+            status.getReasonPhrase(),
             e.getMessage(),
             request.getRequestURI()
         );
@@ -58,7 +59,22 @@ public class GlobalExceptionHandler {
         ApiErrorResponse error = new ApiErrorResponse(
             Instant.now(),
             status.value(),
-            "Conflict",
+            status.getReasonPhrase(),
+            e.getMessage(),
+            request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnauthorized(UnauthorizedException e, HttpServletRequest request) {
+        log.warn("Unauthorized access: {}", e.getMessage());
+        
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ApiErrorResponse error = new ApiErrorResponse(
+            Instant.now(),
+            status.value(),
+            status.getReasonPhrase(),
             e.getMessage(),
             request.getRequestURI()
         );
@@ -73,7 +89,7 @@ public class GlobalExceptionHandler {
         ApiErrorResponse error = new ApiErrorResponse(
             Instant.now(),
             status.value(),
-            "Forbidden",
+            status.getReasonPhrase(),
             e.getMessage(),
             request.getRequestURI()
         );
@@ -88,7 +104,7 @@ public class GlobalExceptionHandler {
         ApiErrorResponse error = new ApiErrorResponse(
             Instant.now(),
             status.value(),
-            "Internal Server Error",
+            status.getReasonPhrase(),
             "An unexpected error occurred. Please try again later.", 
             request.getRequestURI()
         );

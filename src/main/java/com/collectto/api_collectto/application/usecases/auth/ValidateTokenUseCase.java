@@ -14,7 +14,7 @@ public class ValidateTokenUseCase {
     private final UserRepository userRepository;
 
     public User execute(String token) {
-        String validEmail = tokenProvider.validate(token);
+        String validEmail = tokenProvider.validateAccessToken(token);
 
         return userRepository.findByEmail(validEmail)
             .orElseThrow(() -> new UnauthorizedException("Invalid session: user not found"));

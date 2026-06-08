@@ -1,5 +1,6 @@
 package com.collectto.api_collectto.application.usecases.auth;
 
+import com.collectto.api_collectto.application.exceptions.UnauthorizedException;
 import com.collectto.api_collectto.domain.entities.User;
 import com.collectto.api_collectto.domain.ports.TokenProvider;
 import com.collectto.api_collectto.domain.ports.UserRepository;
@@ -8,17 +9,22 @@ import com.collectto.api_collectto.domain.shared.AuthToken;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ProcessUserLoginUseCase {
+public class RefreshSessionUseCase {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
 
-    public AuthToken execute(User user) {
+    public AuthToken execute(String refreshToken) {
+        String email = tokenProvider.validateRefreshToken(refreshToken);
+
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UnauthorizedException("User not found"));
+
         if (!user.isActive()) {
-            userRepository.reactivateUser(user.getId());
+            throw new UnauthorizedException("User account is deactivated");
         }
 
-       return new AuthToken(
+        return new AuthToken(
             tokenProvider.generateAccessToken(user.getEmail()),
             tokenProvider.generateRefreshToken(user.getEmail())
         );
