@@ -20,7 +20,7 @@ public class CreateCollectionUseCase {
     private final StorageProvider storageProvider;
     private final StorageUrlPaths storageUrlPaths;
 
-    public record Input(UUID userId, String name, String description, String coverImageUrl, List<String> tags) {}
+    public record Input(UUID userId, String name, String description, String coverImageUrl, Visibility visibility, List<String> tags) {}
     public record Output(UUID id, UUID userId, String name, String description, String coverImageURL, Visibility visibility,
         int followersCount, List<String> tags, boolean isActive, Instant createdAt, Instant updatedAt) {}
                 
@@ -37,6 +37,7 @@ public class CreateCollectionUseCase {
             input.name(), 
             input.description(), 
             coverImageUrl, 
+            input.visibility(),
             input.tags()
         );
 

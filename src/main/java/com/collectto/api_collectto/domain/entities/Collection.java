@@ -28,7 +28,7 @@ public class Collection {
         this.name = DomainValidator.requireNonBlank(name, "Name cannot be null");
         this.description = description;
         this.coverImageUrl = coverImageUrl;
-        this.visibility = visibility;
+        this.visibility = DomainValidator.requireNonNull(visibility, "Visibility cannot be null");
         this.followersCount = DomainValidator.requireNonNegative(followersCount, "Followers count cannot be negative");
         this.tags = tags;
         this.isActive = isActive;
@@ -36,14 +36,14 @@ public class Collection {
         this.updatedAt = DomainValidator.requireNonNull(updatedAt, "Updated at timestamp cannot be null"); 
     }
 
-    public static Collection createNewCollection(UUID userId, String name, String description, String coverImageUrl, List<String> tags) {
+    public static Collection createNewCollection(UUID userId, String name, String description, String coverImageUrl, Visibility visibility, List<String> tags) {
         return new Collection(
             UUID.randomUUID(),
             userId,
             name,
             description,
             coverImageUrl,
-            Visibility.PRIVATE,
+            visibility,
             0, // Initial followers count
             tags,
             true, // isActive

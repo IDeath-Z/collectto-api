@@ -64,6 +64,7 @@ public class CollectionController {
                 request.name(),
                 request.description(),
                 request.coverImageUrl(),
+                request.visibility(),
                 request.tags()
             )
         ));
