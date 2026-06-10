@@ -4,7 +4,7 @@
 
 > Backend da rede social para colecionadores — organize seu acervo e conecte-se com outros entusiastas.
 
-Collectto é uma **rede social mobile** voltada especificamente para colecionadores. A plataforma resolve um problema real: as redes sociais genéricas não oferecem ferramentas para catalogar itens com detalhes como data de aquisição, condição de conservação, valor estimado e atributos personalizados. Este repositório contém a **API REST** que alimenta o aplicativo.
+Collectto é uma rede social mobile voltada especificamente para colecionadores. A plataforma resolve um problema real: redes sociais genéricas não oferecem ferramentas para catalogar um acervo. No Collectto, cada item registra dados como data de aquisição e histórico de uso, além de atributos totalmente personalizáveis — um colecionador de vinis cadastra prensagem e estado da capa; um de action figures, escala e fabricante — sem que a plataforma precise prever cada nicho. Este repositório contém a API REST que alimenta o aplicativo.
 
 ---
 
@@ -62,7 +62,7 @@ A autenticação é gerenciada pelo Spring Security. Todos os endpoints exigem J
 | Método | Rota | Descrição | Auth |
 |--------|------|-----------|------|
 | `POST` | `/users/create` | Cria uma nova conta | público |
-| `GET` | `/users/{userId}` | Retorna dados públicos de um usuário | público |
+| `GET` | `/users/{userId}` | Retorna dados públicos de um usuário | ✅ |
 | `GET` | `/users/me` | Retorna dados do usuário autenticado | ✅ |
 | `PATCH` | `/users/update` | Atualiza o perfil do usuário autenticado | ✅ |
 | `PATCH` | `/users/password` | Altera a senha do usuário autenticado | ✅ |
