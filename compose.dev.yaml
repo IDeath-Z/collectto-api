@@ -1,0 +1,10 @@
+# Override base containers to liberate default ports, USE ONLY FOR DEVELOPMENT PURPOSES IN LOCAL HOST
+# Run docker compose -f compose.yaml -f compose.dev.yaml up -d to start in development mode.
+services:
+  postgres:
+    ports:
+      - "5433:5432"
+
+  api:
+    ports:
+      - "8080:8080"

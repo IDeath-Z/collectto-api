@@ -37,4 +37,4 @@ jobs:
           script: |
             cd /root/collectto-api
             git pull origin main
-            docker compose up -d --build --no-deps api
+            docker compose -f compose.yaml -f compose.prod.yaml up -d --build --no-deps api
