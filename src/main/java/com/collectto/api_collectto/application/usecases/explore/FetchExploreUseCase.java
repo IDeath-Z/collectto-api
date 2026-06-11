@@ -28,42 +28,20 @@ public class FetchExploreUseCase {
         
         Set<UUID> favoriteTagIds = exploreRepository.getFavoriteTagIds(input.requesterId());
 
-        List<DomainExploreCard> items = new ArrayList<>();
-        Set<UUID> addedItemIds = new HashSet<>();
-
-        for (DomainExploreCard card : exploreRepository.getItemsByUserTagsAffinity(input.requesterId(), favoriteTagIds, pageRequest)) {
-            if (addedItemIds.add(card.id())) items.add(card);
-        }
-        
-        int missingItems = pageRequest.size() - items.size();
-        if (missingItems > 0) {
-            for (DomainExploreCard card : exploreRepository.getItemsByPopularity(input.requesterId(), new DomainPageRequest(pageRequest.page(), missingItems, pageRequest.sortBy()))) {
-                if (addedItemIds.add(card.id())) items.add(card);
-            }
-        }
-        
-        missingItems = pageRequest.size() - items.size();
-        if (missingItems > 0) {
-            for (DomainExploreCard card : exploreRepository.getItemsByMostRecent(input.requesterId(), new DomainPageRequest(pageRequest.page(), missingItems, pageRequest.sortBy()))) {
-                if (addedItemIds.add(card.id())) items.add(card);
-            }
-        }
-        exploreFeed.addAll(items);
-
         List<DomainExploreCard> collections = new ArrayList<>();
         Set<UUID> addedCollectionIds = new HashSet<>();
 
         for (DomainExploreCard card : exploreRepository.getCollectionsByUserTagsAffinity(input.requesterId(), favoriteTagIds, pageRequest)) {
             if (addedCollectionIds.add(card.id())) collections.add(card);
         }
-        
+
         int missingCollections = pageRequest.size() - collections.size();
         if (missingCollections > 0) {
             for (DomainExploreCard card : exploreRepository.getCollectionsByPopularity(input.requesterId(), new DomainPageRequest(pageRequest.page(), missingCollections, pageRequest.sortBy()))) {
                 if (addedCollectionIds.add(card.id())) collections.add(card);
             }
         }
-        
+
         missingCollections = pageRequest.size() - collections.size();
         if (missingCollections > 0) {
             for (DomainExploreCard card : exploreRepository.getCollectionsByMostRecent(input.requesterId(), new DomainPageRequest(pageRequest.page(), missingCollections, pageRequest.sortBy()))) {
@@ -71,6 +49,28 @@ public class FetchExploreUseCase {
             }
         }
         exploreFeed.addAll(collections);
+
+        List<DomainExploreCard> items = new ArrayList<>();
+        Set<UUID> addedItemIds = new HashSet<>();
+
+        for (DomainExploreCard card : exploreRepository.getItemsByUserTagsAffinity(input.requesterId(), favoriteTagIds, addedCollectionIds, pageRequest)) {
+            if (addedItemIds.add(card.id())) items.add(card);
+        }
+
+        int missingItems = pageRequest.size() - items.size();
+        if (missingItems > 0) {
+            for (DomainExploreCard card : exploreRepository.getItemsByPopularity(input.requesterId(), addedCollectionIds, new DomainPageRequest(pageRequest.page(), missingItems, pageRequest.sortBy()))) {
+                if (addedItemIds.add(card.id())) items.add(card);
+            }
+        }
+
+        missingItems = pageRequest.size() - items.size();
+        if (missingItems > 0) {
+            for (DomainExploreCard card : exploreRepository.getItemsByMostRecent(input.requesterId(), addedCollectionIds, new DomainPageRequest(pageRequest.page(), missingItems, pageRequest.sortBy()))) {
+                if (addedItemIds.add(card.id())) items.add(card);
+            }
+        }
+        exploreFeed.addAll(items);
 
         Collections.shuffle(exploreFeed);
 

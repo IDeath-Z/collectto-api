@@ -55,15 +55,17 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         SELECT DISTINCT i FROM ItemJpaEntity i 
         JOIN FETCH i.tags t
         JOIN i.collection c
-        WHERE t.id IN :tagIds 
-        AND i.isActive = true 
+        WHERE t.id IN :tagIds
+        AND i.isActive = true
         AND c.isActive = true
         AND c.visibility = 'PUBLIC'
-        AND i.user.id != :requesterId 
+        AND i.user.id != :requesterId
+        AND c.id NOT IN :excludedCollectionIds
     """)
     List<ItemJpaEntity> findRecommendedByTags(
-        @Param("tagIds") Set<UUID> tagIds, 
+        @Param("tagIds") Set<UUID> tagIds,
         @Param("requesterId") UUID requesterId,
+        @Param("excludedCollectionIds") Set<UUID> excludedCollectionIds,
         Pageable pageable
     );
 
@@ -74,11 +76,13 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         WHERE i.isActive = true 
         AND c.isActive = true
         AND c.visibility = 'PUBLIC'
-        AND i.user.id != :requesterId 
+        AND i.user.id != :requesterId
+        AND c.id NOT IN :excludedCollectionIds
         ORDER BY i.likesCount DESC
     """)
     List<ItemJpaEntity> findTrendingItems(
         @Param("requesterId") UUID requesterId,
+        @Param("excludedCollectionIds") Set<UUID> excludedCollectionIds,
         Pageable pageable
     );
 
@@ -89,11 +93,13 @@ public interface ItemJpaRepository extends JpaRepository<ItemJpaEntity, UUID> {
         WHERE i.isActive = true 
         AND c.isActive = true
         AND c.visibility = 'PUBLIC'
-        AND i.user.id != :requesterId 
+        AND i.user.id != :requesterId
+        AND c.id NOT IN :excludedCollectionIds
         ORDER BY i.createdAt DESC
     """)
     List<ItemJpaEntity> findLatestItems(
         @Param("requesterId") UUID requesterId,
+        @Param("excludedCollectionIds") Set<UUID> excludedCollectionIds,
         Pageable pageable
     );
 
