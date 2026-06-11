@@ -5,6 +5,8 @@
 services:
   api:
     restart: always
+    environment:
+      - SERVER_FORWARD_HEADERS_STRATEGY=framework
   caddy:
     image: caddy:2-alpine
     container_name: caddy_proxy
