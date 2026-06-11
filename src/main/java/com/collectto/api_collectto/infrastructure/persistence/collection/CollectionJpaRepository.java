@@ -96,15 +96,15 @@ public interface CollectionJpaRepository extends JpaRepository<CollectionJpaEnti
     );
 
     @Query(value = """
-        SELECT c.id as collectionId, 
+        SELECT c.collection_id as collectionId,
                (array_agg(media_url ORDER BY i.created_at DESC))[1:3] as mediaUrls
         FROM collections c
-        JOIN items i ON c.id = i.collection_id
+        JOIN items i ON c.collection_id = i.collection_id
         CROSS JOIN LATERAL unnest(i.media_urls) as media_url
-        WHERE c.id IN :collectionIds 
+        WHERE c.collection_id IN :collectionIds
         AND c.is_active = true
         AND i.is_active = true
-        GROUP BY c.id
+        GROUP BY c.collection_id
     """, nativeQuery = true)
     List<CollectionMediaProjection> findMediaForCollections(@Param("collectionIds") Set<UUID> collectionIds);
 
