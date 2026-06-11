@@ -41,34 +41,39 @@ public class ExploreRepositoryAdapter implements ExploreRepository {
     }
 
     @Override
-    public List<DomainExploreCard> getItemsByUserTagsAffinity(UUID requesterId, Set<UUID> tags, DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getItemsByUserTagsAffinity(UUID requesterId, Set<UUID> tags, Set<UUID> excludedCollectionIds, DomainPageRequest pageRequest) {
         if (tags.isEmpty())
             return List.of();
 
         PageRequest springPage = PageConverter.toSpring(pageRequest);
 
         return exploreMapper.toItemDomain(
-            itemRepository.findRecommendedByTags(tags, requesterId, springPage),
+            itemRepository.findRecommendedByTags(tags, requesterId, normalizeExcluded(excludedCollectionIds), springPage),
             SocialContext.ITEM
         );
     }
 
     @Override
-    public List<DomainExploreCard> getItemsByPopularity(UUID requesterId, DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getItemsByPopularity(UUID requesterId, Set<UUID> excludedCollectionIds, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
         return exploreMapper.toItemDomain(
-            itemRepository.findTrendingItems(requesterId, springPage),
+            itemRepository.findTrendingItems(requesterId, normalizeExcluded(excludedCollectionIds), springPage),
             SocialContext.ITEM
         );
     }
 
     @Override
-    public List<DomainExploreCard> getItemsByMostRecent(UUID requesterId, DomainPageRequest pageRequest) {
+    public List<DomainExploreCard> getItemsByMostRecent(UUID requesterId, Set<UUID> excludedCollectionIds, DomainPageRequest pageRequest) {
         PageRequest springPage = PageConverter.toSpring(pageRequest);
         return exploreMapper.toItemDomain(
-            itemRepository.findLatestItems(requesterId, springPage),
+            itemRepository.findLatestItems(requesterId, normalizeExcluded(excludedCollectionIds), springPage),
             SocialContext.ITEM
         );
+    }
+
+    // NOT IN with an empty list is invalid SQL, so an unmatchable nil UUID keeps the query valid
+    private Set<UUID> normalizeExcluded(Set<UUID> excludedCollectionIds) {
+        return excludedCollectionIds.isEmpty() ? Set.of(new UUID(0L, 0L)) : excludedCollectionIds;
     }
 
     @Override

@@ -11,9 +11,9 @@ public interface ExploreRepository {
 
     Set<UUID> getFavoriteTagIds(UUID userId);
     
-    List<DomainExploreCard> getItemsByUserTagsAffinity(UUID requesterId, Set<UUID> tags, DomainPageRequest pageRequest);
-    List<DomainExploreCard> getItemsByPopularity(UUID requesterId, DomainPageRequest pageRequest);
-    List<DomainExploreCard> getItemsByMostRecent(UUID requesterId, DomainPageRequest pageRequest);
+    List<DomainExploreCard> getItemsByUserTagsAffinity(UUID requesterId, Set<UUID> tags, Set<UUID> excludedCollectionIds, DomainPageRequest pageRequest);
+    List<DomainExploreCard> getItemsByPopularity(UUID requesterId, Set<UUID> excludedCollectionIds, DomainPageRequest pageRequest);
+    List<DomainExploreCard> getItemsByMostRecent(UUID requesterId, Set<UUID> excludedCollectionIds, DomainPageRequest pageRequest);
     
     List<DomainExploreCard> getCollectionsByUserTagsAffinity(UUID requesterId, Set<UUID> tags, DomainPageRequest pageRequest);
     List<DomainExploreCard> getCollectionsByPopularity(UUID requesterId, DomainPageRequest pageRequest);
