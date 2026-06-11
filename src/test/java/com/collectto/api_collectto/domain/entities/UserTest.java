@@ -32,26 +32,31 @@ class UserTest {
         @DisplayName("should create successfully with valid data")
         void shouldCreateSuccessfully() {
             // Arrange
-            UserFakeData fake = UserFakeData.generate();
+            User fake = UserFakeData.generate();
 
             // Act
-            User user = User.createNewUser(fake.name(), fake.username(),
-                fake.email(), fake.passwordHash(), fake.birthdayDate());
+            User user = User.createNewUser(
+                fake.getName(),
+                fake.getUsername(),
+                fake.getEmail(), 
+                fake.getPasswordHash(),
+                fake.getBirthdayDate()
+            );
 
             // Assert
             assertAll(
                 () -> assertNotNull(user.getId()),
-                () -> assertEquals(fake.name(), user.getName()),
-                () -> assertEquals(fake.username(), user.getUsername()),
-                () -> assertEquals(fake.email(), user.getEmail()),
-                () -> assertEquals(fake.passwordHash(), user.getPasswordHash()),
+                () -> assertEquals(fake.getName(), user.getName()),
+                () -> assertEquals(fake.getUsername(), user.getUsername()),
+                () -> assertEquals(fake.getEmail(), user.getEmail()),
+                () -> assertEquals(fake.getPasswordHash(), user.getPasswordHash()),
                 () -> assertNull(user.getBio()),
                 () -> assertNull(user.getProfilePictureUrl()),
                 () -> assertNull(user.getProfileBackgroundUrl()),
                 () -> assertEquals(0, user.getFollowersCount()),
                 () -> assertEquals(0, user.getFollowingCount()),
                 () -> assertTrue(user.isActive()),
-                () -> assertEquals(fake.birthdayDate(), user.getBirthdayDate()),
+                () -> assertEquals(fake.getBirthdayDate(), user.getBirthdayDate()),
                 () -> assertNotNull(user.getCreationDate())
             );
         }
@@ -59,14 +64,25 @@ class UserTest {
         @ParameterizedTest(name = "should fail: {9}")
         @CsvFileSource(resources = CSV_PATH, numLinesToSkip = 1, nullValues = {"null"})
         @DisplayName("should throw when data is invalid")
-        void shouldThrowWhenDataIsInvalid(@ConvertWith(UUIDConverter.class) UUID id, String name, String username, String email, 
-            String passwordHash, int followersCount, int followingCount, @ConvertWith(LocalDateConverter.class) LocalDate birthday,
-            @ConvertWith(InstantConverter.class) Instant creationDate, String expectedMessage) {
+        void shouldThrowWhenDataIsInvalid(
+            @ConvertWith(UUIDConverter.class) UUID id,
+            String name,
+            String username,
+            String email, 
+            String passwordHash,
+            int followersCount,
+            int followingCount,
+            @ConvertWith(LocalDateConverter.class) LocalDate birthday,
+            @ConvertWith(InstantConverter.class) Instant creationDate,
+            String expectedMessage
+        ) {
 
-            assertThrows(IllegalArgumentException.class, () ->
+            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
                 new User(id, name, username, email, passwordHash,
                     null, null, null, followersCount, followingCount,
                     true, birthday, creationDate));
+
+            assertEquals(expectedMessage, ex.getMessage());
         }
     }
 
@@ -78,34 +94,27 @@ class UserTest {
 
         @BeforeEach
         void setUp() {
-            UserFakeData fake = UserFakeData.generate();
-            user = User.createNewUser(
-                fake.name(), 
-                fake.username(),
-                fake.email(), 
-                fake.passwordHash(), 
-                fake.birthdayDate()
-            );
+            user = UserFakeData.generate();
         }
 
         @Test
         @DisplayName("should update mutable fields and preserve immutable ones")
         void shouldUpdateSuccessfully() {
-            UserFakeData newFake = UserFakeData.generate();
+            User newFake = UserFakeData.generate();
 
             User updated = user.updateProfile(
-                newFake.name(), 
+                newFake.getName(), 
                 null, 
-                newFake.bio(),
-                newFake.profilePictureUrl(), 
+                newFake.getBio(),
+                newFake.getProfilePictureUrl(), 
                 null, 
                 null
             );
 
             assertAll(
-                () -> assertEquals(newFake.name(), updated.getName()),
-                () -> assertEquals(newFake.bio(), updated.getBio()),
-                () -> assertEquals(newFake.profilePictureUrl(), updated.getProfilePictureUrl()),
+                () -> assertEquals(newFake.getName(), updated.getName()),
+                () -> assertEquals(newFake.getBio(), updated.getBio()),
+                () -> assertEquals(newFake.getProfilePictureUrl(), updated.getProfilePictureUrl()),
                 () -> assertEquals(user.getUsername(), updated.getUsername()),
                 () -> assertEquals(user.getId(), updated.getId()),
                 () -> assertEquals(user.getBirthdayDate(), updated.getBirthdayDate()),
@@ -121,8 +130,8 @@ class UserTest {
                 null, 
                 null, 
                 null, 
-                UserFakeData.generate().profilePictureUrl(), 
-                UserFakeData.generate().profileBackgroundUrl(), 
+                UserFakeData.generate().getProfilePictureUrl(), 
+                UserFakeData.generate().getProfileBackgroundUrl(), 
                 null);
 
             User updated = userWithImages.updateProfile(
@@ -170,20 +179,13 @@ class UserTest {
 
         @BeforeEach
         void setUp() {
-            UserFakeData fake = UserFakeData.generate();
-            user = User.createNewUser(
-                fake.name(), 
-                fake.username(),
-                fake.email(), 
-                fake.passwordHash(), 
-                fake.birthdayDate()
-            );
+            user = UserFakeData.generate();
         }
 
         @Test
         @DisplayName("should change password and return new instance")
         void shouldUpdateSuccessfully() {
-            String newHash = UserFakeData.generate().passwordHash();
+            String newHash = UserFakeData.generate().getPasswordHash();
 
             User updated = user.updatePassword(newHash);
 
@@ -203,14 +205,7 @@ class UserTest {
         @Test
         @DisplayName("should return same instance when already active")
         void shouldReturnSameWhenAlreadyActive() {
-            UserFakeData fake = UserFakeData.generate();
-            User user = User.createNewUser(
-                fake.name(), 
-                fake.username(),
-                fake.email(), 
-                fake.passwordHash(), 
-                fake.birthdayDate()
-            );
+            User user = UserFakeData.generate();
 
             assertSame(user, user.activate());
         }
@@ -218,22 +213,7 @@ class UserTest {
         @Test
         @DisplayName("should return a new instance with isActive true when user is inactive")
         void shouldActivateInactiveUser() {
-            UserFakeData fake = UserFakeData.generate();
-            User inactiveUser = new User(
-                fake.id(), 
-                fake.name(), 
-                fake.username(), 
-                fake.email(), 
-                fake.passwordHash(),
-                null, 
-                null, 
-                null,
-                0, 
-                0, 
-                false,
-                fake.birthdayDate(), 
-                fake.creationDate()
-            );
+            User inactiveUser = UserFakeData.generateInactive();
 
             User activatedUser = inactiveUser.activate();
 
