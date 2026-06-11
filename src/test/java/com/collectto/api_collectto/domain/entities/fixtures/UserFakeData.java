@@ -34,8 +34,8 @@ public record UserFakeData() {
             faker.number().numberBetween(0, 500),
             isActive, 
             LocalDate.now()
-                    .minusYears(faker.number().numberBetween(18, 50))
-                    .minusDays(faker.number().numberBetween(1, 365)),
+                .minusYears(faker.number().numberBetween(18, 50))
+                .minusDays(faker.number().numberBetween(1, 365)),
             Instant.now().minusSeconds(faker.number().numberBetween(1000, 1000000)) 
         );
     }
