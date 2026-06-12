@@ -32,7 +32,7 @@ public class Notification {
             recipientId, 
             actorId, 
             NotificationContext.USER_FOLLOW_REQUESTED, 
-            null, // The reference in this case is actorId
+            actorId,
             false, 
             Instant.now()
         );
