@@ -57,9 +57,9 @@ public class CommentItemUseCase {
 
         if (!savedComment.getAuthorId().equals(collection.getUserId())) {
             Notification notification = Notification.createItemCommentedNotification(
-                collection.getUserId(), 
-                savedComment.getAuthorId(), 
-                savedComment.getId()
+                collection.getUserId(),
+                savedComment.getAuthorId(),
+                savedComment.getItemId()
             );
             notificationRepository.save(notification);
         }
