@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users", "/users/create").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
+                .requestMatchers(HttpMethod.POST, "/preregister").permitAll()
                 .anyRequest().authenticated())
             
             .exceptionHandling(ex -> ex
