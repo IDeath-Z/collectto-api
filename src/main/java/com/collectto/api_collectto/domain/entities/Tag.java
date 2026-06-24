@@ -9,11 +9,13 @@ public class Tag {
 
     private final UUID id;
     private final String name;
+    private final int usageCount;
     private final Instant createdAt;
 
-    public Tag(UUID id, String name, Instant createdAt) {
+    public Tag(UUID id, String name, int usageCount, Instant createdAt) {
         this.id = DomainValidator.requireNonNull(id, "Tag ID cannot be null");
         this.name = DomainValidator.requireNonNull(name, "Name cannot be null");
+        this.usageCount = DomainValidator.requireNonNegative(usageCount, "Usage count cannot be negative");
         this.createdAt = DomainValidator.requireNonNull(createdAt, "Created at timestamp cannot be null");
     }
 
@@ -21,6 +23,7 @@ public class Tag {
         return new Tag(
             UUID.randomUUID(),
             name,
+            0,
             Instant.now()
         );
     }
@@ -31,6 +34,10 @@ public class Tag {
 
     public String getName() {
         return name;
+    }
+
+    public int getUsageCount() {
+        return usageCount;
     }
 
     public Instant getCreatedAt() {
