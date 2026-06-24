@@ -11,10 +11,17 @@ public class TagMapper {
         TagJpaEntity entity = new TagJpaEntity();
         entity.setId(tag.getId());
         entity.setName(tag.getName());
+        entity.setUsageCount(tag.getUsageCount());
+        entity.setCreatedAt(tag.getCreatedAt());
         return entity;
     }
 
     public Tag toDomain(TagJpaEntity entity) {
-        return new Tag(entity.getId(), entity.getName(), entity.getCreatedAt());
+        return new Tag(
+            entity.getId(),
+            entity.getName(),
+            entity.getUsageCount(),
+            entity.getCreatedAt()
+        );
     }
 }

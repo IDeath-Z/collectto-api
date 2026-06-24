@@ -25,6 +25,9 @@ public class TagJpaEntity {
     @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
+    @Column(name = "usage_count", nullable = false, insertable = false, updatable = false)
+    private int usageCount;
+
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     @CreationTimestamp
     private Instant createdAt;

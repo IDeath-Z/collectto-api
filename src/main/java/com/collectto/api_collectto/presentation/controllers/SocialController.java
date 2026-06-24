@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.collectto.api_collectto.application.usecases.explore.FetchExploreUseCase;
 import com.collectto.api_collectto.application.usecases.feed.FetchFeedUseCase;
 import com.collectto.api_collectto.application.usecases.search.FetchGlobalSearchUseCase;
+import com.collectto.api_collectto.application.usecases.search.FetchTagSearchUseCase;
 import com.collectto.api_collectto.infrastructure.persistence.shared.TransactionalProxy;
 import com.collectto.api_collectto.infrastructure.security.SecurityUserDetails;
 import com.collectto.api_collectto.presentation.dto.item.ItemResponse;
 import com.collectto.api_collectto.presentation.dto.social.ExploreCardsResponse;
 import com.collectto.api_collectto.presentation.dto.social.FeedResponse;
 import com.collectto.api_collectto.presentation.dto.social.GlobalSearchResponse;
+import com.collectto.api_collectto.presentation.dto.social.TagSearchResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class SocialController {
     private final FetchExploreUseCase fetchExploreUseCase;
     private final FetchFeedUseCase fetchFeedUseCase;
     private final FetchGlobalSearchUseCase globalSearchUseCase;
+    private final FetchTagSearchUseCase fetchTagSearchUseCase;
     private final TransactionalProxy transactionalProxy;
 
     @GetMapping("/explore")
@@ -111,6 +114,25 @@ public class SocialController {
             output.page(),
             output.size(),
             output.hasNext()
+        ));
+    }
+
+    @GetMapping("/search/by-tag")
+    @Operation(summary = "Search by tag", description = "Searches for users, collections, and items based on a tag.")
+    public ResponseEntity<TagSearchResponse> searchByTag(@RequestParam(value = "term", defaultValue = "") String query, @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "5") int size) {
+
+        var output = transactionalProxy.execute(() -> 
+            fetchTagSearchUseCase.execute(new FetchTagSearchUseCase.Input(query, page, size))
+        );
+
+        return ResponseEntity.ok(new TagSearchResponse(
+            output.content().stream()
+                .map(tag -> new TagSearchResponse.TagSummaryResponse(tag.id(), tag.name(), tag.usageCount()))
+                .toList(),
+            output.totalPages(),
+            output.totalElements(),
+            output.currentPage()
         ));
     }
 }
