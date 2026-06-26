@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class FeedRepositoryAdapter implements FeedRepository {
+public final class FeedRepositoryAdapter implements FeedRepository {
 
     private final UserFollowJpaRepository userFollowRepository;
     private final CollectionFollowJpaRepository collectionFollowRepository;

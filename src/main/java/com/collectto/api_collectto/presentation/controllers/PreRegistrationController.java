@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/preregister")
-public class PreRegistrationController {
+public final class PreRegistrationController {
 
     private final TransactionalProxy transactionalProxy;
     private final RegisterForBetaUseCase registerForBetaUseCase;

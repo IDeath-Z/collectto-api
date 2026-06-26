@@ -13,7 +13,7 @@ import com.collectto.api_collectto.domain.shared.DomainPageResult;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchUserCollectionsUseCase {
+public final class FetchUserCollectionsUseCase {
 
     private final CollectionRepository collectionRepository;
     private final ItemRepository itemRepository;

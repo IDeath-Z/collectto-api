@@ -27,7 +27,7 @@ import com.oracle.bmc.Region;
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class OracleStorageProvider implements StorageProvider {
+public final class OracleStorageProvider implements StorageProvider {
 
     @Value("${oracle.cloud.tenantId}")
     private String tenantId;

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class BCryptPasswordHasher implements PasswordHasher {
+public final class BCryptPasswordHasher implements PasswordHasher {
 
     private final BCryptPasswordEncoder encoder;
 

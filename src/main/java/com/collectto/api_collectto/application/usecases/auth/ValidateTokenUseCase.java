@@ -8,7 +8,7 @@ import com.collectto.api_collectto.domain.ports.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ValidateTokenUseCase {
+public final class ValidateTokenUseCase {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;

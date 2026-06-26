@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class ItemComment {
+public final class ItemComment {
 
     private final UUID id;
     private final UUID itemId;

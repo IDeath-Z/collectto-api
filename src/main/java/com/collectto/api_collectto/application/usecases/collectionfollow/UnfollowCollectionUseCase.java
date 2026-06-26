@@ -11,7 +11,7 @@ import com.collectto.api_collectto.domain.ports.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UnfollowCollectionUseCase {
+public final class UnfollowCollectionUseCase {
 
     private final CollectionFollowRepository collectionFollowRepository;
     private final CollectionRepository collectionRepository;

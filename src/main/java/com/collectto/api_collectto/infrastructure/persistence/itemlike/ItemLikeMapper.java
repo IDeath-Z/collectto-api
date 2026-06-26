@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.collectto.api_collectto.domain.entities.ItemLike;
 
 @Component
-public class ItemLikeMapper {
+public final class ItemLikeMapper {
 
     public ItemLikeJpaEntity toJpa(ItemLike itemLike) {
         ItemLikeJpaId id = new ItemLikeJpaId(itemLike.getItemId(), itemLike.getLikerId());

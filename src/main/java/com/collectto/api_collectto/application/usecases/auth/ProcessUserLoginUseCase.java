@@ -8,7 +8,7 @@ import com.collectto.api_collectto.domain.shared.AuthToken;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ProcessUserLoginUseCase {
+public final class ProcessUserLoginUseCase {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;

@@ -14,7 +14,7 @@ import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FollowUserUseCase {
+public final class FollowUserUseCase {
 
     private final UserFollowRepository userFollowRepository;
     private final NotificationRepository notificationRepository;

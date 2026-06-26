@@ -17,7 +17,7 @@ import com.collectto.api_collectto.domain.shared.DomainPageResult;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchCollectionItemsUseCase {
+public final class FetchCollectionItemsUseCase {
 
     private final ItemRepository itemRepository;
     private final CollectionRepository collectionRepository;

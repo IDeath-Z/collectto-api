@@ -7,7 +7,7 @@ import com.collectto.api_collectto.infrastructure.persistence.item.ItemJpaEntity
 import com.collectto.api_collectto.infrastructure.persistence.user.UserJpaEntity;
 
 @Component
-public class ItemCommentMapper {
+public final class ItemCommentMapper {
 
     public ItemCommentJpaEntity toJpa(ItemComment itemComment, ItemJpaEntity item, UserJpaEntity author) {
         ItemCommentJpaEntity entity = new ItemCommentJpaEntity();

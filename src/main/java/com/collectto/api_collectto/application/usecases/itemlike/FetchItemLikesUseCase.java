@@ -23,7 +23,7 @@ import com.collectto.api_collectto.domain.shared.DomainPageResult;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchItemLikesUseCase {
+public final class FetchItemLikesUseCase {
 
     private final ItemLikeRepository itemLikeRepository;
     private final CollectionRepository collectionRepository;

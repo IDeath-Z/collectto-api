@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class BetaSignupRepositoryAdapter implements BetaSignupRepository {
+public final class BetaSignupRepositoryAdapter implements BetaSignupRepository {
 
     private final BetaSignupJpaRepository jpaRepository;
     private final BetaSignupMapper mapper;

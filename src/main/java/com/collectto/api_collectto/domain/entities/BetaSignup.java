@@ -5,7 +5,7 @@ import java.time.Instant;
 import com.collectto.api_collectto.domain.enums.PreRegisterOrigin;
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class BetaSignup {
+public final class BetaSignup {
 
     Long id;
     String name;

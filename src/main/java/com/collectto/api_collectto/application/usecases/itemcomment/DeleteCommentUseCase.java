@@ -14,7 +14,7 @@ import com.collectto.api_collectto.domain.ports.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class DeleteCommentUseCase {
+public final class DeleteCommentUseCase {
 
     private final ItemCommentRepository itemCommentRepository;
     private final ItemRepository itemRepository;

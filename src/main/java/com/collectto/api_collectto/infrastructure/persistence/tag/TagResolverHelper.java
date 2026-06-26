@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class TagResolverHelper {
+public final class TagResolverHelper {
 
     private final TagJpaRepository tagJpaRepository;
 

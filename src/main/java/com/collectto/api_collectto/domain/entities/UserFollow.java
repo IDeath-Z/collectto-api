@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.collectto.api_collectto.domain.enums.FollowStatus;
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class UserFollow {
+public final class UserFollow {
 
     private final UUID followerId;
     private final UUID followedId;

@@ -11,7 +11,7 @@ import com.collectto.api_collectto.domain.ports.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UnlikeItemUseCase {
+public final class UnlikeItemUseCase {
 
     private final ItemLikeRepository itemLikeRepository;
     private final ItemRepository itemRepository;

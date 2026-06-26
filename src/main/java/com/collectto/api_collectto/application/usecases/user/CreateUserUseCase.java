@@ -12,7 +12,7 @@ import com.collectto.api_collectto.domain.ports.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CreateUserUseCase {
+public final class CreateUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordHasher passwordHasher;

@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class SpringSecurityAuthentication {
+public final class SpringSecurityAuthentication {
 
     private final AuthenticationManager authenticationManager;
 

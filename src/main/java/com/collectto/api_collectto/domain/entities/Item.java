@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class Item {
+public final class Item {
 
     private final UUID id;
     private final UUID collectionId;

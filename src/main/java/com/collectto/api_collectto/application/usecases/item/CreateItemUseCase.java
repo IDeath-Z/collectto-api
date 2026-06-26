@@ -19,7 +19,7 @@ import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CreateItemUseCase {
+public final class CreateItemUseCase {
 
     private final ItemRepository itemRepository;
     private final CollectionRepository collectionRepository;

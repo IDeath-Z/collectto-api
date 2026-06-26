@@ -17,7 +17,7 @@ import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class GenerateUploadUrlsUseCase {
+public final class GenerateUploadUrlsUseCase {
 
     private final StorageProvider storageProvider;
     private final StorageUrlPaths storageUrlPaths;

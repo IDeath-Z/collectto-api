@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/notifications")
-public class NotificationController {
+public final class NotificationController {
 
     private final FetchNotificationsUseCase fetchNotificationsUseCase;
     private final TransactionalProxy transactionalProxy;

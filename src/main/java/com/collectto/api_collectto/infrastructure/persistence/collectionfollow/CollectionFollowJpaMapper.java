@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.collectto.api_collectto.domain.entities.CollectionFollow;
 
 @Component
-public class CollectionFollowJpaMapper {
+public final class CollectionFollowJpaMapper {
 
     public CollectionFollowJpaEntity toJpa(CollectionFollow collectionFollow) {
         CollectionFollowJpaId id = new CollectionFollowJpaId(collectionFollow.getFollowerId(), collectionFollow.getCollectionId());

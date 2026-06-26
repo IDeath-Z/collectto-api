@@ -18,7 +18,7 @@ import com.collectto.api_collectto.domain.entities.Item;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchGlobalSearchUseCase {
+public final class FetchGlobalSearchUseCase {
 
     private final UserRepository userRepository;
     private final CollectionRepository collectionRepository;

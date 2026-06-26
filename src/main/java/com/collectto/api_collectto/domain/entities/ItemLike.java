@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class ItemLike {
+public final class ItemLike {
 
     private final UUID itemId;
     private final UUID likerId;

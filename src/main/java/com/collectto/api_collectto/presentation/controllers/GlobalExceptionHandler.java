@@ -19,7 +19,7 @@ import java.time.Instant;
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public final class GlobalExceptionHandler {
 
     @ExceptionHandler({BusinessRuleException.class, IllegalArgumentException.class})
     public ResponseEntity<ApiErrorResponse> handleBadRequest(RuntimeException e, HttpServletRequest request) {

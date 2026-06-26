@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.collectto.api_collectto.domain.enums.Visibility;
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class Collection {
+public final class Collection {
 
     private final UUID id;
     private final UUID userId;

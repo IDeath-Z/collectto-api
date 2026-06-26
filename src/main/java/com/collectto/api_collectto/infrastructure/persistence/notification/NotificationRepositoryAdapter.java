@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class NotificationRepositoryAdapter implements NotificationRepository {
+public final class NotificationRepositoryAdapter implements NotificationRepository {
 
     private final NotificationJpaRepository jpaRepository;
     private final NotificationMapper mapper;

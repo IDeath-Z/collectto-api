@@ -24,7 +24,7 @@ import com.collectto.api_collectto.domain.shared.DomainPageResult;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchItemCommentsUseCase {
+public final class FetchItemCommentsUseCase {
 
     private final ItemCommentRepository itemCommentRepository;
     private final CollectionRepository collectionRepository;
