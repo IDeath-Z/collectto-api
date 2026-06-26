@@ -14,7 +14,7 @@ import com.collectto.api_collectto.domain.shared.StorageUrlPaths;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UpdateUserUseCase {
+public final class UpdateUserUseCase {
 
     private final UserRepository userRepository;
     private final StorageProvider storageProvider;

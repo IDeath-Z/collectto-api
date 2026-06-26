@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-public class AuthController {
+public final class AuthController {
 
     private final SpringSecurityAuthentication springSecurityAuthentication;
     private final ProcessUserLoginUseCase processUserLoginUseCase;

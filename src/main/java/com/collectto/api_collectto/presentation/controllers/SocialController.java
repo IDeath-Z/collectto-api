@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/social")
-public class SocialController {
+public final class SocialController {
 
     private final FetchExploreUseCase fetchExploreUseCase;
     private final FetchFeedUseCase fetchFeedUseCase;

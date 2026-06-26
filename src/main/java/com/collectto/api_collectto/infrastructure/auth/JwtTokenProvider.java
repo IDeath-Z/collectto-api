@@ -16,7 +16,7 @@ import com.collectto.api_collectto.domain.enums.TokenType;
 import com.collectto.api_collectto.domain.ports.TokenProvider;
 
 @Component
-public class JwtTokenProvider implements TokenProvider {
+public final class JwtTokenProvider implements TokenProvider {
 
     @Value("${jwt.secret}")
     private String jwtSecret;

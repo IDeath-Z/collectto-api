@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class FetchCurrentUserInfoUseCase {
+public final class FetchCurrentUserInfoUseCase {
 
     private final UserRepository userRepository;
 

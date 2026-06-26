@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.collectto.api_collectto.domain.entities.BetaSignup;
 
 @Component
-public class BetaSignupMapper {
+public final class BetaSignupMapper {
 
     public BetaSignupJpaEntity toJpa(BetaSignup betaSignup) {
         BetaSignupJpaEntity jpaEntity = new BetaSignupJpaEntity();

@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/uploads")
-public class UploadController {
+public final class UploadController {
 
     private final GenerateUploadUrlsUseCase generateUploadUrlsUseCase;
 

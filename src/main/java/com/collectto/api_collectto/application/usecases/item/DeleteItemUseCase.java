@@ -10,7 +10,7 @@ import com.collectto.api_collectto.domain.ports.ItemRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class DeleteItemUseCase {
+public final class DeleteItemUseCase {
 
     private final ItemRepository itemRepository;
 

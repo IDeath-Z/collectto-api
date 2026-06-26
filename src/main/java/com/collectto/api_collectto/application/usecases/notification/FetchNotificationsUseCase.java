@@ -21,7 +21,7 @@ import com.collectto.api_collectto.domain.shared.DomainPageResult;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchNotificationsUseCase {
+public final class FetchNotificationsUseCase {
 
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;

@@ -9,7 +9,7 @@ import com.collectto.api_collectto.domain.shared.AuthToken;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RefreshSessionUseCase {
+public final class RefreshSessionUseCase {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;

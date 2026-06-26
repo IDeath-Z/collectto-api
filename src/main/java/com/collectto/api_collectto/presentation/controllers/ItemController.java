@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
-public class ItemController {
+public final class ItemController {
 
     private final CreateItemUseCase createItemUseCase;
     private final DeleteItemUseCase deleteItemUseCase;

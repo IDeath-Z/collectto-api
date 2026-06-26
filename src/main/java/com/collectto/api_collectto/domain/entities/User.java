@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class User {
+public final class User {
 
     private final UUID id;
     private final String name;

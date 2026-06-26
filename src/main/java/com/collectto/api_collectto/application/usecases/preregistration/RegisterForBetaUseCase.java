@@ -8,7 +8,7 @@ import com.collectto.api_collectto.domain.ports.BetaSignupRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RegisterForBetaUseCase {
+public final class RegisterForBetaUseCase {
 
     private final BetaSignupRepository betaSignupRepository;
 

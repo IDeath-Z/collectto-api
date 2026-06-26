@@ -14,7 +14,7 @@ import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchCollectionUseCase {
+public final class FetchCollectionUseCase {
     
     private final CollectionRepository collectionRepository;
     private final UserFollowRepository userFollowRepository;

@@ -19,7 +19,7 @@ import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CommentItemUseCase {
+public final class CommentItemUseCase {
 
     private final ItemCommentRepository itemCommentRepository;
     private final ItemRepository itemRepository;

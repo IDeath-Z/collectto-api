@@ -12,7 +12,7 @@ import com.collectto.api_collectto.domain.shared.DomainPageResult;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchTagSearchUseCase {
+public final class FetchTagSearchUseCase {
 
     private final TagRepository tagRepository;
 

@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class TagRepositoryAdapter implements TagRepository {
+public final class TagRepositoryAdapter implements TagRepository {
 
     private final TagJpaRepository jpaRepository;
     private final TagMapper tagmapper;

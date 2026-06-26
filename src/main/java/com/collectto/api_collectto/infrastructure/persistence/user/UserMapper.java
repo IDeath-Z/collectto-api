@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.collectto.api_collectto.domain.entities.User;
 
 @Component
-public class UserMapper {
+public final class UserMapper {
 
     public UserJpaEntity toJpa(User user) {
         UserJpaEntity entity = new UserJpaEntity();

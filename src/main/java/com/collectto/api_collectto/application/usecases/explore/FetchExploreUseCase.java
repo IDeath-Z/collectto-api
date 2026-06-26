@@ -15,7 +15,7 @@ import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchExploreUseCase {
+public final class FetchExploreUseCase {
 
     private final ExploreRepository exploreRepository;
 

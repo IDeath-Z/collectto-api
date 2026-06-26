@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.collectto.api_collectto.domain.entities.Notification;
 
 @Component
-public class NotificationMapper {
+public final class NotificationMapper {
 
     public NotificationJpaEntity toJpa(Notification notification) {
         NotificationJpaEntity jpaEntity = new NotificationJpaEntity();

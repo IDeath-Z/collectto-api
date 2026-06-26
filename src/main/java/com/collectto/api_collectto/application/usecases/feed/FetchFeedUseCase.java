@@ -11,7 +11,7 @@ import com.collectto.api_collectto.domain.shared.DomainPageRequest;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FetchFeedUseCase {
+public final class FetchFeedUseCase {
 
     private final FeedRepository feedRepository;
 

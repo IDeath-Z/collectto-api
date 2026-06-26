@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class CollectionRepositoryAdapter implements CollectionRepository {
+public final class CollectionRepositoryAdapter implements CollectionRepository {
 
     private final CollectionJpaRepository collectionsJpaRepository;
     private final UserJpaRepository userJpaRepository;

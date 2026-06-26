@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class CollectionFollow {
+public final class CollectionFollow {
 
     private final UUID followerId;
     private final UUID collectionId;

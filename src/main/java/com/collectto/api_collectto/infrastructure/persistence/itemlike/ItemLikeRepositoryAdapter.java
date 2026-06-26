@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemLikeRepositoryAdapter implements ItemLikeRepository {
+public final class ItemLikeRepositoryAdapter implements ItemLikeRepository {
 
     private final ItemLikeJpaRepository itemLikeJpaRepository;
     private final ItemLikeMapper itemLikeMapper;

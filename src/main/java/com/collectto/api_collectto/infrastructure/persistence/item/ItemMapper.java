@@ -10,7 +10,7 @@ import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaEntity;
 import com.collectto.api_collectto.infrastructure.persistence.user.UserJpaEntity;
 
 @Component
-public class ItemMapper {
+public final class ItemMapper {
 
     public ItemJpaEntity toJpa(Item item, CollectionJpaEntity collection, UserJpaEntity user) {
         ItemJpaEntity entity = new ItemJpaEntity();

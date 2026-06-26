@@ -13,7 +13,7 @@ import com.collectto.api_collectto.infrastructure.persistence.item.ItemJpaEntity
 import com.collectto.api_collectto.infrastructure.persistence.tag.TagJpaEntity;
 
 @Component
-public class ExploreMapper {
+public final class ExploreMapper {
 
     public List<DomainExploreCard> toItemDomain(List<ItemJpaEntity> entities, SocialContext context) {
         return entities.stream()

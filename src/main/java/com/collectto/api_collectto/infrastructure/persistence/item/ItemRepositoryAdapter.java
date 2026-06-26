@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryAdapter implements ItemRepository {
+public final class ItemRepositoryAdapter implements ItemRepository {
 
     private final ItemJpaRepository itemJpaRepository;
     private final CollectionJpaRepository collectionsJpaRepository;

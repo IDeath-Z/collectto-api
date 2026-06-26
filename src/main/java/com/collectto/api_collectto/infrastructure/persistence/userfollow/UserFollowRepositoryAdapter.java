@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class UserFollowRepositoryAdapter implements UserFollowRepository {
+public final class UserFollowRepositoryAdapter implements UserFollowRepository {
 
     private final UserFollowJpaRepository userFollowJpaRepository;
     private final UserFollowMapper userFollowMapper;

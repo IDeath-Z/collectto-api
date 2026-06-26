@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/collections")
-public class CollectionController {
+public final class CollectionController {
 
     private final CreateCollectionUseCase createCollectionUseCase;
     private final DeleteCollectionUseCase deleteCollectionUseCase;

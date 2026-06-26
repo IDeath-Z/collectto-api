@@ -18,7 +18,7 @@ import java.io.IOException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SecurityFilter extends OncePerRequestFilter {
+public final class SecurityFilter extends OncePerRequestFilter {
 
     private final ValidateTokenUseCase validateTokenUseCase;
 

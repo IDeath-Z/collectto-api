@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.collectto.api_collectto.domain.enums.NotificationContext;
 import com.collectto.api_collectto.domain.shared.DomainValidator;
 
-public class Notification {
+public final class Notification {
 
     private final UUID id;
     private final UUID recipientId;

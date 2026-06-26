@@ -11,7 +11,7 @@ import com.collectto.api_collectto.domain.ports.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ChangePasswordUseCase {
+public final class ChangePasswordUseCase {
 
     private final UserRepository userRepository;
     private final PasswordHasher passwordHasher;

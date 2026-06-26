@@ -20,7 +20,7 @@ import com.collectto.api_collectto.domain.ports.UserFollowRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class LikeItemUseCase {
+public final class LikeItemUseCase {
 
     private final ItemLikeRepository itemLikeRepository;
     private final ItemRepository itemRepository;

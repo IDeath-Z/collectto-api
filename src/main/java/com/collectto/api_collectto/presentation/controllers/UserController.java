@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-public class UserController {
+public final class UserController {
 
     private final ChangePasswordUseCase changePasswordUseCase;
     private final CreateUserUseCase createUserUseCase;

@@ -9,7 +9,7 @@ import com.collectto.api_collectto.domain.ports.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class DeleteUserUseCase {
+public final class DeleteUserUseCase {
 
     private final UserRepository userRepository;
 

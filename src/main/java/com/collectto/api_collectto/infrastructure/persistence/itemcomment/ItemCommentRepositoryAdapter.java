@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemCommentRepositoryAdapter implements ItemCommentRepository {
+public final class ItemCommentRepositoryAdapter implements ItemCommentRepository {
 
     private final ItemCommentJpaRepository itemCommentJpaRepository;
     private final ItemJpaRepository itemJpaRepository;

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.collectto.api_collectto.domain.entities.Tag;
 
 @Component
-public class TagMapper {
+public final class TagMapper {
 
     public TagJpaEntity toJpa(Tag tag) {
         TagJpaEntity entity = new TagJpaEntity();

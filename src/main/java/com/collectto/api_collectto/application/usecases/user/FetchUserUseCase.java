@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class FetchUserUseCase {
+public final class FetchUserUseCase {
 
     private final UserRepository userRepository;
 

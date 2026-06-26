@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 @CrossOrigin
 @RestController
 @RequestMapping("/test")
-public class TestController {
+public final class TestController {
 
     @GetMapping("/hello")
     @Operation(summary = "Test endpoint", description = "Returns a simple greeting message to verify that the API is working, with you are not authenticated return an error.")
