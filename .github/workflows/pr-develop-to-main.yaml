@@ -1,0 +1,32 @@
+name: Auto PR (develop -> main)
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  abrir-pr:
+    name: Criar PR para Main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+
+      - name: Criar Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head develop \
+            --title "PR #${{ github.run_number }}: Sync develop -> main" \
+            --body "## Resumo da Alteração
+          - **Execução:** #${{ github.run_number }}
+          - **Autor:** @${{ github.actor }}
+          - **Branch de Origem:** develop
+          - **Branch de Destino:** main
+
+          PR gerado automaticamente via GitHub Actions. Valide os testes antes do merge." \
+          || echo "PR já existente ou sem alterações pendentes entre develop e main."
