@@ -1,12 +1,6 @@
-collectto.app, www.collectto.app {
-    root * /srv/site
-    file_server
-
-    handle_path /api/* {
-        reverse_proxy api:8080
+:80 {
+    reverse_proxy collectto_api:8080 {
+        header_up X-Forwarded-Proto {header.X-Forwarded-Proto}
+        header_up X-Forwarded-Host {host}
     }
-}
-
-api.collectto.app {
-    reverse_proxy api:8080
 }
