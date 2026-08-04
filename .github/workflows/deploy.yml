@@ -52,6 +52,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: self-hosted
 
+
     steps:
       - name: Checkout na VPS
         uses: actions/checkout@v4.2.2
