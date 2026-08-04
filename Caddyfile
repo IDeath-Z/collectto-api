@@ -1,7 +1,10 @@
 :80 {
     @api host api.collectto.app
     handle @api {
-        reverse_proxy collectto_api:8080
+        reverse_proxy collectto_api:8080 {
+            header_up X-Forwarded-Proto {header.X-Forwarded-Proto}
+            header_up X-Forwarded-Host {host}
+        }
     }
 
 handle {
