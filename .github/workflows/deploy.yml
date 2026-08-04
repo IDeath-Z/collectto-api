@@ -7,8 +7,28 @@ on:
     branches: [main]
 
 jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4.7.0
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Compilar Projeto (Build)
+        run: mvn compile -DskipTests
+
   test:
-    name: Build e Testes
+    name: test
+    needs: build
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -32,6 +52,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: self-hosted
 
+
     steps:
       - name: Checkout na VPS
         uses: actions/checkout@v4.2.2
@@ -41,4 +62,4 @@ jobs:
 
       - name: Subir API (Docker)
         run: |
-          docker compose -f compose.yaml -f compose.prod.yaml up -d --build --no-deps api
+          docker compose -f compose.yaml -f compose.prod.yaml up -d --build
